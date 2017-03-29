@@ -162,34 +162,46 @@ var postRequest = {
     }
 };
 
-var buffer = "";
-var result = "";
-var resultTransXml = "";
-var resultTransJson = "";
-var resultTransPriceJson = "";
-var resultTransDateJson = "";
-var resultTransNumberOfUnitsJson = "";
-var resultTransPersonCountJson = "";
+let buffer = "";
+let resultTransXml = "";
+let resultTransNameJson = "";
+let resultTransPriceJson = "";
+let resultTransDateJson = "";
+let resultTransNumberOfUnitsJson = "";
+let resultTransPersonCountJson = "";
+let roomName = new Array();
+let roomPrice = new Array();
+let stayDate = new Array();
+let numberOfRooms = new Array();
+let numberOfPersons = new Array();
+let roomids = [ 420420, 420422, 420424, 420426, 420428, 420430, 420432, 420434, 420436, 420582, 420584, 420586, 420588, 420590, 420592, 420594, 420596, 516234, 516236, 432202, 432204, 432208, 432210, 432214, 432216, 432220, 432222, 432418, 432420, 432434, 432436, 433926, 498254, 498256, 532584, 532588, 532604, 532606, 532612, 532614, 532662, 532664, 532666, 532668, 532670, 532672, 532674, 532676, 532712, 532714];
+for (var i = 0; i < roomids.length; i++) {
+let body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="2017-07-12" End="2017-07-13"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomids[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="2"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>'
 
 
-var req = http.request( postRequest, function( res )    {
+let req = http.request( postRequest, function( res )    {
 
    console.log( res.statusCode );
    var buffer = "";
    
    res.on( "data", function( data ) { buffer = buffer + data; } );
-   res.on( "end", function( data ) { resultTransXml = buffer; parseString(buffer, function (err, result) {
+   res.on( "end", function( data ) { 
+   resultTransXml = buffer; 
+   parseString(buffer, function (err, result) {
    (JSON.stringify(result));
-   console.log(result);
-   console.log(result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name);
-   resultTransJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name.toString();
-   console.log(result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax);
-   resultTransPriceJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax.toString();
-   console.log(result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start + " bis " + result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End );
-   resultTransDateJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start.toString() + " bis " + result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End.toString();
-   resultTransNumberOfUnitsJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits.toString();
-   resultTransPersonCountJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].TPA_Extensions[0].Descriptions[0].Description[0].Text[1]._.toString();
 
+   resultTransNameJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name;
+   roomName.push(resultTransNameJson);
+   resultTransPriceJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax;
+   roomPrice.push(resultTransPriceJson);
+   resultTransDateJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start.toString() + " bis " + result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End.toString();
+   stayDate.push(resultTransDateJson);
+   resultTransNumberOfUnitsJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits.toString();
+   numberOfRooms.push(resultTransNumberOfUnitsJson)
+   resultTransPersonCountJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].TPA_Extensions[0].Descriptions[0].Description[0].Text[1]._.toString();
+   numberOfPersons.push(resultTransPersonCountJson);
+
+console.log(roomName);
 
 
 }); } );
@@ -206,6 +218,10 @@ req.on('error', function(e) {
 
 req.write( body);
 req.end();
+
+}
+
+
 
 //XML parser Variante 1
 /*
@@ -670,8 +686,8 @@ function sendGenericMessage(recipientId) {
           template_type: "generic",
           
           elements: [{
-            title: String(resultTransNumberOfUnitsJson) + " " + String(resultTransJson) + " / " + String(resultTransDateJson),
-            subtitle: String(resultTransPriceJson) + "EUR  /  "  + String(resultTransPersonCountJson),
+            title: String(numberOfRooms[1]) + " " + String(roomName[1]) + " / " + String(stayDate[1]),
+            subtitle: String(roomPrice[1]) + "EUR  /  "  + String(numberOfPersons[1]),
             item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
             image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
             buttons: [{
@@ -684,8 +700,8 @@ function sendGenericMessage(recipientId) {
               payload: "Payload for first bubble",
             }],
           }, {
-            title: String(resultTransXml),
-            subtitle: "Hello",
+            title: String(numberOfRooms[3]) + " " + String(roomName[3]) + " / " + String(stayDate[3]),
+            subtitle: String(roomPrice[3]) + "EUR  /  "  + String(numberOfPersons[3]),
             item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
             image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
             buttons: [{
@@ -699,8 +715,8 @@ function sendGenericMessage(recipientId) {
             }]
           },
           {
-            title: "Hello",
-            subtitle: "Hello",
+            title: String(numberOfRooms[6]) + " " + String(roomName[6]) + " / " + String(stayDate[6]),
+            subtitle: String(roomPrice[6]) + "EUR  /  "  + String(numberOfPersons[6]),
             item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
             image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
             buttons: [{
@@ -714,8 +730,8 @@ function sendGenericMessage(recipientId) {
             }]
           },
           {
-            title: "Hello",
-            subtitle: "Hello",
+            title: String(numberOfRooms[20]) + " " + String(roomName[20]) + " / " + String(stayDate[20]),
+            subtitle: String(roomPrice[20]) + "EUR  /  "  + String(numberOfPersons[20]),
             item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
             image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
             buttons: [{
