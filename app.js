@@ -147,8 +147,65 @@ app.get('/authorize', function(req, res) {
 });
 
 
-//var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="2017-09-02" End="2017-09-04"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="432202"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="1"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="2"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates> </AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>'
-var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="2017-07-12" End="2017-07-13"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="420426"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="2"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>'
+let buffer = "";
+let resultTransferData = [];
+
+let roomIds = [420420, 420422, 420424, 420426];
+
+/*further categories:
+ 420420 - '100.00' - Einzelzimmer Sommerstein
+ 420422 - '175.00' - Einzelnutzung Classic Steinleo
+ 420424 - '214.00' - Doppelzimmer Classic Steinleo
+ 420426 - '228.00' - Doppelzimmer Superior Steinleo
+ 420428 - '244.00' - Doppelzimmer Deluxe Holzleo
+ 420430 - '999.99' - Deluxe Asitz Allgergiker Stein
+ 420432 - '999.99' - Familienzimmer Birnhorn Steinl
+ 420434 - '999.99' - Familienzimmer Spielberg Holzl
+ 420436 - '999.99' - Suite Mitterhorn Steinleo
+ 420582 - '175.00' - Einzelnutzung Classic Steinleo
+ 420584 - '999.99' - Suite Mitterhorn Steinleo
+ 420586 - '999.99' - Familienzimmer Spielberg Holzl
+ 420588 - '999.00' - Familienzimmer Birnhorn Steinl
+ 420590 - '244.00' - Doppelzimmer Deluxe Holzleo
+ 420592 - '228.00' - Doppelzimmer Superior Steinleo
+ 420594 - '214.00' - Doppelzimmer Classic Steinleo
+ 420596 - '100.00' - Einzelzimmer Sommerstein
+ 432202 - Doppelzimmer Classic Steinleo_Standard Rate HP
+ 432204 - Doppelzimmer Classic Steinleo_Breakfast include rates
+ 432208 - Einzelzimmer Sommerstein_Standard Rate HP
+ 432210 - Einzelzimmer Sommerstein_Breakfast include rates
+ 432214 - Doppelzimmer Superior Steinleo_Standard Rate HP
+ 432216 - Doppelzimmer Superior Steinleo_Breakfast include rates
+ 432220 - Doppelzimmer Deluxe Holzleo_Standard Rate HP
+ 432222 - Doppelzimmer Deluxe Holzleo_Breakfast include rates
+ 432418 - Einzelzimmer Sommerstein_HRS_seasional rate
+ 432420 - Doppelzimmer Classic Steinleo_HRS_seasional rate
+ 432434 - Doppelzimmer Deluxe Holzleo_Std. Rate non xml
+ 432436 - Doppelzimmer Deluxe Holzleo_Std. Rate non xml 1
+ 433926 - Familienzimmer Birnhorn HP
+ 498254 - Einzelzimmer HOT DEAL - breakfast
+ 498256 - Doppelzimmer HOT DEAL - breakfast
+ 532584 - Doppelzimmer Classic Steinleo_Short Stay HP
+ 532588 - Doppelzimmer Classic Steinleo_Breakfast include rates Short Stay
+ 532604 - Doppelzimmer Classic Steinleo_Long Stay HP
+ 532606 - Doppelzimmer Classic Steinleo_Breakfast include rates Long Stay
+ 532612 - Einzelzimmer Sommerstein_Short Stay HP
+ 532614 - Einzelzimmer Sommerstein_Breakfast include rates Short  Stay
+ 532662 - Einzelzimmer Sommerstein_Long Stay HP
+ 532664 - Einzelzimmer Sommerstein_Breakfast include rates Long Stay
+ 532666 - Doppelzimmer Superior Steinleo_Short Stay
+ 532668 - Doppelzimmer Superior Steinleo_Breakfast include rates Short Stay
+ 532670 - Doppelzimmer Superior Steinleo_Long Stay HP
+ 532672 - Doppelzimmer Superior Steinleo_Breakfast include rates Long Stay
+ 532674 - Doppelzimmer Deluxe Holzleo_Short HP
+ 532676 - Doppelzimmer Deluxe Holzleo_Breakfast include rates short Stay
+ 532712 - Doppelzimmer Deluxe Holzleo_Long HP
+ 532714 - Doppelzimmer Deluxe Holzleo_Breakfast include rates Long Stay
+ 579384 - [COPY] Einzelzimmer Sommerstein
+ 516234 - EZ Sommerstein HRS
+ 516236 - DZ Steinleo HRS
+
+ */
 
 var postRequest = {
     hostname: "cultswitch.cultuzz.de",
@@ -158,91 +215,34 @@ var postRequest = {
     headers: {
         'Cookie': 'cookie',
         'Content-type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(body)
     }
 };
 
-let buffer = "";
-let resultTransXml = "";
-let resultTransNameJson = "";
-let resultTransPriceJson = "";
-let resultTransDateJson = "";
-let resultTransNumberOfUnitsJson = "";
-let resultTransPersonCountJson = "";
-let roomName = new Array();
-let roomPrice = new Array();
-let stayDate = new Array();
-let numberOfRooms = new Array();
-let numberOfPersons = new Array();
-let roomids = [ 420420, 420422, 420424, 420426, 420428, 420430, 420432, 420434, 420436, 420582, 420584, 420586, 420588, 420590, 420592, 420594, 420596, 516234, 516236, 432202, 432204, 432208, 432210, 432214, 432216, 432220, 432222, 432418, 432420, 432434, 432436, 433926, 498254, 498256, 532584, 532588, 532604, 532606, 532612, 532614, 532662, 532664, 532666, 532668, 532670, 532672, 532674, 532676, 532712, 532714];
-for (var i = 0; i < roomids.length; i++) {
-let body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="2017-07-12" End="2017-07-13"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomids[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="2"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>'
 
+for (var i = 0; i < roomIds.length; i++) {
 
-let req = http.request( postRequest, function( res )    {
+  let body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="2017-07-12" End="2017-07-13"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomIds[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="2"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
 
-   console.log( res.statusCode );
-   var buffer = "";
-   
-   res.on( "data", function( data ) { buffer = buffer + data; } );
-   res.on( "end", function( data ) { 
-   resultTransXml = buffer; 
-   parseString(buffer, function (err, result) {
-   (JSON.stringify(result));
+    let req = http.request( postRequest, function( res )    {
 
-   resultTransNameJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name;
-   roomName.push(resultTransNameJson);
-   resultTransPriceJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax;
-   roomPrice.push(resultTransPriceJson);
-   resultTransDateJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start.toString() + " bis " + result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End.toString();
-   stayDate.push(resultTransDateJson);
-   resultTransNumberOfUnitsJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits.toString();
-   numberOfRooms.push(resultTransNumberOfUnitsJson)
-   resultTransPersonCountJson = result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].TPA_Extensions[0].Descriptions[0].Description[0].Text[1]._.toString();
-   numberOfPersons.push(resultTransPersonCountJson);
+      console.log( res.statusCode );
+      var buffer = "";
+      res.on( "data", function( data ) { buffer = buffer + data; } );
+      res.on( "end", function( data ) {
+        parseString(buffer, function (err, result) {
+         (JSON.stringify(result));
+         resultTransferData.push(result);
+        }); 
+      });
+    });
 
-console.log(roomName);
-
-
-}); } );
-
-});
-
-//parseString(buffer, function (err, result) {console.log(JSON.stringify(result.OTA_HotelAvailRS.$.PrimaryLangID)); });
-//console.log(result.OTA_HotelAvailRS.RoomStays.RoomStay.RoomType.RoomDescription)
-//result.OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].Rates[0].Rate[0].Base[0].$.AmountAfterTax
-
-req.on('error', function(e) {
+  req.on('error', function(e) {
     console.log('problem with request: ' + e.message);
-});
+  });
 
 req.write( body);
 req.end();
-
 }
-
-
-
-//XML parser Variante 1
-/*
-var http = require('http');
-var xml2js = require('xml2js');
-var parser = new xml2js.Parser();
-
-parser.parseString(buffer, function (err, result) {
-    console.log(result);
-});
-*/
-
-//XML parser Varainte 2
-/*
-var http = require('http');
-var parseString = require('xml2js').parseString;
-
-parseString(buffer, function (err, result) {
-    console.dir(JSON.stringify(result));
-});
-*/
 
 /*
  * Verify that the callback came from Facebook. Using the App Secret from 
@@ -381,7 +381,7 @@ function receivedMessage(event) {
         sendButtonMessage(senderID);
         break;
 
-      case 'Zimmer Anfrage':
+      case 'zimmer anfrage':
         sendGenericMessage(senderID);
         break;
 
@@ -452,22 +452,33 @@ function receivedDeliveryConfirmation(event) {
  * 
  */
 function receivedPostback(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfPostback = event.timestamp;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfPostback = event.timestamp;
+    //var messageData = sendGenericMessage();
+    // The 'payload' param is a developer-defined field which is set in a postback
+    // button for Structured Messages.
+    var payload = event.postback.payload;
+    //console.log(messageData.message.attachment.payload.elements[0].title);
+    console.log("Received postback for user %d and page %d with payload '%s' " +
+        "at %d", senderID, recipientID, payload, timeOfPostback);
 
-  // The 'payload' param is a developer-defined field which is set in a postback 
-  // button for Structured Messages. 
-  var payload = event.postback.payload;
+    // When a postback is called, we'll send a message back to the sender to
+    // let them know it was successful
+    sendButtonMessage(senderID);
 
-  console.log("Received postback for user %d and page %d with payload '%s' " + 
-    "at %d", senderID, recipientID, payload, timeOfPostback);
-
-  // When a postback is called, we'll send a message back to the sender to 
-  // let them know it was successful
-  sendTextMessage(senderID, "Postback called");
+/*
+   if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Einzelzimmer Sommerstein") >= 0) {
+   sendRoomDetails1(senderID);
+   } else if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Doppelzimmer Classic Steinleo") >= 0)  {
+   sendRoomDetails2(senderID);
+   } else if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Einzelnutzung Classic Steinleo") >= 0)  {
+   sendRoomDetails3(senderID);
+   } else if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Doppelzimmer Superior Steinleo") >= 0)  {
+   sendRoomDetails4(senderID);
+   }
+*/
 }
-
 /*
  * Message Read Event
  *
@@ -675,6 +686,7 @@ function sendButtonMessage(recipientId) {
  *
  */
 function sendGenericMessage(recipientId) {
+
   var messageData = {
     recipient: {
       id: recipientId
@@ -684,12 +696,12 @@ function sendGenericMessage(recipientId) {
         type: "template",
         payload: {
           template_type: "generic",
-          
+
           elements: [{
-            title: String(numberOfRooms[1]) + " " + String(roomName[1]) + " / " + String(stayDate[1]),
-            subtitle: String(roomPrice[1]) + "EUR  /  "  + String(numberOfPersons[1]),
-            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
-            image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
+            title: String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits) + " " + String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name) + " / " + String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start + " bis " + resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End),
+            subtitle: String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax) + "EUR  /  "  + String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].TPA_Extensions[0].Descriptions[0].Description[0].Text[1]._),
+            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
             buttons: [{
               type: "web_url",
               url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
@@ -697,51 +709,51 @@ function sendGenericMessage(recipientId) {
             }, {
               type: "postback",
               title: "Details",
-              payload: "Payload for first bubble",
-            }],
+              payload: "1",
+            }]
           }, {
-            title: String(numberOfRooms[3]) + " " + String(roomName[3]) + " / " + String(stayDate[3]),
-            subtitle: String(roomPrice[3]) + "EUR  /  "  + String(numberOfPersons[3]),
-            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
-            image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
+            title: String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits) + " " + String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name) + " / " + String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start + " bis " + resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End),
+              subtitle: String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax) + "EUR  /  "  + String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].TPA_Extensions[0].Descriptions[0].Description[0].Text[1]._),
+              item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
             buttons: [{
               type: "web_url",
               url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
               title: "Open Web URL"
             }, {
               type: "postback",
-              title: "Call Postback",
-              payload: "Payload for second bubble",
+              title: "Details",
+              payload: "2",
             }]
           },
           {
-            title: String(numberOfRooms[6]) + " " + String(roomName[6]) + " / " + String(stayDate[6]),
-            subtitle: String(roomPrice[6]) + "EUR  /  "  + String(numberOfPersons[6]),
-            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
-            image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
+              title: String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits) + " " + String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name) + " / " + String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start + " bis " + resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End),
+              subtitle: String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax) + "EUR  /  "  + String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].TPA_Extensions[0].Descriptions[0].Description[0].Text[1]._),
+              item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
             buttons: [{
               type: "web_url",
               url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
               title: "Open Web URL"
             }, {
               type: "postback",
-              title: "Call Postback",
-              payload: "Payload for second bubble",
+              title: "Details",
+              payload: "3",
             }]
           },
           {
-            title: String(numberOfRooms[20]) + " " + String(roomName[20]) + " / " + String(stayDate[20]),
-            subtitle: String(roomPrice[20]) + "EUR  /  "  + String(numberOfPersons[20]),
-            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",               
-            image_url: "https://gettagbag.com/wp-content/uploads/2017/01/SteinleoHotelZimmer.png",
+              title: String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits) + " " + String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name) + " / " + String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start + " bis " + resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End),
+              subtitle: String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax) + "EUR  /  "  + String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].TPA_Extensions[0].Descriptions[0].Description[0].Text[1]._),
+              item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
             buttons: [{
               type: "web_url",
               url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
               title: "Open Web URL"
             }, {
               type: "postback",
-              title: "Call Postback",
-              payload: "Payload for second bubble",
+              title: "Details",
+              payload: "4",
             }]
           }
 
@@ -749,12 +761,367 @@ function sendGenericMessage(recipientId) {
         }
       }
     }
-  };  
+  };
+
+  for (var i = 0; i < resultTransferData.length; i++) {
+      if (messageData.message.attachment.payload.elements[i].title.indexOf("Einzelzimmer Sommerstein") >= 0) {
+          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png";
+      } else if (messageData.message.attachment.payload.elements[i].title.indexOf("Doppelzimmer Classic Steinleo") >= 0) {
+          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png";
+      } else if (messageData.message.attachment.payload.elements[i].title.indexOf("Einzelnutzung Classic Steinleo") >= 0) {
+          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png";
+      } else if (messageData.message.attachment.payload.elements[i].title.indexOf("Doppelzimmer Superior Steinleo") >= 0) {
+          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png";
+      };
+  }
 
   callSendAPI(messageData);
+  //return messageData;
 }
 
-//string(resultTransJson.OTA_HotelAvailRS.$.PrimaryLangID)
+/*
+ * Send a Structured Message (Generic Message type) using the Send API.
+ * Details view on room category 1
+ */
+
+function sendRoomDetails1(recipientId) {
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+
+                    elements: [{
+                        title: String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Jetzt buchen"
+                        }, {
+                            type: "postback",
+                            title: "Details",
+                            payload: "Payload for second bubble",
+                        }]
+                    }, {
+                        title: String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for second bubble",
+                        }]
+                    },
+                        {
+                            title: String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        },
+                        {
+                            title: String(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        }
+
+                    ]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a Structured Message (Generic Message type) using the Send API.
+ * Details view on room category 2
+ */
+
+function sendRoomDetails2(recipientId) {
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+
+                    elements: [{
+                        title: String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Jetzt buchen"
+                        }, {
+                            type: "postback",
+                            title: "Details",
+                            payload: "Payload for second bubble",
+                        }]
+                    }, {
+                        title: String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for second bubble",
+                        }]
+                    },
+                        {
+                            title: String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        },
+                        {
+                            title: String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        }
+
+                    ]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a Structured Message (Generic Message type) using the Send API.
+ * Details view on room category 3
+ */
+
+function sendRoomDetails3(recipientId) {
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+
+                    elements: [{
+                        title: String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Jetzt buchen"
+                        }, {
+                            type: "postback",
+                            title: "Details",
+                            payload: "Payload for second bubble",
+                        }]
+                    }, {
+                        title: String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for second bubble",
+                        }]
+                    },
+                        {
+                            title: String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        },
+                        {
+                            title: String(resultTransferData[2].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        }
+
+                    ]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a Structured Message (Generic Message type) using the Send API.
+ * Details view on room category 4
+ */
+
+function sendRoomDetails4(recipientId) {
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+
+                    elements: [{
+                        title: String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Jetzt buchen"
+                        }, {
+                            type: "postback",
+                            title: "Details",
+                            payload: "Payload for second bubble",
+                        }]
+                    }, {
+                        title: String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                        subtitle: "Hello",
+                        item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                        image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                        buttons: [{
+                            type: "web_url",
+                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            title: "Open Web URL"
+                        }, {
+                            type: "postback",
+                            title: "Call Postback",
+                            payload: "Payload for second bubble",
+                        }]
+                    },
+                        {
+                            title: String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        },
+                        {
+                            title: String(resultTransferData[3].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name),
+                            subtitle: "Hello",
+                            item_url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
+                            buttons: [{
+                                type: "web_url",
+                                url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                                title: "Open Web URL"
+                            }, {
+                                type: "postback",
+                                title: "Call Postback",
+                                payload: "Payload for second bubble",
+                            }]
+                        }
+
+                    ]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
 
 /*
  * Send a receipt message using the Send API.
@@ -977,4 +1344,3 @@ app.listen(app.get('port'), function() {
 // });
 
 module.exports = app;
-
