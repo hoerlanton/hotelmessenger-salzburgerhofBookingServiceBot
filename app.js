@@ -346,8 +346,11 @@ function receivedMessage(event) {
     var quickReplyPayload = quickReply.payload;
     console.log("Quick reply for message %s with payload %s",
       messageId, quickReplyPayload);
-
-    sendTextMessage(senderID, "Quick reply tapped");
+      if (quickReplyPayload === "1person" || "2persons" || "3persons" || "4persons" || "5persons") {
+          sendRoomRequest(senderID);
+      } else if (quickReplyPayload === "1room" || "2rooms" || "3rooms" || "4rooms" || "5rooms") {
+          sendArrivalDate(senderID);
+      }
     return;
   }
 
@@ -377,12 +380,8 @@ function receivedMessage(event) {
         sendFileMessage(senderID);
         break;
 
-      case 'button':
-        sendButtonMessage(senderID);
-        break;
-
-      case 'zimmer anfrage':
-        sendGenericMessage(senderID);
+      case 'Menu':
+        sendMenu(senderID);
         break;
 
       case 'receipt':
@@ -391,7 +390,11 @@ function receivedMessage(event) {
 
       case 'quick reply':
         sendQuickReply(senderID);
-        break;        
+        break;
+
+      case 'Anfrage':
+        sendGenericMessage(senderID);
+        break;
 
       case 'read receipt':
         sendReadReceipt(senderID);
@@ -455,7 +458,7 @@ function receivedPostback(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfPostback = event.timestamp;
-    //var messageData = sendGenericMessage();
+    // var messageData = sendGenericMessage();
     // The 'payload' param is a developer-defined field which is set in a postback
     // button for Structured Messages.
     var payload = event.postback.payload;
@@ -465,7 +468,15 @@ function receivedPostback(event) {
 
     // When a postback is called, we'll send a message back to the sender to
     // let them know it was successful
-    sendButtonMessage(senderID);
+   if (payload === "1") {
+       sendGifMessage(senderID);
+   }
+   else if (payload === "2") {
+       sendGifMessage(senderID);
+   }
+   else if (payload === "Zimmer Anfrage") {
+       sendPersonRequest(senderID);
+   }
 
 /*
    if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Einzelzimmer Sommerstein") >= 0) {
@@ -649,7 +660,7 @@ function sendTextMessage(recipientId, messageText) {
  * Send a button message using the Send API.
  *
  */
-function sendButtonMessage(recipientId) {
+function sendMenu(recipientId) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -659,19 +670,19 @@ function sendButtonMessage(recipientId) {
         type: "template",
         payload: {
           template_type: "button",
-          text: "This is test text",
+          text: "Menü Auswahl",
           buttons:[{
             type: "web_url",
-            url: "https://www.oculus.com/en-us/rift/",
-            title: "Open Web URL"
+            url: "https://www.salzburgerhof.eu",
+            title: "Website"
           }, {
             type: "postback",
-            title: "Trigger Postback",
-            payload: "DEVELOPER_DEFINED_PAYLOAD"
+            title: "Zimmer Anfrage",
+            payload: "Zimmer Anfrage"
           }, {
-            type: "phone_number",
-            title: "Call Phone Number",
-            payload: "+16505551234"
+            type: "postback",
+            title: "Info",
+            payload: "Info"
           }]
         }
       }
@@ -679,6 +690,125 @@ function sendButtonMessage(recipientId) {
   };  
 
   callSendAPI(messageData);
+}
+
+/*
+ * Send a button message using the Send API.
+ *
+ */
+function sendPersonRequest(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+                  message: {
+                      "text":"Anzahl der Personen:",
+                      "quick_replies":[
+                          {
+                              "content_type":"text",
+                              "title":"1 Person",
+                              "payload":"1person"
+                          },
+                          {
+                              "content_type":"text",
+                              "title":"2 Personen",
+                              "payload":"2persons"
+                          },
+                          {
+                              "content_type":"text",
+                              "title":"3 Personen",
+                              "payload":"3persons"
+                          },
+                          {
+                              "content_type":"text",
+                              "title":"4 Personen",
+                              "payload":"4persons"
+                          },
+                          {
+                              "content_type":"text",
+                              "title":"5 Personen",
+                              "payload":"5persons"
+                          }
+                      ]
+                  }
+              };
+    callSendAPI(messageData);
+}
+
+function sendRoomRequest(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"Anzahl der Zimmer:",
+            "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title":"1 Zimmer",
+                    "payload":"1room"
+                },
+                {
+                    "content_type":"text",
+                    "title":"2 Zimmer",
+                    "payload":"2rooms"
+                },
+                {
+                    "content_type":"text",
+                    "title":"3 Zimmer",
+                    "payload":"3rooms"
+                },
+                {
+                    "content_type":"text",
+                    "title":"4 Zimmer",
+                    "payload":"4rooms"
+                },
+                {
+                    "content_type":"text",
+                    "title":"5 Zimmer",
+                    "payload":"5rooms"
+                }
+            ]
+        }
+    };
+    callSendAPI(messageData);
+}
+
+function sendArrivalDate(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "video",
+                payload: {
+                    url: SERVER_URL + "/assets/allofus480.mov"
+                }
+            }
+        }
+    };
+    callSendAPI(messageData);
+}
+
+function sendDepartureDate(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"Abreise Datum:",
+            "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title":"12-07-2017 bis 13-07-2017",
+                    "payload":"departureDate"
+                }
+
+            ]
+        }
+    };
+    callSendAPI(messageData);
 }
 
 /*
