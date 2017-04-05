@@ -146,12 +146,6 @@ app.get('/authorize', function(req, res) {
   });
 });
 
-
-let buffer = "";
-let resultTransferData = [];
-
-let roomIds = [420420, 420422, 420424, 420426];
-
 /*further categories:
  420420 - '100.00' - Einzelzimmer Sommerstein
  420422 - '175.00' - Einzelnutzung Classic Steinleo
@@ -206,42 +200,48 @@ let roomIds = [420420, 420422, 420424, 420426];
  516236 - DZ Steinleo HRS
 
  */
+var result = '';
+var buffer = '';
+var resultTransferData = [];
+var x = '';
+var roomIds = [420420, 420422, 420424, 420426];
 
-var postRequest = {
-    hostname: "cultswitch.cultuzz.de",
-    path: "/cultswitch/processOTA",
-    method: "POST",
-    port: 8080,
-    headers: {
-        'Cookie': 'cookie',
-        'Content-type': 'application/x-www-form-urlencoded',
+function sendXmlPostRequest(senderID) {
+
+    var postRequest = {
+        hostname: "cultswitch.cultuzz.de",
+        path: "/cultswitch/processOTA",
+        method: "POST",
+        port: 8080,
+        headers: {
+            'Cookie': 'cookie',
+            'Content-type': 'application/x-www-form-urlencoded',
+        }
+    };
+
+    for (var i = 0; i < roomIds.length; i++) {
+        let body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="' + x + '" End="2017-09-13"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomIds[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="1"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
+        let req = http.request(postRequest, function (res) {
+            console.log(res.statusCode);
+            res.on("data", function (data) {
+                buffer = buffer + data;
+            });
+            res.on("end", function (data) {
+                parseString(buffer, function (err, result) {
+                    (JSON.stringify(result));
+                    resultTransferData.push(result);
+                });
+                console.log(resultTransferData);
+            });
+        });
+        req.on('error', function (e) {
+            console.log('problem with request: ' + e.message);
+        });
+        req.write(body);
+        req.end();
     }
-};
-
-
-for (var i = 0; i < roomIds.length; i++) {
-
-  let body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="2017-09-12" End="2017-09-13"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomIds[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="1"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
-
-    let req = http.request( postRequest, function( res )    {
-
-      console.log( res.statusCode );
-      var buffer = "";
-      res.on( "data", function( data ) { buffer = buffer + data; } );
-      res.on( "end", function( data ) {
-        parseString(buffer, function (err, result) {
-         (JSON.stringify(result));
-         resultTransferData.push(result);
-        }); 
-      });
-    });
-
-  req.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
-  });
-
-req.write( body);
-req.end();
+    console.log(senderID);
+    //sendResultTransferDataToFbMessenger(senderID, resultTransferData);
 }
 
 /*
@@ -317,6 +317,9 @@ function receivedAuthentication(event) {
  * then we'll simply confirm that we've received the attachment.
  * 
  */
+
+
+
 function receivedMessage(event) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
@@ -352,9 +355,9 @@ function receivedMessage(event) {
           sendArrivalDate(senderID);
       } else if (quickReplyPayload === "arrivalDate") {
           sendDepartureDate(senderID);
-      } else if (quickReplyPayload === "departureDate") {
-          sendRequestToChannelmanager(senderID);
-      }
+      } //else if (quickReplyPayload === "departureDate") {
+       //   sendRequestToChannelmanager(senderID);
+      //}
     return;
   }
 
@@ -365,38 +368,40 @@ function receivedMessage(event) {
     // the text we received.
     switch (messageText) {
 
-      case 'Menu':
-        sendMenu(senderID);
-        break;
+        case 'Menu':
+            sendMenu(senderID);
+            break;
 
-      case 'quick reply':
-        sendQuickReply(senderID);
-        break;
+        case 'quick reply':
+            sendQuickReply(senderID);
+            break;
 
-      case 'Anfrage':
-        sendRequestToChannelmanager(senderID);
-        break;
+        case '2017-09-12':
+            x = messageText;
+            console.log(x);
+            sendXmlPostRequest(senderID);
+            break;
 
-      case 'typing on':
-        sendTypingOn(senderID);
-        break;        
+        case 'typing on':
+            sendTypingOn(senderID);
+            break;
 
-      case 'typing off':
-        sendTypingOff(senderID);
-        break;        
+        case 'typing off':
+            sendTypingOff(senderID);
+            break;
 
-      case 'account linking':
-        sendAccountLinking(senderID);
-        break;
+        case 'account linking':
+            sendAccountLinking(senderID);
+            break;
 
-      default:
-        sendTextMessage(senderID, messageText);
+        default:
+          sendTextMessage(senderID, messageText);
     }
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
   }
-}
 
+}
 
 /*
  * Delivery Confirmation Event
@@ -649,37 +654,25 @@ function sendArrivalDate(recipientId) {
             id: recipientId
         },
         message: {
-            "text":"Anreise Datum:",
-            "quick_replies":[
-                {
-                    "content_type":"text",
-                    "title":"12-07-2017",
-                    "payload":"arrivalDate"
-                }
-
-            ]
+            text: "Anreise Datum eingeben: (Bsp. 12-08-2017)",
+            metadata: "DEVELOPER_DEFINED_METADATA"
         }
     };
+
     callSendAPI(messageData);
 }
 
-function sendDepartureDate(recipientId) {
+function sendDepartureDate(recipientId, messageText) {
     var messageData = {
         recipient: {
             id: recipientId
         },
         message: {
-            "text":"Abreise Datum:",
-            "quick_replies":[
-                {
-                    "content_type":"text",
-                    "title":"13-07-2017",
-                    "payload":"departureDate"
-                }
-
-            ]
+            text: "Abreise Datum eingeben: (Bsp. 12-08-2017)",
+            metadata: "DEVELOPER_DEFINED_METADATA"
         }
     };
+
     callSendAPI(messageData);
 }
 
@@ -687,7 +680,7 @@ function sendDepartureDate(recipientId) {
  * Send a Structured Message (Generic Message type) using the Send API.
  *
  */
-function sendRequestToChannelmanager(recipientId) {
+function sendResultTransferDataToFbMessenger(recipientId, resultTransferData) {
 
   var messageData = {
     recipient: {
@@ -711,7 +704,7 @@ function sendRequestToChannelmanager(recipientId) {
             }, {
               type: "postback",
               title: "Details",
-              payload: "1",
+              payload: "1"
             }]
           }, {
             title: String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[0].$.NumberOfUnits) + " " + String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomTypes[0].RoomType[0].RoomDescription[0].$.Name) + " / " + String(resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.Start + " bis " + resultTransferData[1].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].TimeSpan[0].$.End),
@@ -725,7 +718,7 @@ function sendRequestToChannelmanager(recipientId) {
             }, {
               type: "postback",
               title: "Details",
-              payload: "2",
+              payload: "2"
             }]
           },
           {
@@ -740,7 +733,7 @@ function sendRequestToChannelmanager(recipientId) {
             }, {
               type: "postback",
               title: "Details",
-              payload: "3",
+              payload: "3"
             }]
           },
           {
@@ -755,7 +748,7 @@ function sendRequestToChannelmanager(recipientId) {
             }, {
               type: "postback",
               title: "Details",
-              payload: "4",
+              payload: "4"
             }]
           }
 
@@ -774,11 +767,10 @@ function sendRequestToChannelmanager(recipientId) {
           messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png";
       } else if (messageData.message.attachment.payload.elements[i].title.indexOf("Doppelzimmer Superior Steinleo") >= 0) {
           messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png";
-      };
+      }
   }
 
   callSendAPI(messageData);
-  //return messageData;
 }
 
 
