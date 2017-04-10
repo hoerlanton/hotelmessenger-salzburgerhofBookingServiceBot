@@ -15,13 +15,28 @@ const
   config = require('config'),
   crypto = require('crypto'),
   express = require('express'),
+
   https = require('https'),  
   request = require('request'),
   http = require('http'),
   parseString = require('xml2js').parseString;
 
+var localStorage = require('node-localstorage');
 
-var result = '';
+var x = '';
+var y = '';
+var resultTransferData = [];
+var buffer = '';
+var postRequest = {
+    hostname: "cultswitch.cultuzz.de",
+    path: "/cultswitch/processOTA",
+    method: "POST",
+    port: 8080,
+    headers: {
+        'Cookie': 'cookie',
+        'Content-type': 'application/x-www-form-urlencoded',
+    }
+};
 var app = express();
 app.set('port', process.env.PORT || 8000);
 app.set('view engine', 'ejs');
@@ -145,6 +160,16 @@ app.get('/authorize', function(req, res) {
     redirectURISuccess: redirectURISuccess
   });
 });
+//localStorage Setup
+/*
+if (typeof localStorage === "undefined" || localStorage === null) {
+    var LocalStorage = require('node-localstorage').LocalStorage;
+    localStorage = new LocalStorage('./scratch');
+}
+
+localStorage.setItem('myFirstKey', 'myFirstValue');
+console.log(localStorage.getItem('myFirstKey'));
+*/
 
 /*further categories:
  420420 - '100.00' - Einzelzimmer Sommerstein
@@ -198,40 +223,23 @@ app.get('/authorize', function(req, res) {
  579384 - [COPY] Einzelzimmer Sommerstein
  516234 - EZ Sommerstein HRS
  516236 - DZ Steinleo HRS
-
  */
-var result = '';
-var buffer = '';
-var resultTransferData = [];
-var x = '';
-var roomIds = [420420, 420422, 420424, 420426];
 
-function sendXmlPostRequest(senderID) {
 
-    var postRequest = {
-        hostname: "cultswitch.cultuzz.de",
-        path: "/cultswitch/processOTA",
-        method: "POST",
-        port: 8080,
-        headers: {
-            'Cookie': 'cookie',
-            'Content-type': 'application/x-www-form-urlencoded',
-        }
-    };
-
+var z = function(roomIds, arrivalDate, departureDate) {
     for (var i = 0; i < roomIds.length; i++) {
-        let body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="' + x + '" End="2017-09-13"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomIds[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="1"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
-        let req = http.request(postRequest, function (res) {
+        var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="' + arrivalDate + '" End="' + departureDate + '"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomIds[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="1"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
+        var req = http.request(postRequest, function (res) {
             console.log(res.statusCode);
             res.on("data", function (data) {
                 buffer = buffer + data;
             });
-            res.on("end", function (data) {
+            res.on("end", function () {
                 parseString(buffer, function (err, result) {
                     (JSON.stringify(result));
                     resultTransferData.push(result);
+                    console.log(resultTransferData);
                 });
-                console.log(resultTransferData);
             });
         });
         req.on('error', function (e) {
@@ -240,9 +248,90 @@ function sendXmlPostRequest(senderID) {
         req.write(body);
         req.end();
     }
-    console.log(senderID);
-    //sendResultTransferDataToFbMessenger(senderID, resultTransferData);
-}
+};
+
+//console.log(z([420420, 420422, 420424, 420426], '2017-09-12', '2017-09-13'));
+
+
+/*
+console.log
+
+var w = function() {
+    console.log('i am called inside a function 2');
+    var result = 6;
+    return result;
+};
+
+ var x = function(callback) {
+ return callback();
+ };
+
+
+console.log(x(w));
+*/
+
+/*
+var x = function() {
+        console.log('i am called inside a function')
+    };
+var y = function(callback) {
+    console.log('doSomething')
+    callback();
+};
+y(x);
+*/
+
+/*
+ var buffer = '';
+
+
+ var printReqAnswer = function(roomIds, arrivalDate, departureDate, callback) {
+ return callback(roomIds, arrivalDate, departureDate);
+ };
+
+ console.log(printReqAnswer([420420, 420422, 420424, 420426], '2017-09-12', '2017-09-13', function (roomIds, arrivalDate, departureDate) {
+
+ var postRequest = {
+ hostname: "cultswitch.cultuzz.de",
+ path: "/cultswitch/processOTA",
+ method: "POST",
+ port: 8080,
+ headers: {
+ 'Cookie': 'cookie',
+ 'Content-type': 'application/x-www-form-urlencoded',
+ }
+ };
+ var resultTransferData = [];
+
+ for (var i = 0; i < roomIds.length; i++) {
+ var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="' + arrivalDate + '" End="' + departureDate + '"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomIds[i] + '"/> </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="2"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="1"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
+ var req = http.request(postRequest, function (res) {
+ console.log(res.statusCode);
+ res.on("data", function (data) {
+ buffer = buffer + data;
+ });
+ res.on("end", function (data) {
+ parseString(buffer, function (err, result) {
+ (JSON.stringify(result));
+ resultTransferData.push(result);
+ //console.log(resultTransferData);
+ });
+ });
+ });
+ req.on('error', function (e) {
+ console.log('problem with request: ' + e.message);
+ });
+ req.write(body);
+ req.end();
+ }
+ //sendResultTransferDataToFbMessenger(senderID, resultTransferData);
+ return resultTransferData;
+ }));
+ */
+//console.log(resultTransferData);
+
+
+
 
 /*
  * Verify that the callback came from Facebook. Using the App Secret from 
@@ -318,90 +407,103 @@ function receivedAuthentication(event) {
  * 
  */
 
-
+var time = '';
 
 function receivedMessage(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfMessage = event.timestamp;
-  var message = event.message;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfMessage = event.timestamp;
+    var message = event.message;
 
-  console.log("Received message for user %d and page %d at %d with message:", 
-    senderID, recipientID, timeOfMessage);
-  console.log(JSON.stringify(message));
 
-  var isEcho = message.is_echo;
-  var messageId = message.mid;
-  var appId = message.app_id;
-  var metadata = message.metadata;
+    console.log("Received message for user %d and page %d at %d with message:",
+        senderID, recipientID, timeOfMessage);
+    console.log(JSON.stringify(message));
 
-  // You may get a text or attachment but not both
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
-  var quickReply = message.quick_reply;
+    var isEcho = message.is_echo;
+    var messageId = message.mid;
+    var appId = message.app_id;
+    var metadata = message.metadata;
 
-  if (isEcho) {
-    // Just logging message echoes to console
-    console.log("Received echo for message %s and app %d with metadata %s", 
-      messageId, appId, metadata);
-    return;
-  } else if (quickReply) {
-      var quickReplyPayload = quickReply.payload;
-      console.log("Quick reply for message %s with payload %s",
-          messageId, quickReplyPayload);
-      if (quickReplyPayload === "1person" || quickReplyPayload === "2persons" || quickReplyPayload === "3persons" || quickReplyPayload === "4persons" || quickReplyPayload === "5persons") {
-          sendRoomRequest(senderID);
-      } else if (quickReplyPayload === "1room" || quickReplyPayload === "2rooms" || quickReplyPayload === "3rooms" || quickReplyPayload === "4rooms" || quickReplyPayload === "5rooms") {
-          sendArrivalDate(senderID);
-      } else if (quickReplyPayload === "arrivalDate") {
-          sendDepartureDate(senderID);
-      } //else if (quickReplyPayload === "departureDate") {
-       //   sendRequestToChannelmanager(senderID);
-      //}
-    return;
-  }
+    // You may get a text or attachment but not both
+    var messageText = message.text;
+    var messageAttachments = message.attachments;
+    var quickReply = message.quick_reply;
 
-  if (messageText) {
+    if (isEcho) {
+        // Just logging message echoes to console
+        console.log("Received echo for message %s and app %d with metadata %s",
+            messageId, appId, metadata);
+        return;
+    } else if (quickReply) {
+        var quickReplyPayload = quickReply.payload;
+        console.log("Quick reply for message %s with payload %s",
+            messageId, quickReplyPayload);
+        if (quickReplyPayload === "1person" || quickReplyPayload === "2persons" || quickReplyPayload === "3persons" || quickReplyPayload === "4persons" || quickReplyPayload === "5persons") {
+            sendRoomRequest(senderID);
+        } else if (quickReplyPayload === "1room" || quickReplyPayload === "2rooms" || quickReplyPayload === "3rooms" || quickReplyPayload === "4rooms" || quickReplyPayload === "5rooms") {
+            sendArrivalDate(senderID);
+        }
+        return;
+    }
 
-    // If we receive a text message, check to see if it matches any special
-    // keywords and send back the corresponding example. Otherwise, just echo
-    // the text we received.
-    switch (messageText) {
+    if (messageText) {
 
-        case 'Menu':
-            sendMenu(senderID);
-            break;
+        // If we receive a text message, check to see if it matches any special
+        // keywords and send back the corresponding example. Otherwise, just echo
+        // the text we received.
 
-        case 'quick reply':
-            sendQuickReply(senderID);
-            break;
-
-        case '2017-09-12':
+        if (typeof messageText === "string" && messageText.match(/[_\W0-9]/)) {
+            console.log(typeof messageText);
+            time = timeOfMessage;
+            console.log(time);
             x = messageText;
             console.log(x);
-            sendXmlPostRequest(senderID);
-            break;
+            sendDepartureDate(senderID);
+        } else if (typeof messageText === "string" && messageText.match(/[_\W0-9]/) && time < event.timestamp ) {
+            console.log(y);
+            console.log(event.timestamp);
+            console.log(time);
+            z([420420, 420422, 420424, 420426], x, y);
+        }
+        switch (messageText) {
 
-        case 'typing on':
-            sendTypingOn(senderID);
-            break;
+            case 'Menu':
+                sendMenu(senderID);
+                break;
 
-        case 'typing off':
-            sendTypingOff(senderID);
-            break;
+            case 'quick reply':
+                sendQuickReply(senderID);
+                break;
 
-        case 'account linking':
-            sendAccountLinking(senderID);
-            break;
+            case '2017-09-12':
+                return messageText;
+                break;
 
-        default:
-          sendTextMessage(senderID, messageText);
+            case 'typing on':
+                sendTypingOn(senderID);
+                break;
+
+            case 'typing off':
+                sendTypingOff(senderID);
+                break;
+
+            case 'account linking':
+                sendAccountLinking(senderID);
+                break;
+            /*
+            default:
+                console.log(typeof messageText);
+                sendTextMessage(senderID, messageText);
+                z([420420, 420422, 420424, 420426], x, '2017-09-13');
+                sendResultTransferDataToFbMessenger(senderID);
+               */
+        }
+    } else if (messageAttachments) {
+        sendTextMessage(senderID, "Message with attachment received");
     }
-  } else if (messageAttachments) {
-    sendTextMessage(senderID, "Message with attachment received");
-  }
-
 }
+
 
 /*
  * Delivery Confirmation Event
@@ -680,7 +782,7 @@ function sendDepartureDate(recipientId, messageText) {
  * Send a Structured Message (Generic Message type) using the Send API.
  *
  */
-function sendResultTransferDataToFbMessenger(recipientId, resultTransferData) {
+function sendResultTransferDataToFbMessenger(recipientId) {
 
   var messageData = {
     recipient: {
