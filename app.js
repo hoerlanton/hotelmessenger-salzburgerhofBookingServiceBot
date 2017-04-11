@@ -25,6 +25,7 @@ var localStorage = require('node-localstorage');
 
 var x = '';
 var y = '';
+var time = '';
 var resultTransferData = [];
 var buffer = '';
 var postRequest = {
@@ -238,7 +239,7 @@ var z = function(roomIds, arrivalDate, departureDate) {
                 parseString(buffer, function (err, result) {
                     (JSON.stringify(result));
                     resultTransferData.push(result);
-                    console.log(resultTransferData);
+                    console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax);
                 });
             });
         });
@@ -250,7 +251,9 @@ var z = function(roomIds, arrivalDate, departureDate) {
     }
 };
 
-//console.log(z([420420, 420422, 420424, 420426], '2017-09-12', '2017-09-13'));
+console.log(z([420420, 420422, 420424, 420426], '2017-09-09', '2017-09-13'));
+
+
 
 
 /*
@@ -407,7 +410,7 @@ function receivedAuthentication(event) {
  * 
  */
 
-var time = '';
+
 
 function receivedMessage(event) {
     var senderID = event.sender.id;
@@ -452,20 +455,22 @@ function receivedMessage(event) {
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-
+/*
+        time = timeOfMessage;
         if (typeof messageText === "string" && messageText.match(/[_\W0-9]/)) {
             console.log(typeof messageText);
-            time = timeOfMessage;
             console.log(time);
             x = messageText;
             console.log(x);
             sendDepartureDate(senderID);
-        } else if (typeof messageText === "string" && messageText.match(/[_\W0-9]/) && time < event.timestamp ) {
+        } else if (typeof messageText === "string" && messageText.match(/[_\W0-9]/) && messageText != x) {
             console.log(y);
+            y = messageText;
             console.log(event.timestamp);
             console.log(time);
             z([420420, 420422, 420424, 420426], x, y);
-        }
+         */
+
         switch (messageText) {
 
             case 'Menu':
@@ -491,18 +496,14 @@ function receivedMessage(event) {
             case 'account linking':
                 sendAccountLinking(senderID);
                 break;
-            /*
+
             default:
                 console.log(typeof messageText);
                 sendTextMessage(senderID, messageText);
-                z([420420, 420422, 420424, 420426], x, '2017-09-13');
-                sendResultTransferDataToFbMessenger(senderID);
-               */
         }
     } else if (messageAttachments) {
-        sendTextMessage(senderID, "Message with attachment received");
-    }
-}
+        sendTextMessage(senderID, "Message with attachment received")
+}}
 
 
 /*
