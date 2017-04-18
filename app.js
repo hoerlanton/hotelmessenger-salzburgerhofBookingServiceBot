@@ -712,19 +712,7 @@ var y = function (recipientId, resultTransferData) {
       }
     }
   };
-/*
-  for (var i = 0; i < resultTransferData.length; i++) {
-      if (messageData.message.attachment.payload.elements[i].title.indexOf("Einzelzimmer Sommerstein") >= 0) {
-          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png";
-      } else if (messageData.message.attachment.payload.elements[i].title.indexOf("Doppelzimmer Classic Steinleo") >= 0) {
-          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png";
-      } else if (messageData.message.attachment.payload.elements[i].title.indexOf("Einzelnutzung Classic Steinleo") >= 0) {
-          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png";
-      } else if (messageData.message.attachment.payload.elements[i].title.indexOf("Doppelzimmer Superior Steinleo") >= 0) {
-          messageData.message.attachment.payload.elements[i].image_url = "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png";
-      }
-  }
-*/
+
   callSendAPI(messageData);
 }
 
