@@ -158,17 +158,13 @@ if (typeof localStorage === "undefined" || localStorage === null) {
 localStorage.setItem('myFirstKey', 'myFirstValue');
 console.log(localStorage.getItem('myFirstKey'));
 */
-var count = 0;
-var time1 = 0;
 var numberOfPersons = 0;
 var numberOfRoomsSplitted = [];
 var numberOfRooms = 0;
 var arrivalDate = 0;
 var departureDate = 0;
 var resultTransferData = [];
-var senderID = senderID;
 var isAsked = false;
-//var resultTransferData2 = [];
 var buffer = '';
 var postRequest = {
     hostname: "cultswitch.cultuzz.de",
@@ -180,6 +176,7 @@ var postRequest = {
         'Content-type': 'application/x-www-form-urlencoded'
     }
 };
+
 
 var x = function(roomId1, roomId2, roomId3, roomId4, numberOfRooms, numberOfPersons, arrivalDate, departureDate) {
         var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="' + arrivalDate + '" End="' + departureDate + '"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId1 + '"/> <RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId2 + '"/> <RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId3 + '"/> <RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId4 + '"/>  </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="' + numberOfRooms + '"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="' + numberOfPersons + '"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
@@ -202,25 +199,6 @@ var x = function(roomId1, roomId2, roomId3, roomId4, numberOfRooms, numberOfPers
         req.write(body);
         req.end();
 };
-
-
-
-//
-/*
-var y = function() {
-        console.log('i am called inside a function')
-    };
-var x = function(callback) {
-    console.log('doSomething')
-    callback();
-};
-x(y);
-
-//NODEJS book 4.2.2 page 79
- resultTransferData.push(result);
- resultTransferData2 = resultTransferData.map(function() {
- return resultTransferData;      });
-*/
 
 /*
  * Verify that the callback came from Facebook. Using the App Secret from 
@@ -296,19 +274,11 @@ function receivedAuthentication(event) {
  * 
  */
 
-
-
 function receivedMessage(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfMessage = event.timestamp;
     var message = event.message;
-    /*
-    var time = 0;
-    var data1 = {};
-    var x = '';
-    var y = '';
-    */
     console.log("Received message for user %d and page %d at %d with message:",
         senderID, recipientID, timeOfMessage);
     console.log(JSON.stringify(message));
@@ -383,15 +353,6 @@ function receivedMessage(event) {
                 sendQuickReply(senderID);
                 break;
 
-            //case '2017-05-12':
-            //    sendDepartureDate(senderID);
-            //    break;
-
-           // case '2017-05-13':
-           //     x(432202, 432208, 532674, 432214, '2017-05-12', '2017-05-13');
-           //     setTimeout(y, 2000, senderID, resultTransferData);
-           //     break;
-
             case 'typing on':
                 sendTypingOn(senderID);
                 break;
@@ -405,12 +366,7 @@ function receivedMessage(event) {
                 break;
 
             default:
-            count++;
-            console.log(count);
-            console.log(timeOfMessage);
-                console.log(metadata);
-                console.log(typeof messageText);
-                //sendTextMessage(senderID, messageText);
+            //sendTextMessage(senderID, messageText);
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received")
@@ -454,7 +410,6 @@ function receivedPostback(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfPostback = event.timestamp;
-    // var messageData = sendGenericMessage();
     // The 'payload' param is a developer-defined field which is set in a postback
     // button for Structured Messages.
     var payload = event.postback.payload;
@@ -473,18 +428,6 @@ function receivedPostback(event) {
    else if (payload === "Zimmer Anfrage") {
        sendPersonRequest(senderID);
    }
-
-/*
-   if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Einzelzimmer Sommerstein") >= 0) {
-   sendRoomDetails1(senderID);
-   } else if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Doppelzimmer Classic Steinleo") >= 0)  {
-   sendRoomDetails2(senderID);
-   } else if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Einzelnutzung Classic Steinleo") >= 0)  {
-   sendRoomDetails3(senderID);
-   } else if (payload === "1" && messageData.message.attachment.payload.elements[0].title.indexOf("Doppelzimmer Superior Steinleo") >= 0)  {
-   sendRoomDetails4(senderID);
-   }
-*/
 }
 /*
  * Message Read Event
@@ -523,8 +466,6 @@ function receivedAccountLink(event) {
   console.log("Received account link event with for user %d with status %s " +
     "and auth code %s ", senderID, status, authCode);
 }
-
-
 
 /*
  * Send a text message using the Send API.
@@ -696,8 +637,6 @@ function sendDepartureDate(recipientId) {
  *
  */
 var y = function (recipientId, resultTransferData) {
-  console.log(resultTransferData);
-  console.log("Callback called");
   var messageData = {
     recipient: {
       id: recipientId
