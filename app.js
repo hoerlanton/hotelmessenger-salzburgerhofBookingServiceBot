@@ -160,6 +160,8 @@ console.log(localStorage.getItem('myFirstKey'));
 */
 var numberOfPersons = 0;
 var numberOfRoomsSplitted = [];
+var numberOfPersonsSplitted = [];
+var departureDateSplitted = [];
 var numberOfRooms = 0;
 var arrivalDate = 0;
 var departureDate = 0;
@@ -304,7 +306,8 @@ function receivedMessage(event) {
         var quickReplyPayload = quickReply.payload;
         console.log("Quick reply for message %s with payload %s",
             messageId, quickReplyPayload);
-        if (quickReplyPayload === "1" || quickReplyPayload === "2" || quickReplyPayload === "3" || quickReplyPayload === "4" || quickReplyPayload === "5") {
+        if (quickReplyPayload === "1 person" || quickReplyPayload === "2 persons" || quickReplyPayload === "3 persons" || quickReplyPayload === "4 persons" || quickReplyPayload === "5 persons") {
+            numberOfPersonsSplitted = quickReplyPayload.split(" ");
             numberOfPersons = parseInt(quickReplyPayload);
             console.log(numberOfPersons);
             sendRoomRequest(senderID);
@@ -312,9 +315,19 @@ function receivedMessage(event) {
             numberOfRoomsSplitted = quickReplyPayload.split(" ");
             numberOfRooms = parseInt(quickReplyPayload);
             console.log(numberOfRooms);
-            sendArrivalDate(senderID);
+            sendArrivalDateMonth(senderID);
+        } else if (quickReplyPayload === "mehr1") {
+            sendArrivalDateMonth2(senderID);
+        } else if (quickReplyPayload === "01" || quickReplyPayload === "02" || quickReplyPayload === "03" || quickReplyPayload === "04" || quickReplyPayload === "05" || quickReplyPayload === "06" || quickReplyPayload === "07" || quickReplyPayload === "08" || quickReplyPayload === "09" || quickReplyPayload === "10" || quickReplyPayload === "11" || quickReplyPayload === "12") {
+            sendArrivalDay(senderID);
+        } else if (quickReplyPayload === "mehr2") {
+            sendArrivalDay2(senderID);
+        } else if (quickReplyPayload === "mehr3") {
+            sendArrivalDay3(senderID);
+        } else if (quickReplyPayload === "01" || quickReplyPayload === "02" || quickReplyPayload === "03" || quickReplyPayload === "04" || quickReplyPayload === "05" || quickReplyPayload === "06" || quickReplyPayload === "07" || quickReplyPayload === "08" || quickReplyPayload === "09" || quickReplyPayload === "10" || quickReplyPayload === "11" || quickReplyPayload === "12" || quickReplyPayload === "13" || quickReplyPayload === "14" || quickReplyPayload === "15" || quickReplyPayload === "16" || quickReplyPayload === "17" || quickReplyPayload === "18" || quickReplyPayload === "19" || quickReplyPayload === "20" || quickReplyPayload === "21" || quickReplyPayload === "22" || quickReplyPayload === "23" || quickReplyPayload === "24" || quickReplyPayload === "25" || quickReplyPayload === "26" || quickReplyPayload === "27" || quickReplyPayload === "28" || quickReplyPayload === "29" || quickReplyPayload === "30" || quickReplyPayload === "31" ) {
+            //sendDepartureDateMonth(senderID);
+            return;
         }
-        return;
     }
 
     if (messageText) {
@@ -326,7 +339,6 @@ function receivedMessage(event) {
         if (typeof messageText === "string" && messageText.match(/[_\W0-9]/) && messageText.length === 10 && isAsked === false) {
             console.log(arrivalDate + ": arrivalDate");
             console.log(arrivalDate.length);
-            time1 = timeOfMessage;
             arrivalDate = messageText;
             console.log(arrivalDate + ": arrivalDate");
             console.log(arrivalDate.length);
@@ -336,6 +348,7 @@ function receivedMessage(event) {
             console.log(departureDate + ": departureDate");
             console.log(departureDate.length);
             departureDate = messageText;
+            departureDateSplitted = quickReplyPayload.split("-");
             console.log(departureDate + ": departureDate");
             x(432202, 432208, 532674, 432214, numberOfRooms, numberOfPersons, arrivalDate, departureDate);
             setTimeout(y, 2000, senderID, resultTransferData);
@@ -366,7 +379,8 @@ function receivedMessage(event) {
                 break;
 
             default:
-            //sendTextMessage(senderID, messageText);
+                //sendMenu(senderID);
+                break;
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received")
@@ -500,18 +514,18 @@ function sendMenu(recipientId) {
         payload: {
           template_type: "button",
           text: "Menü Auswahl",
-          buttons:[{
-            type: "web_url",
-            url: "https://www.salzburgerhof.eu",
-            title: "Website"
-          }, {
+          buttons:[ {
             type: "postback",
             title: "Zimmer Anfrage",
             payload: "Zimmer Anfrage"
           }, {
             type: "postback",
-            title: "Info",
-            payload: "Info"
+            title: "Vor Aufenthalt",
+            payload: "Vor"
+          }, {
+              type: "postback",
+              title: "Während Aufenthalt",
+              payload: "Während"
           }]
         }
       }
@@ -561,6 +575,7 @@ function sendPersonRequest(recipientId) {
                       ]
                   }
               };
+
     callSendAPI(messageData);
 }
 
@@ -600,8 +615,318 @@ function sendRoomRequest(recipientId) {
             ]
         }
     };
+    
     callSendAPI(messageData);
 }
+
+function sendArrivalDateMonth(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"Für welchen Monat wollen Sie anfragen?:",
+            "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title":"Jänner",
+                    "payload":"01"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Februar",
+                    "payload":"02"
+                },
+                {
+                    "content_type":"text",
+                    "title":"März",
+                    "payload":"03"
+                },
+                {
+                    "content_type":"text",
+                    "title":"April",
+                    "payload":"04"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Mai",
+                    "payload":"05"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Juni",
+                    "payload":"06"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Mehr",
+                    "payload":"mehr1"
+                },
+            ]
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function sendArrivalDateMonth2(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"Für welchen Monat wollen Sie anfragen?:",
+            "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title":"Juli",
+                    "payload":"07"
+                },
+                {
+                    "content_type":"text",
+                    "title":"August",
+                    "payload":"08"
+                },
+                {
+                    "content_type":"text",
+                    "title":"September",
+                    "payload":"09"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Oktober",
+                    "payload":"10"
+                },
+                {
+                    "content_type":"text",
+                    "title":"November",
+                    "payload":"11"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Dezember",
+                    "payload":"12"
+                },
+
+            ]
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function sendArrivalDay(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"An welchen Tag wollen Sie anreisen?:",
+            "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title":"01",
+                    "payload":"01"
+                },
+                {
+                    "content_type":"text",
+                    "title":"02",
+                    "payload":"02"
+                },
+                {
+                    "content_type":"text",
+                    "title":"03",
+                    "payload":"03"
+                },
+                {
+                    "content_type":"text",
+                    "title":"04",
+                    "payload":"04"
+                },
+                {
+                    "content_type":"text",
+                    "title":"05",
+                    "payload":"05"
+                },
+                {
+                    "content_type":"text",
+                    "title":"06",
+                    "payload":"06"
+                },
+                {
+                    "content_type":"text",
+                    "title":"07",
+                    "payload":"07"
+                },
+                {
+                    "content_type":"text",
+                    "title":"08",
+                    "payload":"08"
+                },
+                {
+                    "content_type":"text",
+                    "title":"09",
+                    "payload":"09"
+                },
+                {
+                    "content_type":"text",
+                    "title":"10",
+                    "payload":"10"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Mehr",
+                    "payload":"mehr2"
+                },
+
+            ]
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function sendArrivalDay2(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"An welchen Tag wollen Sie anreisen?:",
+            "quick_replies":[
+
+                {
+                    "content_type":"text",
+                    "title":"11",
+                    "payload":"11"
+                },
+                {
+                    "content_type":"text",
+                    "title":"12",
+                    "payload":"12"
+                },
+                {
+                    "content_type":"text",
+                    "title":"13",
+                    "payload":"13"
+                },
+                {
+                    "content_type":"text",
+                    "title":"14",
+                    "payload":"14"
+                },
+                {
+                    "content_type":"text",
+                    "title":"15",
+                    "payload":"15"
+                },
+                {
+                    "content_type":"text",
+                    "title":"16",
+                    "payload":"16"
+                },
+                {
+                    "content_type":"text",
+                    "title":"17",
+                    "payload":"17"
+                },
+                {
+                    "content_type":"text",
+                    "title":"18",
+                    "payload":"18"
+                },
+                {
+                    "content_type":"text",
+                    "title":"19",
+                    "payload":"19"
+                },
+                {
+                    "content_type":"text",
+                    "title":"20",
+                    "payload":"20"
+                },
+                {
+                    "content_type":"text",
+                    "title":"Mehr",
+                    "payload":"mehr3"
+                },
+            ]
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function sendArrivalDay3(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"An welchen Tag wollen Sie anreisen?:",
+            "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title":"21",
+                    "payload":"21"
+                },
+                {
+                    "content_type":"text",
+                    "title":"22",
+                    "payload":"22"
+                },
+                {
+                    "content_type":"text",
+                    "title":"23",
+                    "payload":"23"
+                },
+                {
+                    "content_type":"text",
+                    "title":"24",
+                    "payload":"24"
+                },
+                {
+                    "content_type":"text",
+                    "title":"25",
+                    "payload":"25"
+                },
+                {
+                    "content_type":"text",
+                    "title":"26",
+                    "payload":"26"
+                },
+                {
+                    "content_type":"text",
+                    "title":"27",
+                    "payload":"27"
+                },
+                {
+                    "content_type":"text",
+                    "title":"28",
+                    "payload":"28"
+                },
+                {
+                    "content_type":"text",
+                    "title":"29",
+                    "payload":"29"
+                },
+                {
+                    "content_type":"text",
+                    "title":"30",
+                    "payload":"30"
+                },
+                {
+                    "content_type":"text",
+                    "title":"31",
+                    "payload":"31"
+                },
+            ]
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
 
 function sendArrivalDate(recipientId) {
     var messageData = {
