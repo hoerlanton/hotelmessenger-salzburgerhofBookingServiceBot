@@ -159,9 +159,12 @@ localStorage.setItem('myFirstKey', 'myFirstValue');
 console.log(localStorage.getItem('myFirstKey'));
 */
 var numberOfPersons = 0;
+var arrivalDateMonth = 0;
+var arrivalDateDay = 0;
 var numberOfRoomsSplitted = [];
 var numberOfPersonsSplitted = [];
 var departureDateSplitted = [];
+var arrivalDayDateSplitted = [];
 var numberOfRooms = 0;
 var arrivalDate = 0;
 var departureDate = 0;
@@ -308,24 +311,33 @@ function receivedMessage(event) {
             messageId, quickReplyPayload);
         if (quickReplyPayload === "1 person" || quickReplyPayload === "2 persons" || quickReplyPayload === "3 persons" || quickReplyPayload === "4 persons" || quickReplyPayload === "5 persons") {
             numberOfPersonsSplitted = quickReplyPayload.split(" ");
-            numberOfPersons = parseInt(quickReplyPayload);
+            numberOfPersons = parseInt(numberOfPersonsSplitted);
             console.log(numberOfPersons);
             sendRoomRequest(senderID);
         } else if (quickReplyPayload === "1 room" || quickReplyPayload === "2 rooms" || quickReplyPayload === "3 rooms" || quickReplyPayload === "4 rooms" || quickReplyPayload === "5 rooms") {
             numberOfRoomsSplitted = quickReplyPayload.split(" ");
-            numberOfRooms = parseInt(quickReplyPayload);
+            numberOfRooms = parseInt(numberOfRoomsSplitted);
             console.log(numberOfRooms);
             sendArrivalDateMonth(senderID);
         } else if (quickReplyPayload === "mehr1") {
             sendArrivalDateMonth2(senderID);
         } else if (quickReplyPayload === "01" || quickReplyPayload === "02" || quickReplyPayload === "03" || quickReplyPayload === "04" || quickReplyPayload === "05" || quickReplyPayload === "06" || quickReplyPayload === "07" || quickReplyPayload === "08" || quickReplyPayload === "09" || quickReplyPayload === "10" || quickReplyPayload === "11" || quickReplyPayload === "12") {
+            arrivalDateMonth = quickReplyPayload;
             sendArrivalDay(senderID);
         } else if (quickReplyPayload === "mehr2") {
             sendArrivalDay2(senderID);
         } else if (quickReplyPayload === "mehr3") {
             sendArrivalDay3(senderID);
-        } else if (quickReplyPayload === "01" || quickReplyPayload === "02" || quickReplyPayload === "03" || quickReplyPayload === "04" || quickReplyPayload === "05" || quickReplyPayload === "06" || quickReplyPayload === "07" || quickReplyPayload === "08" || quickReplyPayload === "09" || quickReplyPayload === "10" || quickReplyPayload === "11" || quickReplyPayload === "12" || quickReplyPayload === "13" || quickReplyPayload === "14" || quickReplyPayload === "15" || quickReplyPayload === "16" || quickReplyPayload === "17" || quickReplyPayload === "18" || quickReplyPayload === "19" || quickReplyPayload === "20" || quickReplyPayload === "21" || quickReplyPayload === "22" || quickReplyPayload === "23" || quickReplyPayload === "24" || quickReplyPayload === "25" || quickReplyPayload === "26" || quickReplyPayload === "27" || quickReplyPayload === "28" || quickReplyPayload === "29" || quickReplyPayload === "30" || quickReplyPayload === "31" ) {
-            //sendDepartureDateMonth(senderID);
+        } else if (quickReplyPayload === "d 01" || quickReplyPayload === "d 02" || quickReplyPayload === "d 03" || quickReplyPayload === "d 04" || quickReplyPayload === "d 05" || quickReplyPayload === "d 06" || quickReplyPayload === "d 07" || quickReplyPayload === "d 08" || quickReplyPayload === "d 09" || quickReplyPayload === "d 10" || quickReplyPayload === "d 11" || quickReplyPayload === "d 12" || quickReplyPayload === "d 13" || quickReplyPayload === "d 14" || quickReplyPayload === "d 15" || quickReplyPayload === "d 16" || quickReplyPayload === "d 17" || quickReplyPayload === "d 18" || quickReplyPayload === "d 19" || quickReplyPayload === "d 20" || quickReplyPayload === "d 21" || quickReplyPayload === "d 22" || quickReplyPayload === "d 23" || quickReplyPayload === "d 24" || quickReplyPayload === "d 25" || quickReplyPayload === "d 26" || quickReplyPayload === "d 27" || quickReplyPayload === "d 28" || quickReplyPayload === "d 29" || quickReplyPayload === "d 30" || quickReplyPayload === "d 31" ) {
+            arrivalDayDateSplitted = quickReplyPayload.split(" ");
+            console.log(arrivalDayDateSplitted);
+            arrivalDateDay = parseInt(arrivalDayDateSplitted[1]);
+            console.log(arrivalDateDay);
+            sendDepartureDateSuggestion(senderID);
+            sendArrivalDateSummary(senderID);
+        } else if ("de" || quickReplyPayload === "2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 2) || quickReplyPayload === "2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 3) || quickReplyPayload === "2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 4) || quickReplyPayload === "2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 5)) {
+            x(432202, 432208, 532674, 432214, numberOfRooms, numberOfPersons, arrivalDate, departureDate);
+            setTimeout(y, 2000, senderID, resultTransferData);
             return;
         }
     }
@@ -335,7 +347,7 @@ function receivedMessage(event) {
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-
+/*
         if (typeof messageText === "string" && messageText.match(/[_\W0-9]/) && messageText.length === 10 && isAsked === false) {
             console.log(arrivalDate + ": arrivalDate");
             console.log(arrivalDate.length);
@@ -355,7 +367,7 @@ function receivedMessage(event) {
             isAsked = false;
         }
 
-
+*/
         switch (messageText) {
 
             case 'Menu':
@@ -486,17 +498,71 @@ function receivedAccountLink(event) {
  *
  */
 function sendTextMessage(recipientId, messageText) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      text: messageText,
-      metadata: "DEVELOPER_DEFINED_METADATA"
-    }
-  };
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText,
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
 
-  callSendAPI(messageData);
+    callSendAPI(messageData);
+}
+
+function sendArrivalDateSummary(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Ihr Anreisedatum: 2017"+ "-" + arrivalDateMonth + "-" + arrivalDateDay,
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function sendDepartureDateSuggestion(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            "text":"Wann wollen Sie abreisen?:",
+            "quick_replies":[
+                {
+                    "content_type":"text",
+                    "title":"2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 1),
+                    "payload":"departureDate 1"
+                },
+                {
+                    "content_type":"text",
+                    "title":"2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 2),
+                    "payload":"departureDate 2"
+                },
+                {
+                    "content_type":"text",
+                    "title":"2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 3),
+                    "payload":"departureDate 3"
+                },
+                {
+                    "content_type":"text",
+                    "title":"2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 4),
+                    "payload":"departureDate 4"
+                },
+                {
+                    "content_type":"text",
+                    "title":"2017"+ "-" + arrivalDateMonth + "-" + (arrivalDateDay + 5),
+                    "payload":"departureDate 5"
+                }
+            ]
+        }
+    };
+
+    callSendAPI(messageData);
 }
 
 /*
@@ -550,27 +616,27 @@ function sendPersonRequest(recipientId) {
                           {
                               "content_type":"text",
                               "title":"1 Person",
-                              "payload":"1"
+                              "payload":"1 person"
                           },
                           {
                               "content_type":"text",
                               "title":"2 Personen",
-                              "payload":"2"
+                              "payload":"2 persons"
                           },
                           {
                               "content_type":"text",
                               "title":"3 Personen",
-                              "payload":"3"
+                              "payload":"3 persons"
                           },
                           {
                               "content_type":"text",
                               "title":"4 Personen",
-                              "payload":"4"
+                              "payload":"4 persons"
                           },
                           {
                               "content_type":"text",
                               "title":"5 Personen",
-                              "payload":"5"
+                              "payload":"5 persons"
                           }
                       ]
                   }
@@ -726,52 +792,52 @@ function sendArrivalDay(recipientId) {
                 {
                     "content_type":"text",
                     "title":"01",
-                    "payload":"01"
+                    "payload":"d 01"
                 },
                 {
                     "content_type":"text",
                     "title":"02",
-                    "payload":"02"
+                    "payload":"d 02"
                 },
                 {
                     "content_type":"text",
                     "title":"03",
-                    "payload":"03"
+                    "payload":"d 03"
                 },
                 {
                     "content_type":"text",
                     "title":"04",
-                    "payload":"04"
+                    "payload":"d 04"
                 },
                 {
                     "content_type":"text",
                     "title":"05",
-                    "payload":"05"
+                    "payload":"d 05"
                 },
                 {
                     "content_type":"text",
                     "title":"06",
-                    "payload":"06"
+                    "payload":"d 06"
                 },
                 {
                     "content_type":"text",
                     "title":"07",
-                    "payload":"07"
+                    "payload":"d 07"
                 },
                 {
                     "content_type":"text",
                     "title":"08",
-                    "payload":"08"
+                    "payload":"d 08"
                 },
                 {
                     "content_type":"text",
                     "title":"09",
-                    "payload":"09"
+                    "payload":"d 09"
                 },
                 {
                     "content_type":"text",
                     "title":"10",
-                    "payload":"10"
+                    "payload":"d 10"
                 },
                 {
                     "content_type":"text",
@@ -798,52 +864,52 @@ function sendArrivalDay2(recipientId) {
                 {
                     "content_type":"text",
                     "title":"11",
-                    "payload":"11"
+                    "payload":"d 11"
                 },
                 {
                     "content_type":"text",
                     "title":"12",
-                    "payload":"12"
+                    "payload":"d 12"
                 },
                 {
                     "content_type":"text",
                     "title":"13",
-                    "payload":"13"
+                    "payload":"d 13"
                 },
                 {
                     "content_type":"text",
                     "title":"14",
-                    "payload":"14"
+                    "payload":"d 14"
                 },
                 {
                     "content_type":"text",
                     "title":"15",
-                    "payload":"15"
+                    "payload":"d 15"
                 },
                 {
                     "content_type":"text",
                     "title":"16",
-                    "payload":"16"
+                    "payload":"d 16"
                 },
                 {
                     "content_type":"text",
                     "title":"17",
-                    "payload":"17"
+                    "payload":"d 17"
                 },
                 {
                     "content_type":"text",
                     "title":"18",
-                    "payload":"18"
+                    "payload":"d 18"
                 },
                 {
                     "content_type":"text",
                     "title":"19",
-                    "payload":"19"
+                    "payload":"d 19"
                 },
                 {
                     "content_type":"text",
                     "title":"20",
-                    "payload":"20"
+                    "payload":"d 20"
                 },
                 {
                     "content_type":"text",
@@ -868,57 +934,57 @@ function sendArrivalDay3(recipientId) {
                 {
                     "content_type":"text",
                     "title":"21",
-                    "payload":"21"
+                    "payload":"d 21"
                 },
                 {
                     "content_type":"text",
                     "title":"22",
-                    "payload":"22"
+                    "payload":"d 22"
                 },
                 {
                     "content_type":"text",
                     "title":"23",
-                    "payload":"23"
+                    "payload":"d 23"
                 },
                 {
                     "content_type":"text",
                     "title":"24",
-                    "payload":"24"
+                    "payload":"d 24"
                 },
                 {
                     "content_type":"text",
                     "title":"25",
-                    "payload":"25"
+                    "payload":"d 25"
                 },
                 {
                     "content_type":"text",
                     "title":"26",
-                    "payload":"26"
+                    "payload":"d 26"
                 },
                 {
                     "content_type":"text",
                     "title":"27",
-                    "payload":"27"
+                    "payload":"d 27"
                 },
                 {
                     "content_type":"text",
                     "title":"28",
-                    "payload":"28"
+                    "payload":"d 28"
                 },
                 {
                     "content_type":"text",
                     "title":"29",
-                    "payload":"29"
+                    "payload":"d 29"
                 },
                 {
                     "content_type":"text",
                     "title":"30",
-                    "payload":"30"
+                    "payload":"d 30"
                 },
                 {
                     "content_type":"text",
                     "title":"31",
-                    "payload":"31"
+                    "payload":"d 31"
                 },
             ]
         }
