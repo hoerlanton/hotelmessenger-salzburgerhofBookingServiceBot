@@ -30,9 +30,19 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.use(express.static('public'));
 
+var resultTransferData = [];
 
-//var isAsked = false;
-//var departureDateSplitted = [];
+var numberOfPersons = 0;
+var numberOfRooms = 0;
+var count = 0;
+var arrivalDateMonth = 0;
+var arrivalDateDay = 0;
+var arrivalDateDayCalculations = 0;
+var numberOfRoomsSplitted = [];
+var numberOfPersonsSplitted = [];
+var arrivalDayDateSplitted = [];
+var arrivalDate = 0;
+var departureDate = 0;
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -164,36 +174,24 @@ console.log(localStorage.getItem('myFirstKey'));
 */
 
 
-var resultTransferData = [];
-
-var numberOfPersons = 0;
-var numberOfRooms = 0;
-var count = 0;
-var arrivalDateMonth = 0;
-var arrivalDateDay = 0;
-var arrivalDateDayCalculations = 0;
-var numberOfRoomsSplitted = [];
-var numberOfPersonsSplitted = [];
-var arrivalDayDateSplitted = [];
-var arrivalDate = 0;
-var departureDate = 0;
-
-var buffer = '';
-var postRequest = {
-    hostname: "cultswitch.cultuzz.de",
-    path: "/cultswitch/processOTA",
-    method: "POST",
-    port: 8080,
-    headers: {
-        'Cookie': 'cookie',
-        'Content-type': 'application/x-www-form-urlencoded'
-    }
-};
 
 
 function sendXmlPostRequest(roomId1, roomId2, roomId3, roomId4, numberOfRooms, numberOfPersons, arrivalDate, departureDate) {
 
+    var buffer = '';
+    var postRequest = {
+        hostname: "cultswitch.cultuzz.de",
+        path: "/cultswitch/processOTA",
+        method: "POST",
+        port: 8080,
+        headers: {
+            'Cookie': 'cookie',
+            'Content-type': 'application/x-www-form-urlencoded'
+        }
+    };
+
     var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="' + arrivalDate + '" End="' + departureDate + '"/><RatePlanCandidates><RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId1 + '"/> <RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId2 + '"/> <RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId3 + '"/> <RatePlanCandidate RatePlanType="11" RatePlanID="' + roomId4 + '"/>  </RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="' + numberOfRooms + '"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="' + numberOfPersons + '"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
+    console.log(body);
     var req = http.request(postRequest, function (res) {
         console.log(res.statusCode);
         res.on("data", function (data) {
@@ -275,14 +273,6 @@ function receivedAuthentication(event) {
 }
 
 
-
-
-/*
- * Send a Structured Message (Generic Message type) using the Send API.
- *
- */
-
-
 /*
  * Message Event
  *
@@ -330,19 +320,25 @@ function receivedMessage(event) {
 
 
     } else if (quickReply) {
+
         var quickReplyPayload = quickReply.payload;
 
         console.log("Quick reply for message %s with payload %s",
             messageId, quickReplyPayload);
 
         if (quickReplyPayload === "1 person" || quickReplyPayload === "2 persons" || quickReplyPayload === "3 persons" || quickReplyPayload === "4 persons" || quickReplyPayload === "5 persons") {
-           count++;
+            count++;
             console.log(count);
-            if ( count++ ) {
+            if (count >= 1) {
                 numberOfPersonsSplitted[0] = 0;
                 numberOfRoomsSplitted[0] = 0;
-                arrivalDate = "";
-                departureDate = "";
+                console.log(arrivalDate);
+                arrivalDate = 0;
+                console.log(arrivalDate);
+                console.log(departureDate);
+                departureDate = 0;
+                console.log(departureDate);
+                resultTransferData = [];
             }
             numberOfPersonsSplitted = quickReplyPayload.split(" ");
             numberOfPersons = parseInt(numberOfPersonsSplitted[0]);
@@ -377,39 +373,17 @@ function receivedMessage(event) {
             console.log(departureDate);
             sendXmlPostRequest(432202, 432208, 532674, 432214, numberOfRooms, numberOfPersons, arrivalDate, departureDate);
             sendStatusFeedbackRequest(senderID);
-            setTimeout(sendGenericMessageOffer, 90000, senderID);
+            setTimeout(sendGenericMessageOffer, 5000, senderID);
             return;
         }
     }
-
-
 
     if (messageText) {
 
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
         // the text we received.
-/*
-        if (typeof messageText === "string" && messageText.match(/[_\W0-9]/) && messageText.length === 10 && isAsked === false) {
-            console.log(arrivalDate + ": arrivalDate");
-            console.log(arrivalDate.length);
-            arrivalDate = messageText;
-            console.log(arrivalDate + ": arrivalDate");
-            console.log(arrivalDate.length);
-            isAsked = true;
-            sendDepartureDate(senderID);
-        } else if (typeof messageText === "string" && messageText.match(/[_\W0-9]/) && isAsked === true) {
-            console.log(departureDate + ": departureDate");
-            console.log(departureDate.length);
-            departureDate = messageText;
-            departureDateSplitted = quickReplyPayload.split("-");
-            console.log(departureDate + ": departureDate");
-            x(432202, 432208, 532674, 432214, numberOfRooms, numberOfPersons, arrivalDate, departureDate);
-            setTimeout(y, 2000, senderID, resultTransferData);
-            isAsked = false;
-        }
 
-*/
         switch (messageText) {
 
             case 'Menu':
