@@ -43,6 +43,14 @@ var numberOfPersonsSplitted = [];
 var arrivalDayDateSplitted = [];
 var arrivalDate = 0;
 var departureDate = 0;
+var i = 0;
+var stayRange = 0;
+var arrivalDateSplitted = [];
+var departureDateSplitted = [];
+var priceAllNightsDoppelzimmerDeluxeHolzleo = 0;
+var priceAllNightsDoppelzimmerSuperiorSteinleo = 0;
+var priceAllNightsEinzelzimmerSommerstein = 0;
+var priceAllNightsDoppelzimmerClassicSteinleo = 0;
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -200,13 +208,6 @@ function sendXmlPostRequest(roomId1, roomId2, roomId3, roomId4, numberOfRooms, n
             parseString(buffer, function (err, result) {
                 (JSON.stringify(result));
                 resultTransferData.push(result);
-                //console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax);
-                //console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[1].Base[0].$.AmountAfterTax);
-                //console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[2].Base[0].$.AmountAfterTax);
-                //console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[3].Base[0].$.AmountAfterTax);
-                //console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[4].Base[0].$.AmountAfterTax);
-                //console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[5].Rates[0].Rate[0].Base[0].$.AmountAfterTax);
-                //console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[7].Rates[0].Rate[0].Base[0].$.AmountAfterTax);
             });
         });
     });
@@ -293,16 +294,9 @@ function receivedAuthentication(event) {
  * 
  */
 
-var i = 0;
-var stayRange = 0;
-var arrivalDateSplitted = [];
-var departureDateSplitted = [];
-var priceAllNightsDoppelzimmerDeluxeHolzleo = 0;
-var priceAllNightsDoppelzimmerSuperiorSteinleo = 0;
-var priceAllNightsEinzelzimmerSommerstein = 0;
-var priceAllNightsDoppelzimmerClassicSteinleo = 0;
 
 function calculateStayRange(arrivalDate, departureDate) {
+
     arrivalDateSplitted = arrivalDate.split("-");
     departureDateSplitted = departureDate.split("-");
     stayRange = parseInt(departureDateSplitted[2] - arrivalDateSplitted[2]);
@@ -431,6 +425,7 @@ function receivedMessage(event) {
                 break;
 
             default:
+                sendMenu(senderID);
                 break;
         }
     }
@@ -485,11 +480,12 @@ function receivedPostback(event) {
    if (payload === "1") {
        sendGifMessage(senderID);
    }
-   else if (payload === "2") {
-       sendGifMessage(senderID);
-   }
-   else if (payload === "Zimmer Anfrage") {
+   else if (payload === "GET_STARTED_PAYLOAD") {
+       sendWelcomeMessage(senderID);
+   }    else if (payload === "Zimmer Anfrage") {
        sendPersonRequest(senderID);
+   }    else if (payload === "personal") {
+       sendPersonalFeedback(senderID);
    }
 }
 /*
@@ -542,6 +538,52 @@ function sendTextMessage(recipientId, messageText) {
         message: {
             text: messageText,
             metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a text message using the Send API.
+ *
+ */
+function sendPersonalFeedback(recipientId, messageText) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: "Es wird sich ehestmöglich einer unserer Mitarbeiter um Ihre Anfrage kümmern.",
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+function sendWelcomeMessage(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: "Hallo & Willkommen beim Chatbot vom Hotel Salzburger Hof Leogang - #homeofsports. Wie darf ich Ihnen helfen?",
+                    buttons:[ {
+                        type: "postback",
+                        title: "Zimmer Anfrage",
+                        payload: "Zimmer Anfrage"
+                    }, {
+                        type: "postback",
+                        title: "Persönliche Beratung",
+                        payload: "personal"
+                    }]
+                }
+            }
         }
     };
 
@@ -639,13 +681,9 @@ function sendMenu(recipientId) {
             payload: "Zimmer Anfrage"
           }, {
             type: "postback",
-            title: "Vor Aufenthalt",
-            payload: "Vor"
-          }, {
-              type: "postback",
-              title: "Während Aufenthalt",
-              payload: "Während"
-          }]
+            title: "Persönliche Beratung",
+            payload: "personal"
+          } ]
         }
       }
     }
