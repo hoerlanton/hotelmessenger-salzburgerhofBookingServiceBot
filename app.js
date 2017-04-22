@@ -425,7 +425,7 @@ function receivedMessage(event) {
                 break;
 
             default:
-                sendMenu(senderID);
+                //sendMenu(senderID);
                 break;
         }
     }
