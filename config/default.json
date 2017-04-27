@@ -1,6 +1,6 @@
 {
-    "appSecret": "b10e2533f7775ae2d99a0cb1fedeb3c5",
-    "pageAccessToken": "EAAbPgy5UveYBAKDnGRZAunje9R9i0biY5dNyCZAlrPTXffV5ph7cDPW6YzdgaRazZAdhGLyc5gIZBYpFlhRNFZBh1lGzs915wCdsLxPf3be2eno4MYLxbcKdFROhKZBxahNAQ67Qr12Bu0ESjKXOyapbktXAZAFICVzpKUs5EmWXQZDZD",
+    "appSecret": "aa0ff220041bcb3551ce1d5318e336cb",
+    "pageAccessToken": "EAABmDV3l5aUBAKZCE8STAhtui93NrbQlEZCkZCpN27OSTvZCZAztQgUMYqVRZCBOhx9i0bi3ZBQfpzN6XKU0hHNJMpTySyuESz3AALL2QTZCUPk2pCGuLKk7O3jZBqQX8LSP8WdIJuUMpwqSZB6ejA5NUcCFI6HMYL8S3cZBkiFaxOrJgZDZD",
     "validationToken": "anton1234",
-    "serverURL": "https://hotelmessenger.herokuapp.com"
+    "serverURL": "https://fe9b7529.ngrok.io"
 }
