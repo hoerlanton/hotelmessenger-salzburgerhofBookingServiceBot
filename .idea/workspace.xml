@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e97f89fe-21ab-44d6-b3b0-c19d42291d92" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/default.json" afterPath="$PROJECT_DIR$/config/default.json" />
-    </list>
+    <list default="true" id="e97f89fe-21ab-44d6-b3b0-c19d42291d92" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -23,52 +21,27 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7020">
-              <caret line="468" column="18" lean-forward="false" selection-start-line="468" selection-start-column="18" selection-end-line="468" selection-end-column="18" />
+            <state relative-caret-position="1850">
+              <caret line="454" column="0" lean-forward="true" selection-start-line="454" selection-start-column="0" selection-end-line="454" selection-end-column="0" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
-                <marker date="1492947709000" expanded="true" signature="57495:57548" ph="/*...*/" />
-                <marker date="1492947709000" expanded="true" signature="57551:57588" ph="/*...*/" />
-                <marker date="1492947709000" expanded="false" signature="57624:57807" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="57693:57775" ph="{&quot;sender_action&quot;: &quot;typing_on&quot;...}" />
-                <marker date="1492947709000" expanded="true" signature="57710:57739" ph="{&quot;id&quot;: recipientId...}" />
-                <marker date="1492947709000" expanded="true" signature="57809:57847" ph="/*...*/" />
-                <marker date="1492947709000" expanded="false" signature="57884:58069" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="57954:58037" ph="{&quot;sender_action&quot;: &quot;typing_off&quot;...}" />
-                <marker date="1492947709000" expanded="true" signature="57971:58000" ph="{&quot;id&quot;: recipientId...}" />
-                <marker date="1492947709000" expanded="true" signature="58071:58138" ph="/*...*/" />
-                <marker date="1492947709000" expanded="false" signature="58180:58584" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="58202:58550" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="58219:58248" ph="{&quot;id&quot;: recipientId...}" />
-                <marker date="1492947709000" expanded="true" signature="58263:58546" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="58283:58540" ph="{&quot;type&quot;: &quot;template&quot;...}" />
-                <marker date="1492947709000" expanded="true" signature="58328:58532" ph="{&quot;template_type&quot;: &quot;button&quot;...}" />
-                <marker date="1492947709000" expanded="true" signature="58430:58522" ph="[...]" />
-                <marker date="1492947709000" expanded="true" signature="58431:58521" ph="{&quot;type&quot;: &quot;account_link&quot;...}" />
-                <marker date="1492947709000" expanded="true" signature="58586:58711" ph="/*...*/" />
-                <marker date="1492947709000" expanded="false" signature="58746:59456" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="58758:58907" ph="{&quot;uri&quot;: 'https://graph.facebook.com/v2.6/me/messages'...}" />
-                <marker date="1492947709000" expanded="true" signature="58942:59450" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="58990:59328" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="59096:59217" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="59223:59322" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="59334:59446" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="59458:59575" ph="//..." />
-                <marker date="1492947709000" expanded="true" signature="59616:59682" ph="{...}" />
-                <marker date="1492947709000" expanded="true" signature="59686:59783" ph="//..." />
+                <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+                <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+                <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+                <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="default.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="default.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/default.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="55" lean-forward="true" selection-start-line="4" selection-start-column="55" selection-end-line="4" selection-end-column="55" />
+            <state relative-caret-position="45">
+              <caret line="3" column="35" lean-forward="true" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -149,6 +122,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -177,7 +151,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -272,11 +245,12 @@
       <workItem from="1491924302043" duration="32862000" />
       <workItem from="1492543875695" duration="50926000" />
       <workItem from="1493309245582" duration="403000" />
+      <workItem from="1493319363083" duration="50000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="202310000" />
+    <option name="totallyTimeSpent" value="202360000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -325,39 +299,36 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6915">
+          <caret line="468" column="18" lean-forward="false" selection-start-line="468" selection-start-column="18" selection-end-line="468" selection-end-column="18" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+            <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+            <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+            <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/default.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.js">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6120">
           <caret line="427" column="18" lean-forward="false" selection-start-line="427" selection-start-column="18" selection-end-line="427" selection-end-column="18" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1492947709000" expanded="true" signature="57495:57548" ph="/*...*/" />
-            <marker date="1492947709000" expanded="true" signature="57551:57588" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57624:57807" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57693:57775" ph="{&quot;sender_action&quot;: &quot;typing_on&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57710:57739" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="57809:57847" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57884:58069" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57954:58037" ph="{&quot;sender_action&quot;: &quot;typing_off&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57971:58000" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58071:58138" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58180:58584" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58202:58550" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58219:58248" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58263:58546" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58283:58540" ph="{&quot;type&quot;: &quot;template&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58328:58532" ph="{&quot;template_type&quot;: &quot;button&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58430:58522" ph="[...]" />
-            <marker date="1492947709000" expanded="true" signature="58431:58521" ph="{&quot;type&quot;: &quot;account_link&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58586:58711" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58746:59456" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58758:58907" ph="{&quot;uri&quot;: 'https://graph.facebook.com/v2.6/me/messages'...}" />
-            <marker date="1492947709000" expanded="true" signature="58942:59450" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58990:59328" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59096:59217" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59223:59322" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59334:59446" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59458:59575" ph="//..." />
-            <marker date="1492947709000" expanded="true" signature="59616:59682" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59686:59783" ph="//..." />
+            <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+            <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+            <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+            <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -376,35 +347,10 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1492947709000" expanded="true" signature="57495:57548" ph="/*...*/" />
-            <marker date="1492947709000" expanded="true" signature="57551:57588" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57624:57807" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57693:57775" ph="{&quot;sender_action&quot;: &quot;typing_on&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57710:57739" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="57809:57847" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57884:58069" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57954:58037" ph="{&quot;sender_action&quot;: &quot;typing_off&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57971:58000" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58071:58138" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58180:58584" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58202:58550" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58219:58248" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58263:58546" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58283:58540" ph="{&quot;type&quot;: &quot;template&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58328:58532" ph="{&quot;template_type&quot;: &quot;button&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58430:58522" ph="[...]" />
-            <marker date="1492947709000" expanded="true" signature="58431:58521" ph="{&quot;type&quot;: &quot;account_link&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58586:58711" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58746:59456" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58758:58907" ph="{&quot;uri&quot;: 'https://graph.facebook.com/v2.6/me/messages'...}" />
-            <marker date="1492947709000" expanded="true" signature="58942:59450" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58990:59328" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59096:59217" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59223:59322" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59334:59446" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59458:59575" ph="//..." />
-            <marker date="1492947709000" expanded="true" signature="59616:59682" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59686:59783" ph="//..." />
+            <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+            <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+            <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+            <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -430,35 +376,10 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1492947709000" expanded="true" signature="57495:57548" ph="/*...*/" />
-            <marker date="1492947709000" expanded="true" signature="57551:57588" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57624:57807" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57693:57775" ph="{&quot;sender_action&quot;: &quot;typing_on&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57710:57739" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="57809:57847" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57884:58069" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57954:58037" ph="{&quot;sender_action&quot;: &quot;typing_off&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57971:58000" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58071:58138" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58180:58584" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58202:58550" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58219:58248" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58263:58546" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58283:58540" ph="{&quot;type&quot;: &quot;template&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58328:58532" ph="{&quot;template_type&quot;: &quot;button&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58430:58522" ph="[...]" />
-            <marker date="1492947709000" expanded="true" signature="58431:58521" ph="{&quot;type&quot;: &quot;account_link&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58586:58711" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58746:59456" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58758:58907" ph="{&quot;uri&quot;: 'https://graph.facebook.com/v2.6/me/messages'...}" />
-            <marker date="1492947709000" expanded="true" signature="58942:59450" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58990:59328" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59096:59217" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59223:59322" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59334:59446" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59458:59575" ph="//..." />
-            <marker date="1492947709000" expanded="true" signature="59616:59682" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59686:59783" ph="//..." />
+            <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+            <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+            <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+            <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -484,35 +405,10 @@
           <caret line="253" column="0" lean-forward="true" selection-start-line="253" selection-start-column="0" selection-end-line="253" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1492947709000" expanded="true" signature="57495:57548" ph="/*...*/" />
-            <marker date="1492947709000" expanded="true" signature="57551:57588" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57624:57807" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57693:57775" ph="{&quot;sender_action&quot;: &quot;typing_on&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57710:57739" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="57809:57847" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57884:58069" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57954:58037" ph="{&quot;sender_action&quot;: &quot;typing_off&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57971:58000" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58071:58138" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58180:58584" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58202:58550" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58219:58248" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58263:58546" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58283:58540" ph="{&quot;type&quot;: &quot;template&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58328:58532" ph="{&quot;template_type&quot;: &quot;button&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58430:58522" ph="[...]" />
-            <marker date="1492947709000" expanded="true" signature="58431:58521" ph="{&quot;type&quot;: &quot;account_link&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58586:58711" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58746:59456" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58758:58907" ph="{&quot;uri&quot;: 'https://graph.facebook.com/v2.6/me/messages'...}" />
-            <marker date="1492947709000" expanded="true" signature="58942:59450" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58990:59328" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59096:59217" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59223:59322" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59334:59446" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59458:59575" ph="//..." />
-            <marker date="1492947709000" expanded="true" signature="59616:59682" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59686:59783" ph="//..." />
+            <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+            <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+            <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+            <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -544,35 +440,10 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
-            <marker date="1492947709000" expanded="true" signature="57495:57548" ph="/*...*/" />
-            <marker date="1492947709000" expanded="true" signature="57551:57588" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57624:57807" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57693:57775" ph="{&quot;sender_action&quot;: &quot;typing_on&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57710:57739" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="57809:57847" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57884:58069" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57954:58037" ph="{&quot;sender_action&quot;: &quot;typing_off&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57971:58000" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58071:58138" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58180:58584" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58202:58550" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58219:58248" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58263:58546" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58283:58540" ph="{&quot;type&quot;: &quot;template&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58328:58532" ph="{&quot;template_type&quot;: &quot;button&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58430:58522" ph="[...]" />
-            <marker date="1492947709000" expanded="true" signature="58431:58521" ph="{&quot;type&quot;: &quot;account_link&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58586:58711" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58746:59456" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58758:58907" ph="{&quot;uri&quot;: 'https://graph.facebook.com/v2.6/me/messages'...}" />
-            <marker date="1492947709000" expanded="true" signature="58942:59450" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58990:59328" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59096:59217" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59223:59322" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59334:59446" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59458:59575" ph="//..." />
-            <marker date="1492947709000" expanded="true" signature="59616:59682" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59686:59783" ph="//..." />
+            <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+            <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+            <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+            <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -634,50 +505,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/config/default.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7020">
-          <caret line="468" column="18" lean-forward="false" selection-start-line="468" selection-start-column="18" selection-end-line="468" selection-end-column="18" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <marker date="1492947709000" expanded="true" signature="57495:57548" ph="/*...*/" />
-            <marker date="1492947709000" expanded="true" signature="57551:57588" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57624:57807" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57693:57775" ph="{&quot;sender_action&quot;: &quot;typing_on&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57710:57739" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="57809:57847" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="57884:58069" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="57954:58037" ph="{&quot;sender_action&quot;: &quot;typing_off&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="57971:58000" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58071:58138" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58180:58584" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58202:58550" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58219:58248" ph="{&quot;id&quot;: recipientId...}" />
-            <marker date="1492947709000" expanded="true" signature="58263:58546" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58283:58540" ph="{&quot;type&quot;: &quot;template&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58328:58532" ph="{&quot;template_type&quot;: &quot;button&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58430:58522" ph="[...]" />
-            <marker date="1492947709000" expanded="true" signature="58431:58521" ph="{&quot;type&quot;: &quot;account_link&quot;...}" />
-            <marker date="1492947709000" expanded="true" signature="58586:58711" ph="/*...*/" />
-            <marker date="1492947709000" expanded="false" signature="58746:59456" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58758:58907" ph="{&quot;uri&quot;: 'https://graph.facebook.com/v2.6/me/messages'...}" />
-            <marker date="1492947709000" expanded="true" signature="58942:59450" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="58990:59328" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59096:59217" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59223:59322" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59334:59446" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59458:59575" ph="//..." />
-            <marker date="1492947709000" expanded="true" signature="59616:59682" ph="{...}" />
-            <marker date="1492947709000" expanded="true" signature="59686:59783" ph="//..." />
-          </folding>
+        <state relative-caret-position="45">
+          <caret line="3" column="35" lean-forward="true" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/default.json">
+    <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="55" lean-forward="true" selection-start-line="4" selection-start-column="55" selection-end-line="4" selection-end-column="55" />
-          <folding />
+        <state relative-caret-position="1850">
+          <caret line="454" column="0" lean-forward="true" selection-start-line="454" selection-start-column="0" selection-end-line="454" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!block;n#sendTypingOn#0" expanded="false" />
+            <element signature="n#!!block;n#sendTypingOff#0" expanded="false" />
+            <element signature="n#!!block;n#sendAccountLinking#0" expanded="false" />
+            <element signature="n#!!block;n#callSendAPI#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
