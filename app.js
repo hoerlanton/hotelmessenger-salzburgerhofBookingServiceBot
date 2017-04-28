@@ -377,7 +377,6 @@ function createBookingLink(arrivalDateSplitted, departureDateSplitted, numberOfP
     bookingLink = "https://hotel-salzburgerhof.viomassl.com/de/zimmer-angebote/anfrage/vsc.php?calendar_date_from=" + arrivalDateForLink + "&calendar_date_to=" + departureDateForLink + "&persons_adults=" + numberOfPersons + "&submitbook=Suchen&step=roomtypes&page=2.page1&PHPSESSID=fif62okvks52atf111b8a237v4";
 }
 
-
 /*
  * Message Event
  *
@@ -402,13 +401,11 @@ function receivedMessage(event) {
     console.log("Received message for user %d and page %d at %d with message:",
         senderID, recipientID, timeOfMessage);
     console.log(JSON.stringify(message));
-
+console.log(quickReplyPayload);
     var isEcho = message.is_echo;
     var messageId = message.mid;
     var appId = message.app_id;
     var metadata = message.metadata;
-
-    console.log(JSON.stringify(metadata));
 
     // You may get a text or attachment but not both
     var messageText = message.text;
@@ -625,6 +622,20 @@ function receivedMessage(event) {
             case 'account linking':
                 sendAccountLinking(senderID);
                 break;
+
+            case 'Zimmer Anfrage':
+                sendPersonRequest(senderID);
+                break;
+
+            case 'Persönliche Beratung':
+                sendPersonalFeedback(senderID);
+                break;
+
+            default:
+                if (typeof quickReplyPayload === "undefined") {
+                    sendMenu(senderID);
+                }
+
         }
     }
 }
@@ -777,7 +788,7 @@ function sendWelcomeMessage(recipientId) {
                 type: "template",
                 payload: {
                     template_type: "button",
-                    text: "Hallo & Willkommen beim Chatbot vom Hotel Salzburger Hof Leogang - #homeofsports. Wie darf ich Ihnen helfen?",
+                    text: "Hallo & Willkommen beim Chatbot vom Hotel Salzburger Hof Leogang - #homeofsports. Wollen Sie eine Zimmer Anfrage erstellen, oder persönlich beraten werden? Schreiben Sie oder wählen Sie aus.",
                     buttons:[ {
                         type: "postback",
                         title: "Zimmer Anfrage",
@@ -890,7 +901,7 @@ function sendMenu(recipientId) {
         type: "template",
         payload: {
           template_type: "button",
-          text: "Menü Auswahl",
+          text: "Menü - Wollen Sie eine Zimmer Anfrage erstellen, oder persönlich beraten werden? Schreiben Sie oder wählen Sie aus.",
           buttons:[ {
             type: "postback",
             title: "Zimmer Anfrage",
