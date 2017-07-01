@@ -10,26 +10,38 @@
 /* jshint node: true, devel: true */
 'use strict';
  
-const 
+const
   bodyParser = require('body-parser'),
   config = require('config'),
   crypto = require('crypto'),
   express = require('express'),
-
   https = require('https'),  
   request = require('request'),
   http = require('http'),
-  parseString = require('xml2js').parseString;
+  parseString = require('xml2js').parseString,
+  routes = require('./routes/index'),
+  app = express();
 
-//var localStorage = require('node-localstorage');
+var mongojs = require('mongojs');
+var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['gaeste']);
 
-
-var app = express();
-app.set('port', process.env.PORT || 8000);
-app.set('view engine', 'ejs');
+//Bodyparser middleware
+app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
+
+//Setting port
+app.set('port', process.env.PORT || 8000);
+
+//Setting view engine
+app.set('view engine', 'ejs');
+
+//Set Public folder as static folder
 app.use(express.static('public'));
 
+//Use ./routes/index.js as routes root /
+app.use('/', routes);
+
+//Global variables
 var resultTransferData = [];
 var doppelzimmerClassicSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420424\"/>";
 var einzelzimmerSommerstein = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420596\"/>";
@@ -55,7 +67,6 @@ var priceAllNightsDoppelzimmerDeluxeHolzleo = 0;
 var priceAllNightsDoppelzimmerSuperiorSteinleo = 0;
 var priceAllNightsEinzelzimmerSommerstein = 0;
 var priceAllNightsDoppelzimmerClassicSteinleo = 0;
-var arrivalDateDayCalculationsDisplay = 0;
 var january = 31;
 var february = 28;
 var march = 31;
@@ -84,6 +95,27 @@ var hotelIsClosed = false;
 var bookingLink = "";
 var departureDateForLink = "";
 var arrivalDateForLink = "";
+var dateIsInThePast = false;
+var autoAnswerIsOn = true;
+app.locals.titleSummary = "";
+app.locals.subTitleSummary = "";
+app.locals.titleSummary2 = "";
+app.locals.subTitleSummary2 = "";
+app.locals.totalPrice = "";
+app.locals.titleSummaryDoppelzimmerSuperiorSteinleo = "";
+app.locals.subTitleSummaryDoppelzimmerSuperiorSteinleo = "";
+app.locals.titleSummaryDoppelzimmerClassicSteinleo = "";
+app.locals.subTitleSummaryDoppelzimmerClassicSteinleo = "";
+app.locals.totalPrice = 0;
+app.locals.profileInfo = "";
+app.locals.profilePic = "";
+var senderIDTransfer = [];
+exports.profileInfo = [];
+exports.profilePic = [];
+var a = {};
+var b = "";
+var c = "";
+
 
 /*
  * Be sure to setup your config values before running this code. You can 
@@ -118,7 +150,7 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 }
 
 /*
- * Use your own validation token. Check that the token used in the Webhook 
+ * Use your own validation token. Check that the token used in the Webhook
  * setup is the same token used here.
  *
  */
@@ -129,15 +161,14 @@ app.get('/webhook', function(req, res) {
     res.status(200).send(req.query['hub.challenge']);
   } else {
     console.error("Failed validation. Make sure the validation tokens match.");
-    res.sendStatus(403);          
-  }  
+    res.sendStatus(403);
+  }
 });
-
 
 /*
  * All callbacks for Messenger are POST-ed. They will be sent to the same
  * webhook. Be sure to subscribe your app to your page to receive callbacks
- * for your page. 
+ * for your page.
  * https://developers.facebook.com/docs/messenger-platform/product-overview/setup#subscribe_app
  *
  */
@@ -174,22 +205,24 @@ app.post('/webhook', function (req, res) {
 
     // Assume all went well.
     //
-    // You must send back a 200, within 20 seconds, to let us know you've 
+    // You must send back a 200, within 20 seconds, to let us know you've
     // successfully received the callback. Otherwise, the request will time out.
     res.sendStatus(200);
   }
 });
 
+
+
 /*
  * This path is used for account linking. The account linking call-to-action
- * (sendAccountLinking) is pointed to this URL. 
- * 
+ * (sendAccountLinking) is pointed to this URL.
+ *
  */
 app.get('/authorize', function(req, res) {
   var accountLinkingToken = req.query.account_linking_token;
   var redirectURI = req.query.redirect_uri;
 
-  // Authorization Code should be generated per user by the developer. This will 
+  // Authorization Code should be generated per user by the developer. This will
   // be passed to the Account Linking callback.
   var authCode = "1234567890";
 
@@ -202,6 +235,7 @@ app.get('/authorize', function(req, res) {
     redirectURISuccess: redirectURISuccess
   });
 });
+
 
 //localStorage Setup
 /*
@@ -234,18 +268,13 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
         console.log(res.statusCode);
         res.on("data", function (data) {
             buffer += data;
+            console.log(buffer);
         });
         res.on("end", function () {
             parseString(buffer, function (err, result) {
+                console.log(result);
                 (JSON.stringify(result));
                 resultTransferData.push(result);
-                /*
-                console.log(
-                    "Preise einzelzimmerSommerstein: " + parseInt(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[i].Base[0].$.AmountAfterTax) +
-                    "Preise doppelzimmerSuperiorSteinleo:: " + parseInt(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[1].RoomRates[0].RoomRate[1].Rates[0].Rate[i].Base[0].$.AmountAfterTax) +
-                    "Preise doppelzimmerClassicSteinleo: " + parseInt(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[2].RoomRates[0].RoomRate[3].Rates[0].Rate[i].Base[0].$.AmountAfterTax) +
-                    "Preise doppelzimmerDeluxeHolzleo " + parseInt(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[2].RoomRates[0].RoomRate[1].Rates[0].Rate[i].Base[0].$.AmountAfterTax));
-*/
             });
         });
     });
@@ -254,7 +283,8 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
     });
     req.write(body);
     req.end();
-};
+}
+
 
 
 /*
@@ -267,11 +297,11 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
  */
 function verifyRequestSignature(req, res, buf) {
   var signature = req.headers["x-hub-signature"];
-
+    console.log(signature);
   if (!signature) {
     // For testing, let's log an error. In production, you should throw an 
     // error.
-    console.error("Couldn't validate the signature.");
+    console.error("Couldn't validate the signature. Line 304 app.js // Callback from Facebook. If Server URL is not the same as webhook URL on facebook");
   } else {
     var elements = signature.split('=');
     var method = elements[0];
@@ -295,26 +325,140 @@ function verifyRequestSignature(req, res, buf) {
  * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
  *
  */
+
+//Recieve authentication from wlanlandingpage when user click Send to messenger - Send data to mongoDB database.
 function receivedAuthentication(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfAuth = event.timestamp;
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfAuth = event.timestamp;
 
-  // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
-  // The developer can set this to an arbitrary value to associate the 
-  // authentication callback with the 'Send to Messenger' click event. This is
-  // a way to do account linking when the user clicks the 'Send to Messenger' 
-  // plugin.
-  var passThroughParam = event.optin.ref;
+    // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
+    // The developer can set this to an arbitrary value to associate the
+    // authentication callback with the 'Send to Messenger' click event. This is
+    // a way to do account linking when the user clicks the 'Send to Messenger'
+    // plugin.
+    var passThroughParam = event.optin.ref;
 
-  console.log("Received authentication for user %d and page %d with pass " +
-    "through param '%s' at %d", senderID, recipientID, passThroughParam, 
-    timeOfAuth);
+    console.log("Received authentication for user %d and page %d with pass " +
+        "through param '%s' at %d", senderID, recipientID, passThroughParam,
+        timeOfAuth);
 
-  // When an authentication is received, we'll send a message back to the sender
-  // to let them know it was successful.
-  sendTextMessage(senderID, "Authentication successful");
+    // When an authentication is received, we'll send a message back to the sender
+    // to let them know it was successful.
+    sendTextMessage(senderID, "Sie haben sich erfolgreich angemeldet. Sie erhalten nun Neuigkeiten via Facebook Messenger von Ihrem Salzburger Hof Leogang team. Viel Spaß!");
+    //Function initialised on line 651
+    //exportSenderID(senderID);
+
+
+    //https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
+    var buffer = "";
+    var optionsget = {
+        host: 'graph.facebook.com',
+        port: 443,
+        path: '/v2.6/' + senderID + '?fields=first_name,last_name,profile_pic,is_payment_enabled,locale,timezone,gender&access_token=EAAUv40NW3zMBAAdTfzQAegAv1KNh6Nxcmerwtn7dpjzc2UHspQbs4tOGpVrqcZC2rdgSoDSZANEw7Qbg7CVH60GUAigsbaVO83iBOGY2KYoOLEpe1mB8GzECPz2cLZBNTL0lqKMcPps2DD5q21hXGXPpnu149qXUoh1ehHfxAZDZD',
+        method: 'GET'
+    };
+
+    console.info('Options prepared:');
+    console.info(optionsget);
+    console.info('Do the GET call');
+
+    // do the GET request to retrieve data from the user's graph API
+    var reqGet = https.request(optionsget, function (res) {
+        console.log("statusCode: ", res.statusCode);
+        // uncomment it for header details
+        console.log("headers: ", res.headers);
+
+        res.on('data', function (d) {
+            console.info('GET result:\n');
+            process.stdout.write(d);
+            buffer += d;
+            console.log(buffer);
+            //parse buffer to JSON object
+            a = JSON.parse(buffer);
+            console.log("Data recieving from Send to messenger button" + a);
+            console.log(a.first_name);
+            //Additionally senderID is added to the Javascript object, which is saved to the MongoDB
+            a["senderId"] = senderID;
+            //User is a "angemeldeter Gast" and is able to recieve messages
+            a["signed_up"] = true;
+            a["signed_up_at"] = new Date();
+            //Parse JSON object to JSON string
+            b = JSON.stringify(a);
+        });
+    });
+            // Build the post string from an object
+            reqGet.end();
+            reqGet.on('error', function (e) {
+                console.error(e);
+
+    });
+    setTimeout(postNewUserToDB, 30000);
 }
+
+function postNewUserToDB() {
+    console.log(b);
+        // An object of options to indicate where to post to
+        var post_options = {
+            //Change URL to hotelmessengertagbag.herokuapp.com if deploying
+            host: 'hotelmessengertagbag.herokuapp.com',
+            port: '80',
+            path: '/guests',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        // Set up the request
+        var post_req = http.request(post_options, function (res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                console.log('Response: ' + chunk);
+            });
+        });
+
+        // post the data
+        post_req.write(b);
+        post_req.end();
+}
+
+function getAnalytics(){
+    var buffer = "";
+    var a = "";
+    var optionsget = {
+        host: 'graph.facebook.com',
+        port: 443,
+        path: '/v2.8/me/insights/page_messages_active_threads_unique&access_token=EAAUv40NW3zMBAIpTPoI73Q8mvPtZAZBQEi3usOTD6pZAZCSNZApFVictpz74mhIQOOyZAHM2UrNKbc8hk8NhGaSnEJYrQCKwMd7ZAIkoWZCsimnFUAamsQiNOP6dC2PhLvOsOPatn0fWvxXpCPltvU8INNj3vfBBjNG7S1VlPFTDwgZDZD',
+        method: 'GET'
+    };
+
+    console.info('Options prepared:');
+    console.info(optionsget);
+    console.info('Do the GET call');
+
+// do the GET request
+    var reqGet = https.request(optionsget, function(res) {
+        console.log("statusCode: ", res.statusCode);
+        // uncomment it for header details
+        //  console.log("headers: ", res.headers);
+
+        res.on('data', function(d) {
+            console.info('GET result:\n');
+            process.stdout.write(d);
+            buffer += d;
+            console.log(buffer);
+            a = JSON.parse(buffer);
+            console.log(a);
+        });
+    });
+
+    reqGet.end();
+    reqGet.on('error', function(e) {
+        console.error(e);
+    });
+}
+exports.getAnalytics = getAnalytics;
 
 //Stay range is the difference between arrivalday and departureday
 function calculateStayRange(arrivalDate, departureDate) {
@@ -356,16 +500,10 @@ function calculatePrice(stayRange, numberOfRooms) {
         }
     console.log(" AFTER NUMBER OF ROOMS MULTIPLICATION: DoppelzimmerDeluxeHolzleo: " + priceAllNightsDoppelzimmerDeluxeHolzleo + " | DoppelzimmerSuperiorSteinleo: " + priceAllNightsDoppelzimmerSuperiorSteinleo + " | EinzelzimmerSommerstein: " + priceAllNightsEinzelzimmerSommerstein + " | DoppelzimmerClassicSteinleo: " + priceAllNightsDoppelzimmerClassicSteinleo);
 
-}
 
-function checkIfHotelIsClosed(senderID) {
-    if (parseInt(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax) > 1000 || resultTransferData === "undefined") {
-        console.log("Hotel is closed!");
-        setTimeout(sendErrorMessageNoRoom, 1500, senderID);
-        hotelIsClosed = true;
-    } else {
-        hotelIsClosed = false;
-    }
+    exports.priceAllNightsDoppelzimmerSuperiorSteinleo = priceAllNightsDoppelzimmerSuperiorSteinleo;
+    exports.priceAllNightsDoppelzimmerClassicSteinleo = priceAllNightsDoppelzimmerClassicSteinleo;
+    exports.priceAllNightsDoppelzimmerDeluxeHolzleo = priceAllNightsDoppelzimmerDeluxeHolzleo;
 }
 
 function createBookingLink(arrivalDateSplitted, departureDateSplitted, numberOfPersons){
@@ -376,6 +514,182 @@ function createBookingLink(arrivalDateSplitted, departureDateSplitted, numberOfP
     console.log(departureDateForLink);
     bookingLink = "https://hotel-salzburgerhof.viomassl.com/de/zimmer-angebote/anfrage/vsc.php?calendar_date_from=" + arrivalDateForLink + "&calendar_date_to=" + departureDateForLink + "&persons_adults=" + numberOfPersons + "&submitbook=Suchen&step=roomtypes&page=2.page1&PHPSESSID=fif62okvks52atf111b8a237v4";
 }
+
+function resetData(){
+    count++;
+    if (count >= 1) {
+        stayRange = 0;
+        numberOfPersonsSplitted[0] = 0;
+        numberOfRoomsSplitted[0] = 0;
+        numberOfRooms = 0;
+        numberOfPersons = 0;
+        arrivalDate = 0;
+        departureDate = 0;
+        resultTransferData = [];
+        monthDays = 0;
+        daysInFirstMonth = 0;
+        daysInSecondMonth = 0;
+        secondMonth = 0;
+        daysInSecondMonthCount = 0;
+        daysInFirstMonthCount = 0;
+        daysInAllTwoMonths = [];
+        daysInFirstMonthDisplay = [];
+        daysInSecondMonthDisplay = [];
+        arrivalFirstDateMonthDisplay = [];
+        arrivalSecondDateMonthDisplay = [];
+        arrivalAllTwoMonthsDisplay = [];
+        priceAllNightsDoppelzimmerDeluxeHolzleo = 0;
+        priceAllNightsDoppelzimmerSuperiorSteinleo = 0;
+        priceAllNightsEinzelzimmerSommerstein = 0;
+        priceAllNightsDoppelzimmerClassicSteinleo = 0;
+        arrivalDateForLink = "";
+        departureDateForLink = "";
+        bookingLink = "";
+        app.locals.titleSummary = "";
+        app.locals.subTitleSummary = "";
+        app.locals.totalPrice = 0;
+    }
+}
+
+function assigningNumberOfPersonsVar(quickReplyPayload){
+    numberOfPersonsSplitted = quickReplyPayload.split(" ");
+    numberOfPersons = parseInt(numberOfPersonsSplitted[0]);
+    exports.numberOfPersons = numberOfPersons;
+}
+
+function assigningNumberOfRoomsVar(quickReplyPayload) {
+    numberOfRoomsSplitted = quickReplyPayload.split(" ");
+    console.log("Number of rooms splitted: " + numberOfRoomsSplitted);
+    numberOfRooms = parseInt(numberOfRoomsSplitted[0]);
+    console.log("Number of rooms INT: " + numberOfRooms);
+    exports.numberOfRooms = numberOfRooms;
+}
+
+function assigningNumberOfMonthsVar(quickReplyPayload) {
+    arrivalDateMonth = quickReplyPayload;
+    arrivalDateMonthCalculations = parseInt(arrivalDateMonth);
+}
+
+function assigningArrivalDateVar(quickReplyPayload) {
+    arrivalDayDateSplitted = quickReplyPayload.split(" ");
+    arrivalDateDay = arrivalDayDateSplitted[1];
+    arrivalDateDayCalculations = parseInt(arrivalDayDateSplitted[1]);
+    arrivalDate = "2017-" + arrivalDateMonth + "-" + arrivalDateDay;
+    exports.arrivalDate = arrivalDate;
+}
+
+function createDepartureDateSuggestion(){
+    console.log(arrivalDateMonthCalculations);
+    if(arrivalDateMonthCalculations === 1) {
+        monthDays = january;
+    } else if (arrivalDateMonthCalculations === 2) {
+        monthDays = february;
+    } else if (arrivalDateMonthCalculations === 3) {
+        monthDays = march;
+    } else if (arrivalDateMonthCalculations === 4) {
+        monthDays = april;
+    } else if (arrivalDateMonthCalculations === 5) {
+        monthDays = may;
+    } else if (arrivalDateMonthCalculations === 6) {
+        monthDays = june;
+    } else if (arrivalDateMonthCalculations === 7) {
+        monthDays = july;
+    } else if (arrivalDateMonthCalculations === 8) {
+        monthDays = august;
+    } else if (arrivalDateMonthCalculations === 9) {
+        monthDays = september;
+    } else if (arrivalDateMonthCalculations === 10) {
+        monthDays = oktober;
+    } else if (arrivalDateMonthCalculations === 11) {
+        monthDays = november;
+    } else if (arrivalDateMonthCalculations === 12) {
+        monthDays = december;
+    }
+    daysInFirstMonth = monthDays - arrivalDateDayCalculations;
+    console.log(daysInFirstMonth);
+    console.log(arrivalDateMonthCalculations);
+    if (daysInFirstMonth > 12) {
+        for (daysInFirstMonthCount = (arrivalDateDayCalculations + 1); daysInFirstMonthCount <= (arrivalDateDayCalculations + 12); daysInFirstMonthCount++) {
+            console.log(daysInFirstMonthCount);
+            daysInFirstMonthDisplay.push(daysInFirstMonthCount);
+            arrivalFirstDateMonthDisplay.push(arrivalDateMonthCalculations);
+            daysInFirstMonth = 12;
+        }
+    } else {
+        for (daysInFirstMonthCount = (arrivalDateDayCalculations + 1); daysInFirstMonthCount <= monthDays; daysInFirstMonthCount++) {
+            console.log(daysInFirstMonthCount);
+            daysInFirstMonthDisplay.push(daysInFirstMonthCount);
+            arrivalFirstDateMonthDisplay.push(arrivalDateMonthCalculations);
+        }
+    }
+    console.log(daysInFirstMonthDisplay);
+    console.log(arrivalFirstDateMonthDisplay);
+    console.log(daysInFirstMonth);
+    daysInSecondMonth = 12 - daysInFirstMonth;
+    console.log(daysInSecondMonth);
+    secondMonth = arrivalDateMonthCalculations + 1;
+    console.log(secondMonth);
+    for (daysInSecondMonthCount = 1; daysInSecondMonthCount < daysInSecondMonth; daysInSecondMonthCount++) {
+        console.log(daysInSecondMonthCount);
+        daysInSecondMonthDisplay.push(daysInSecondMonthCount);
+        arrivalSecondDateMonthDisplay.push(secondMonth);
+    }
+    console.log(daysInSecondMonthDisplay);
+    console.log(arrivalSecondDateMonthDisplay);
+    daysInAllTwoMonths = daysInFirstMonthDisplay.concat(daysInSecondMonthDisplay);
+    arrivalAllTwoMonthsDisplay = arrivalFirstDateMonthDisplay.concat(arrivalSecondDateMonthDisplay);
+    console.log(daysInAllTwoMonths);
+    console.log(arrivalDateDayCalculations);
+    console.log(arrivalDateMonthCalculations);
+    console.log(arrivalDateMonth);
+    console.log(arrivalDate);
+}
+
+function assignDepartureDateVar(quickReplyPayload){
+    departureDate = quickReplyPayload;
+    console.log("Departure Date: " + departureDate);
+    exports.departureDate = departureDate;
+}
+
+function checkIfDateIsInPast(senderID){
+    var d = new Date();
+    var f = JSON.stringify(d);
+    var i = f.match(/.{1,11}/g);
+    var g = i[0];
+    while(g.charAt(0) === '"')
+    {
+        g = g.substr(1);
+    }
+    var j = g.split("-");
+    var h = arrivalDate.split("-");
+    if (h[0] < j[0] || h[1] <= j[1] && h[2] < j[2] ) {
+        setTimeout(sendErrorMessageNoRoom, 1500, senderID);
+        dateIsInThePast = true;
+    } else {
+        dateIsInThePast = false;
+    }
+}
+
+//If hotel is closed or if there are no availabilities the rest of the receivedMessage is not executed
+function checkIfHotelIsClosed(senderID) {
+    console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax);
+    if (parseInt(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax) > 1000 || (parseInt(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax) === 999.00 || resultTransferData === "undefined")) {
+        console.log("Hotel is closed or fully booked!");
+        setTimeout(sendErrorMessageNoRoom, 1500, senderID);
+        hotelIsClosed = true;
+    } else {
+        hotelIsClosed = false;
+    }
+}
+//Export senderID (Exported to index.js / exportSenderID function used on lin 750 & 335
+function exportSenderID(senderID){
+    console.log("Exporting senderID " + senderID);
+    senderIDTransfer.push(senderID);
+    console.log(senderIDTransfer);
+    exports.senderIDTransfer = senderIDTransfer;
+    exports.senderID = senderID;
+}
+
 
 /*
  * Message Event
@@ -401,7 +715,7 @@ function receivedMessage(event) {
     console.log("Received message for user %d and page %d at %d with message:",
         senderID, recipientID, timeOfMessage);
     console.log(JSON.stringify(message));
-console.log(quickReplyPayload);
+    console.log(quickReplyPayload);
     var isEcho = message.is_echo;
     var messageId = message.mid;
     var appId = message.app_id;
@@ -422,61 +736,26 @@ console.log(quickReplyPayload);
         var quickReplyPayload = quickReply.payload;
         console.log("Quick reply for message %s with payload %s",
             messageId, quickReplyPayload);
-            //First question is how many persons are joining the requested stay.
-            if (quickReplyPayload === "1 person" || quickReplyPayload === "2 persons" || quickReplyPayload === "3 persons" || quickReplyPayload === "4 persons" || quickReplyPayload === "5 persons") {
-                //Every request is counted.
-                count++;
-                //If request is bigger than 2, the basic arguments for the request are reset.
-                if (count >= 1) {
-                    stayRange = 0;
-                    numberOfPersonsSplitted[0] = 0;
-                    numberOfRoomsSplitted[0] = 0;
-                    numberOfRooms = 0;
-                    numberOfPersons = 0;
-                    arrivalDate = 0;
-                    departureDate = 0;
-                    resultTransferData = [];
-                    monthDays = 0;
-                    daysInFirstMonth = 0;
-                    daysInSecondMonth = 0;
-                    secondMonth = 0;
-                    daysInSecondMonthCount = 0;
-                    daysInFirstMonthCount = 0;
-                    daysInAllTwoMonths = [];
-                    daysInFirstMonthDisplay = [];
-                    daysInSecondMonthDisplay = [];
-                    arrivalFirstDateMonthDisplay = [];
-                    arrivalSecondDateMonthDisplay = [];
-                    arrivalAllTwoMonthsDisplay = [];
-                    priceAllNightsDoppelzimmerDeluxeHolzleo = 0;
-                    priceAllNightsDoppelzimmerSuperiorSteinleo = 0;
-                    priceAllNightsEinzelzimmerSommerstein = 0;
-                    priceAllNightsDoppelzimmerClassicSteinleo = 0;
-                    arrivalDateForLink = "";
-                    departureDateForLink = "";
-                    bookingLink = "";
-
-                }
-                //indicated value (how many persons are joining) from the user is added to the numberOfPersons variable
-            numberOfPersonsSplitted = quickReplyPayload.split(" ");
-            numberOfPersons = parseInt(numberOfPersonsSplitted[0]);
+        //First question is how many persons are joining the requested stay.
+        if (quickReplyPayload === "1 person" || quickReplyPayload === "2 persons" || quickReplyPayload === "3 persons" || quickReplyPayload === "4 persons" || quickReplyPayload === "5 persons") {
+            //Every request is counted.
+            //If request is bigger than 2, the basic arguments for the request are reset.
+            resetData();
+            //indicated value (how many persons are joining) from the user is added to the numberOfPersons variable
+            assigningNumberOfPersonsVar(quickReplyPayload);
             //Number of rooms is the next question
             sendRoomRequest(senderID);
         } else if (quickReplyPayload === "1 room" || quickReplyPayload === "2 rooms" || quickReplyPayload === "3 rooms" || quickReplyPayload === "4 rooms" || quickReplyPayload === "5 rooms") {
-            numberOfRoomsSplitted = quickReplyPayload.split(" ");
-            console.log("Number of rooms splitted: " + numberOfRoomsSplitted);
             //indicated value (how many rooms) from the user is added to the numberOfRooms variable
-            numberOfRooms = parseInt(numberOfRoomsSplitted[0]);
-            console.log("Number of rooms INT: " + numberOfRooms);
             //Arrival month is next question
+            assigningNumberOfRoomsVar(quickReplyPayload);
             sendArrivalDateMonth(senderID);
         } else if (quickReplyPayload === "mehr1") {
             //all monthbubbles are not fitting in one question
             sendArrivalDateMonth2(senderID);
         } else if (quickReplyPayload === "01" || quickReplyPayload === "02" || quickReplyPayload === "03" || quickReplyPayload === "04" || quickReplyPayload === "05" || quickReplyPayload === "06" || quickReplyPayload === "07" || quickReplyPayload === "08" || quickReplyPayload === "09" || quickReplyPayload === "10" || quickReplyPayload === "11" || quickReplyPayload === "12") {
             //indicated value (which months is the arrival) from the user is added to the arrivalDateMonth variable
-            arrivalDateMonth = quickReplyPayload;
-            arrivalDateMonthCalculations = parseInt(arrivalDateMonth);
+            assigningNumberOfMonthsVar(quickReplyPayload);
             //Next question is which day the user arrives
             sendArrivalDay(senderID);
         } else if (quickReplyPayload === "mehr2") {
@@ -487,105 +766,25 @@ console.log(quickReplyPayload);
             sendArrivalDay3(senderID);
         } else if (quickReplyPayload === "d 01" || quickReplyPayload === "d 02" || quickReplyPayload === "d 03" || quickReplyPayload === "d 04" || quickReplyPayload === "d 05" || quickReplyPayload === "d 06" || quickReplyPayload === "d 07" || quickReplyPayload === "d 08" || quickReplyPayload === "d 09" || quickReplyPayload === "d 10" || quickReplyPayload === "d 11" || quickReplyPayload === "d 12" || quickReplyPayload === "d 13" || quickReplyPayload === "d 14" || quickReplyPayload === "d 15" || quickReplyPayload === "d 16" || quickReplyPayload === "d 17" || quickReplyPayload === "d 18" || quickReplyPayload === "d 19" || quickReplyPayload === "d 20" || quickReplyPayload === "d 21" || quickReplyPayload === "d 22" || quickReplyPayload === "d 23" || quickReplyPayload === "d 24" || quickReplyPayload === "d 25" || quickReplyPayload === "d 26" || quickReplyPayload === "d 27" || quickReplyPayload === "d 28" || quickReplyPayload === "d 29" || quickReplyPayload === "d 30" || quickReplyPayload === "d 31") {
             //arrival Day Date is splitted, day is saved in arrivalDateDay variable. Int is saved in arrivalDateDayCalculations varible, whcih is used for stay-range calculations. Arrival date is a string.
-            arrivalDayDateSplitted = quickReplyPayload.split(" ");
-            arrivalDateDay = arrivalDayDateSplitted[1];
-            arrivalDateDayCalculations = parseInt(arrivalDayDateSplitted[1]);
-            arrivalDate = "2017-" + arrivalDateMonth + "-" + arrivalDateDay;
-            //departure date is suggested and sent to the user
-
-                 console.log(arrivalDateMonthCalculations);
-                 if(arrivalDateMonthCalculations === 1) {
-                 monthDays = january;
-                 } else if (arrivalDateMonthCalculations === 2) {
-                 monthDays = february;
-                 } else if (arrivalDateMonthCalculations === 3) {
-                 monthDays = march;
-                 } else if (arrivalDateMonthCalculations === 4) {
-                 monthDays = april;
-                 } else if (arrivalDateMonthCalculations === 5) {
-                 monthDays = may;
-                 } else if (arrivalDateMonthCalculations === 6) {
-                 monthDays = june;
-                 } else if (arrivalDateMonthCalculations === 7) {
-                 monthDays = july;
-                 } else if (arrivalDateMonthCalculations === 8) {
-                 monthDays = august;
-                 } else if (arrivalDateMonthCalculations === 9) {
-                 monthDays = september;
-                 } else if (arrivalDateMonthCalculations === 10) {
-                 monthDays = oktober;
-                 } else if (arrivalDateMonthCalculations === 11) {
-                 monthDays = november;
-                 } else if (arrivalDateMonthCalculations === 12) {
-                 monthDays = december;
-                 }
-                 daysInFirstMonth = monthDays - arrivalDateDayCalculations;
-                 console.log(daysInFirstMonth);
-                 console.log(arrivalDateMonthCalculations);
-                 if (daysInFirstMonth > 12) {
-                     for (daysInFirstMonthCount = (arrivalDateDayCalculations + 1); daysInFirstMonthCount <= (arrivalDateDayCalculations + 12); daysInFirstMonthCount++) {
-                         console.log(daysInFirstMonthCount);
-                         daysInFirstMonthDisplay.push(daysInFirstMonthCount);
-                         arrivalFirstDateMonthDisplay.push(arrivalDateMonthCalculations);
-                         daysInFirstMonth = 12;
-                    }
-                 } else {
-                     for (daysInFirstMonthCount = (arrivalDateDayCalculations + 1); daysInFirstMonthCount <= monthDays; daysInFirstMonthCount++) {
-                         console.log(daysInFirstMonthCount);
-                         daysInFirstMonthDisplay.push(daysInFirstMonthCount);
-                         arrivalFirstDateMonthDisplay.push(arrivalDateMonthCalculations);
-                     }
-                 }
-                 console.log(daysInFirstMonthDisplay);
-                 console.log(arrivalFirstDateMonthDisplay);
-                 console.log(daysInFirstMonth);
-                 daysInSecondMonth = 12 - daysInFirstMonth;
-                 console.log(daysInSecondMonth);
-                 secondMonth = arrivalDateMonthCalculations + 1;
-                 console.log(secondMonth);
-                 for (daysInSecondMonthCount = 1; daysInSecondMonthCount < daysInSecondMonth; daysInSecondMonthCount++) {
-                 console.log(daysInSecondMonthCount);
-                 daysInSecondMonthDisplay.push(daysInSecondMonthCount);
-                 arrivalSecondDateMonthDisplay.push(secondMonth);
-                 }
-                 console.log(daysInSecondMonthDisplay);
-                 console.log(arrivalSecondDateMonthDisplay);
-                 daysInAllTwoMonths = daysInFirstMonthDisplay.concat(daysInSecondMonthDisplay);
-                 arrivalAllTwoMonthsDisplay = arrivalFirstDateMonthDisplay.concat(arrivalSecondDateMonthDisplay);
-                 console.log(daysInAllTwoMonths);
-                 console.log(arrivalDateDayCalculations);
-                 console.log(arrivalDateMonthCalculations);
-                 console.log(arrivalDateMonth);
-                 console.log(arrivalDate);
-
-                 sendDepartureDateSuggestion(senderID);
-                 } else if (quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[0] + "-" + daysInAllTwoMonths[0] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[1] + "-" + daysInAllTwoMonths[1] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[2] + "-" + daysInAllTwoMonths[2] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[3] + "-" + daysInAllTwoMonths[3] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[4] + "-" + daysInAllTwoMonths[4] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[5] + "-" + daysInAllTwoMonths[5] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[6] + "-" + daysInAllTwoMonths[6] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[7] + "-" + daysInAllTwoMonths[7] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[8] + "-" + daysInAllTwoMonths[8] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[9] + "-" + daysInAllTwoMonths[9] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[10] + "-" + daysInAllTwoMonths[10]) {
-                 //Status update feedback is sent, so that the user knows that the offer is created
-                 sendStatusFeedbackRequest(senderID);
-                 //departureDate is assigned
-                 departureDate = quickReplyPayload;
-                 console.log("Departure Date: " + departureDate);
-                 //Range of stay is calculated
-
-                 calculateStayRange(arrivalDate, departureDate);
-                 //Check if date is in the past - if so error message is send
-                    var d = new Date();
-                    var f = JSON.stringify(d);
-                    var i = f.match(/.{1,11}/g);
-                    var g = i[0];
-                    while(g.charAt(0) === '"')
-                    {
-                        g = g.substr(1);
-                    }
-                    var j = g.split("-");
-                    var h = arrivalDate.split("-");
-                    if (h[0] < j[0] || h[1] <= j[1] && h[2] < j[2] ) {
-                        setTimeout(sendErrorMessageNoRoom, 1500, senderID);
-                        return;
-                    }
-            //XML post request to cultuzz channel manager is executed
-            sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departureDate, doppelzimmerClassicSteinleo, einzelzimmerSommerstein, doppelzimmerDeluxeHolzleo, doppelzimmerSuperiorSteinleo);
-            //If hotel is closed, send error message, else create suited offer
+            assigningArrivalDateVar(quickReplyPayload);
+            //departure date is created and sent to the use
+            createDepartureDateSuggestion();
+            sendDepartureDateSuggestion(senderID);
+        } else if (quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[0] + "-" + daysInAllTwoMonths[0] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[1] + "-" + daysInAllTwoMonths[1] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[2] + "-" + daysInAllTwoMonths[2] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[3] + "-" + daysInAllTwoMonths[3] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[4] + "-" + daysInAllTwoMonths[4] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[5] + "-" + daysInAllTwoMonths[5] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[6] + "-" + daysInAllTwoMonths[6] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[7] + "-" + daysInAllTwoMonths[7] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[8] + "-" + daysInAllTwoMonths[8] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[9] + "-" + daysInAllTwoMonths[9] || quickReplyPayload === "2017-" + arrivalAllTwoMonthsDisplay[10] + "-" + daysInAllTwoMonths[10]) {
+            //Status update feedback is sent, so that the user knows that the offer is created
+            sendStatusFeedbackRequest(senderID);
+            //departureDate is assigned
+            assignDepartureDateVar(quickReplyPayload);
+            //Range of stay is calculated
+            calculateStayRange(arrivalDate, departureDate);
+            //Check if date is in the past - if so error message is send
+            checkIfDateIsInPast(senderID);
+            if (dateIsInThePast) {
+                return;
+            } else {
+                //XML post request to cultuzz channel manager is executed
+                sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departureDate, doppelzimmerClassicSteinleo, einzelzimmerSommerstein, doppelzimmerDeluxeHolzleo, doppelzimmerSuperiorSteinleo);
+                //If hotel is closed, send error message, else create suited offer
                 setTimeout(function () {
                     checkIfHotelIsClosed(senderID);
                     if (hotelIsClosed) {
@@ -594,12 +793,17 @@ console.log(quickReplyPayload);
                         setTimeout(calculatePrice, 30, stayRange, numberOfRooms);
                         setTimeout(createBookingLink, 40, arrivalDateSplitted, departureDateSplitted, numberOfPersons);
                         setTimeout(checkTypeOfOffer, 100, senderID);
+                        exportSenderID(senderID);
                     }
-                        }, 15000);
-                    }
-                }
+                }, 15000);
+            }
+        }
+    }
 
     if (messageText) {
+        if (autoAnswerIsOn === false) {
+            return
+        }
 
         // If we receive a text message, check to see if it matches any special
         // keywords and send back the corresponding example. Otherwise, just echo
@@ -631,13 +835,16 @@ console.log(quickReplyPayload);
                 sendPersonalFeedback(senderID);
                 break;
 
-            default:
-                if (typeof quickReplyPayload === "undefined") {
-                    sendMenu(senderID);
-                }
+            case "pay":
+                sendPaymentButton(senderID);
+                break;
 
+            default:
+                //if (typeof quickReplyPayload === "undefined") {
+                //   sendMenu(senderID);
+                //}
+            }
         }
-    }
 }
 
 /*
@@ -664,7 +871,6 @@ function receivedDeliveryConfirmation(event) {
 
   console.log("All message before %d were delivered.", watermark);
 }
-
 
 /*
  * Postback Event
@@ -695,8 +901,13 @@ function receivedPostback(event) {
        sendPersonRequest(senderID);
    }    else if (payload === "personal") {
        sendPersonalFeedback(senderID);
+   } else if (payload === "DEVELOPER_DEFINED_PAYLOAD") {
+
    }
 }
+
+
+
 /*
  * Message Read Event
  *
@@ -765,12 +976,33 @@ function receivedAccountLink(event) {
 }
 //Employee will soon take care of users request
 function sendPersonalFeedback(recipientId) {
+
+    autoAnswerIsOn = false;
+
     var messageData = {
         recipient: {
             id: recipientId
         },
         message: {
             text: "Es wird sich ehestmöglich einer unserer Mitarbeiter um Ihre Anfrage kümmern.",
+            metadata: "DEVELOPER_DEFINED_METADATA"
+        }
+    };
+
+    callSendAPI(messageData);
+}
+
+/*
+ * Send a text message using the Send API.
+ *
+ */
+function sendTextMessage(recipientId, messageText) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText,
             metadata: "DEVELOPER_DEFINED_METADATA"
         }
     };
@@ -920,6 +1152,9 @@ function sendMenu(recipientId) {
 }
 
 function sendPersonRequest(recipientId) {
+
+    autoAnswerIsOn = true;
+
     var messageData = {
         recipient: {
             id: recipientId
@@ -1340,10 +1575,10 @@ function checkTypeOfOffer(senderID) {
             sendGenericMessageOffer7(senderID);
             break;
         case "3|1":
-            sendGenericMessageOffer7(senderID);
+            sendGenericMessageOffer8(senderID);
             break;
         case "3|2":
-            sendGenericMessageOffer7(senderID);
+            sendGenericMessageOffer8(senderID);
             break;
         case "3|3":
             sendGenericMessageOffer8(senderID);
@@ -1386,8 +1621,9 @@ function checkTypeOfOffer(senderID) {
             break;
     }
 }
-//"1|1" ----> double checked |
-function sendGenericMessageOffer1(recipientId) {
+
+//Send Payment button
+function sendPaymentButton(recipientId) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -1404,10 +1640,66 @@ function sendGenericMessageOffer1(recipientId) {
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsenen ",
                             item_url: bookingLink,
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
+                            "buttons":[
+                                {
+                                    "type":"payment",
+                                    "title":"buy",
+                                    "payload":"DEVELOPER_DEFINED_PAYLOAD",
+                                    "payment_summary":{
+                                        "currency":"USD",
+                                        "payment_type":"FIXED_AMOUNT",
+                                        "is_test_payment" : true,
+                                        "merchant_name":"Peter's Apparel",
+                                        "requested_user_info":[
+                                            "shipping_address",
+                                            "contact_name",
+                                            "contact_phone",
+                                            "contact_email"
+                                        ],
+                                        "price_list":[
+                                            {
+                                                "label":"Subtotal",
+                                                "amount":"29.99"
+                                            },
+                                            {
+                                                "label":"Taxes",
+                                                "amount":"2.47"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    };
+
+    callSendAPI(messageData);
+}
+//"1|1" ----> double checked | WORKS
+function sendGenericMessageOffer1(recipientId) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "generic",
+
+                    elements: [
+                        {
+                            title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + ".2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
+                            subtitle: String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsenen ",
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
+                            image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
-                                title: "Buchen & Details"
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
+                                title: "Buchen & Details",
                             }, {
                                 type: "postback",
                                 title: "Persönliche Beratung",
@@ -1421,8 +1713,13 @@ function sendGenericMessageOffer1(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+    exports.totalPrice = priceAllNightsEinzelzimmerSommerstein;
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"1\" RatePlanID=\"420596\" RatePlanType=\"11\" />";
 }
-//"1|2" ----> double checked |
+//"1|2" ----> double checked | DoppelzimmerHolzleo WORKS | DoppelzimmerSuperiorSteinleo WORKS | Classic Steinleo WORKS
 function sendGenericMessageOffer2(recipientId) {
    var messageData = {
         recipient: {
@@ -1437,11 +1734,11 @@ function sendGenericMessageOffer2(recipientId) {
                     elements: [{
                         title: String(numberOfRooms) + " Doppelzimmer Deluxe Holzleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerDeluxeHolzleo) + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene ",
-                        item_url: bookingLink,
+                        item_url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerDeluxeHolzleo",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/zimmer_holzleo_uebersicht.jpg",
                         buttons: [{
                             type: "web_url",
-                            url: bookingLink,
+                            url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerDeluxeHolzleo",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1452,11 +1749,11 @@ function sendGenericMessageOffer2(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Superior Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerSuperiorSteinleo) + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene ",
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerSuperiorSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerSuperiorSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1467,11 +1764,11 @@ function sendGenericMessageOffer2(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerClassicSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerClassicSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1486,8 +1783,20 @@ function sendGenericMessageOffer2(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+
+    app.locals.titleSummaryDoppelzimmerSuperiorSteinleo = messageData.message.attachment.payload.elements[1].title;
+    app.locals.subTitleSummaryDoppelzimmerSuperiorSteinleo = messageData.message.attachment.payload.elements[1].subtitle;
+
+    app.locals.titleSummaryDoppelzimmerClassicSteinleo = messageData.message.attachment.payload.elements[2].title;
+    app.locals.subTitleSummaryDoppelzimmerClassicSteinleo = messageData.message.attachment.payload.elements[2].subtitle;
+
+
+
 }
-//"1|3" ----> double checked |
+//"1|3" ----> double checked | WORKS
 function sendGenericMessageOffer3(recipientId) {
     var messageData = {
         recipient: {
@@ -1502,11 +1811,11 @@ function sendGenericMessageOffer3(recipientId) {
                     elements: [{
                         title: String(numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                        item_url: bookingLink,
+                        item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: bookingLink,
+                            url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1517,11 +1826,11 @@ function sendGenericMessageOffer3(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR + " + String(priceAllNightsDoppelzimmerClassicSteinleo) + ",00 EUR  = " + String(priceAllNightsDoppelzimmerClassicSteinleo + priceAllNightsEinzelzimmerSommerstein + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1537,8 +1846,17 @@ function sendGenericMessageOffer3(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+    app.locals.titleSummary2 = messageData.message.attachment.payload.elements[1].title;
+    app.locals.subTitleSummary2 = messageData.message.attachment.payload.elements[1].subtitle;
+
+    exports.totalPrice = priceAllNightsDoppelzimmerClassicSteinleo + priceAllNightsEinzelzimmerSommerstein;
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"1\" RatePlanID=\"420596\" RatePlanType=\"11\" /><RoomRate NumberOfUnits=\"1\" RatePlanID=\"420594\" RatePlanType=\"11\" />";
+
 }
-//"2|3" ----> double checked |
+//"2|3" ----> double checked | WORKS
 function sendGenericMessageOffer4(recipientId) {
     var messageData = {
         recipient: {
@@ -1553,11 +1871,11 @@ function sendGenericMessageOffer4(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms ) + ",00 EUR "),
-                        item_url: bookingLink,
+                        item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: "http://www.salzburgerhof.eu/de/zimmer-angebote/doppelzimmer/",
+                            url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             title: "Open Web URL"
                         }, {
                             type: "postback",
@@ -1568,11 +1886,11 @@ function sendGenericMessageOffer4(recipientId) {
                         {
                             title: String(numberOfRooms / numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR + " + String(priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ",00 EUR  = " + String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + (priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1588,8 +1906,16 @@ function sendGenericMessageOffer4(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+    app.locals.titleSummary2 = messageData.message.attachment.payload.elements[1].title;
+    app.locals.subTitleSummary2 = messageData.message.attachment.payload.elements[1].subtitle;
+
+    exports.totalPrice = (priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + (priceAllNightsEinzelzimmerSommerstein / numberOfRooms);
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"1\" RatePlanID=\"420594\" RatePlanType=\"11\" /><RoomRate NumberOfUnits=\"1\" RatePlanID=\"420596\" RatePlanType=\"11\" />";
 }
-//"1|4" / "2|4" ----> double checked |
+//"1|4" / "2|4" ----> double checked | WORKS
 function sendGenericMessageOffer5(recipientId) {
     var messageData = {
         recipient: {
@@ -1604,11 +1930,11 @@ function sendGenericMessageOffer5(recipientId) {
                     elements: [{
                         title: String(numberOfRooms) + " Doppelzimmer Deluxe Holzleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerDeluxeHolzleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                        item_url: bookingLink,
+                        item_url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerDeluxeHolzleo",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/zimmer_holzleo_uebersicht.jpg",
                         buttons: [{
                             type: "web_url",
-                            url: bookingLink,
+                            url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerDeluxeHolzleo",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1619,11 +1945,11 @@ function sendGenericMessageOffer5(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Superior Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerSuperiorSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerSuperiorSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerSuperiorSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1634,11 +1960,11 @@ function sendGenericMessageOffer5(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerClassicSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/DoppelzimmerClassicSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1653,8 +1979,20 @@ function sendGenericMessageOffer5(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+
+    app.locals.titleSummaryDoppelzimmerSuperiorSteinleo = messageData.message.attachment.payload.elements[1].title;
+    app.locals.subTitleSummaryDoppelzimmerSuperiorSteinleo = messageData.message.attachment.payload.elements[1].subtitle;
+
+    app.locals.titleSummaryDoppelzimmerClassicSteinleo = messageData.message.attachment.payload.elements[2].title;
+    app.locals.subTitleSummaryDoppelzimmerClassicSteinleo = messageData.message.attachment.payload.elements[2].subtitle;
+
+
+
 }
-//"2|1" / "2|2" ----> double checked |
+//"2|1" / "2|2" ----> double checked | WORKS
 function sendGenericMessageOffer6(recipientId) {
     var messageData = {
         recipient: {
@@ -1670,11 +2008,11 @@ function sendGenericMessageOffer6(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR = " + String(priceAllNightsEinzelzimmerSommerstein +  ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1689,8 +2027,15 @@ function sendGenericMessageOffer6(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+
+    exports.totalPrice = priceAllNightsEinzelzimmerSommerstein;
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"2\" RatePlanID=\"420596\" RatePlanType=\"11\" />";
+
 }
-//"2|5" / "3|1" / "3|2" / "3|5" ----> double checked |
+//"2|5" / "3|5" ----> double checked | WORKS
 function sendGenericMessageOffer7(recipientId) {
     var messageData = {
         recipient: {
@@ -1705,11 +2050,11 @@ function sendGenericMessageOffer7(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms * 2) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) * 2) + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons -1)+ " Erwachsene ",
-                        item_url: bookingLink,
+                        item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: bookingLink,
+                            url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1718,13 +2063,13 @@ function sendGenericMessageOffer7(recipientId) {
                         }]
                     },
                         {
-                            title: String(numberOfRooms - 2) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
+                            title: String(numberOfRooms / numberOfRooms ) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) * 2) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR = " + String(((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) * 2) + (priceAllNightsEinzelzimmerSommerstein / numberOfRooms)) + ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1732,7 +2077,6 @@ function sendGenericMessageOffer7(recipientId) {
                                 payload: "personal"
                             }]
                         },
-
                     ]
                 }
             }
@@ -1740,8 +2084,16 @@ function sendGenericMessageOffer7(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+    app.locals.titleSummary2 = messageData.message.attachment.payload.elements[1].title;
+    app.locals.subTitleSummary2 = messageData.message.attachment.payload.elements[1].subtitle;
+
+    exports.totalPrice = ((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) * 2) + (priceAllNightsEinzelzimmerSommerstein / numberOfRooms);
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"1\" RatePlanID=\"420596\" RatePlanType=\"11\" /><RoomRate NumberOfUnits=\"2\" RatePlanID=\"420594\" RatePlanType=\"11\" />";
 }
-//"3|3" ----> double checked |
+//"3|3" / "3|2" / "3|1"----> double checked | WORKS
 function sendGenericMessageOffer8(recipientId) {
     var messageData = {
         recipient: {
@@ -1756,12 +2108,12 @@ function sendGenericMessageOffer8(recipientId) {
                     elements: [
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
-                            subtitle: String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR = " + String(priceAllNightsEinzelzimmerSommerstein * 3) +  ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: bookingLink,
+                            subtitle: String(priceAllNightsEinzelzimmerSommerstein / 3) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / 3) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / 3) + ",00 EUR = " + String(priceAllNightsEinzelzimmerSommerstein) +  ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1776,8 +2128,15 @@ function sendGenericMessageOffer8(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+
+    exports.totalPrice = (priceAllNightsEinzelzimmerSommerstein);
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"3\" RatePlanID=\"420596\" RatePlanType=\"11\" />";
+
 }
-//"4|1" / "4|2" / "4|3" / "4|4" ----> double checked |
+//"4|1" / "4|2" / "4|3" / "4|4" ----> double checked | WORKS
 function sendGenericMessageOffer9(recipientId) {
     var messageData = {
         recipient: {
@@ -1793,11 +2152,11 @@ function sendGenericMessageOffer9(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle:  String(priceAllNightsEinzelzimmerSommerstein) +  ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1812,8 +2171,14 @@ function sendGenericMessageOffer9(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+
+    exports.totalPrice = priceAllNightsEinzelzimmerSommerstein;
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"4\" RatePlanID=\"420596\" RatePlanType=\"11\" />";
 }
-//"5|1" / "5|2" / "5|3" / "5|4" / "5|5" ----> double checked |
+//"5|1" / "5|2" / "5|3" / "5|4" / "5|5" ----> double checked | WORKS
 function sendGenericMessageOffer10(recipientId) {
     var messageData = {
         recipient: {
@@ -1833,7 +2198,7 @@ function sendGenericMessageOffer10(recipientId) {
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1848,8 +2213,15 @@ function sendGenericMessageOffer10(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+
+    exports.totalPrice = priceAllNightsEinzelzimmerSommerstein;
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"5\" RatePlanID=\"420596\" RatePlanType=\"11\" />";
+
 }
-//"3|4" ----> double checked |
+//"3|4" ----> double checked | WORKS
 function sendGenericMessageOffer11(recipientId) {
     var messageData = {
         recipient: {
@@ -1864,11 +2236,11 @@ function sendGenericMessageOffer11(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ",00 EUR",
-                        item_url: bookingLink,
+                        item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: bookingLink,
+                            url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1879,11 +2251,11 @@ function sendGenericMessageOffer11(recipientId) {
                         {
                             title: String((numberOfRooms / numberOfRooms) * 2) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ",00 EUR + " + ((priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 2)+ ",00 EUR  = " + ((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ((priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 2)) + ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1898,8 +2270,17 @@ function sendGenericMessageOffer11(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+    app.locals.titleSummary2 = messageData.message.attachment.payload.elements[1].title;
+    app.locals.subTitleSummary2 = messageData.message.attachment.payload.elements[1].subtitle;
+
+    exports.totalPrice = ((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ((priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 2));
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"2\" RatePlanID=\"420596\" RatePlanType=\"11\" /><RoomRate NumberOfUnits=\"1\" RatePlanID=\"420594\" RatePlanType=\"11\" />";
+
 }
-//"4|5" ----> double checked
+//"4|5" ----> double checked | WORKS
 function sendGenericMessageOffer12(recipientId) {
     var messageData = {
         recipient: {
@@ -1914,11 +2295,11 @@ function sendGenericMessageOffer12(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ",00 EUR ",
-                        item_url: bookingLink,
+                        item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: bookingLink,
+                            url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1929,11 +2310,11 @@ function sendGenericMessageOffer12(recipientId) {
                         {
                             title: String((numberOfRooms/ numberOfRooms) * 3) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: (priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 3 + ",00 EUR + " + priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ",00 EUR  = " + (priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ((priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 3)) + ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene" ,
-                            item_url: bookingLink,
+                            item_url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: bookingLink,
+                                url: "https://hotelmessengertagbag.herokuapp.com/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1949,6 +2330,15 @@ function sendGenericMessageOffer12(recipientId) {
     };
 
     callSendAPI(messageData);
+
+    app.locals.titleSummary = messageData.message.attachment.payload.elements[0].title;
+    app.locals.subTitleSummary = messageData.message.attachment.payload.elements[0].subtitle;
+    app.locals.titleSummary2 = messageData.message.attachment.payload.elements[1].title;
+    app.locals.subTitleSummary2 = messageData.message.attachment.payload.elements[1].subtitle;
+
+    exports.totalPrice = (priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ((priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 3));
+    exports.ratePlanID = "<RoomRate NumberOfUnits=\"3\" RatePlanID=\"420596\" RatePlanType=\"11\" /><RoomRate NumberOfUnits=\"1\" RatePlanID=\"420594\" RatePlanType=\"11\" />";
+
 }
 
 /*
@@ -2018,6 +2408,8 @@ function sendAccountLinking(recipientId) {
  *
  */
 function callSendAPI(messageData) {
+    console.log("SEND API CALLLED <------------");
+    console.log("Recipient ID: top " + messageData.recipient.id);
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_ACCESS_TOKEN },
@@ -2025,22 +2417,66 @@ function callSendAPI(messageData) {
     json: messageData
 
   }, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
+        if (!error && response.statusCode == 200) {
+            var recipientId = body.recipient_id;
+            console.log("Recipient ID:" + recipientId);
       var messageId = body.message_id;
 
       if (messageId) {
         console.log("Successfully sent message with id %s to recipient %s", 
           messageId, recipientId);
+          //senderIDTransfer.splice((0), senderIDTransfer.length);
+          //senderIDTransfer.push(recipientId);
       } else {
       console.log("Successfully called Send API for recipient %s", 
         recipientId);
       }
     } else {
-      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
-    }
-  });  
+      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error, messageData.recipient.id);
+      console.log(messageData.recipient.id);
+      // var c is assigned to the current recipient id
+      c = messageData.recipient.id;
+      //updateDB  is called with current reciüinet id value -> c which is a global variable
+      updateDB();
+      //var index = senderIDTransfer.indexOf(messageData.recipient.id);
+      //console.log(index);
+      //senderIDTransfer.splice(index, 1);
+      //console.log(senderIDTransfer);
+      //Problem with c = is changed everytime the function Call send api is called - when updateDB function is called the value is the same as the call send api is called the last time
+      }
+    });
 }
+
+//Send update to REST-ful API in index.js if signed-out, change signed-up field to false
+function updateDB(){
+    console.log("updateDB function called" + c);
+
+     // An object of options to indicate where to post to
+     var put_options = {
+        //Change URL to hotelmessengertagbag.herokuapp.com if deploying
+        host: 'hotelmessengertagbag.herokuapp.com',
+        port: '80',
+        path: '/guests',
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+     };
+
+     // Set up the request
+     var put_req = http.request(put_options, function(res) {
+        res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+            console.log('Response: ' + chunk);
+        });
+     });
+
+     // post the data
+     put_req.write(c);
+     put_req.end();
+}
+
+exports.callSendAPI = callSendAPI;
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
