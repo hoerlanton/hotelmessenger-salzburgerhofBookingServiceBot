@@ -19,6 +19,7 @@ router.use(cors());
 //Global variables
 var errMsg = "";
 var successMsg = "";
+//Data recieved from the HotelResRQ request to Channelmanager
 var resultTransferData2 = [];
 var totalPriceChargeReservation = 0;
 var totalPriceChargeReservationInt = 0;

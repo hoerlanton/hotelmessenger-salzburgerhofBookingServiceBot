@@ -22,10 +22,6 @@ const
   routes = require('./routes/index'),
   app = express();
 
-//Require DB
-var mongojs = require('mongojs');
-var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['gaeste']);
-
 //Bodyparser middleware
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
@@ -43,7 +39,9 @@ app.use(express.static('public'));
 app.use('/', routes);
 
 //Global variables
+//Data recieved from the sendXmlPostRequest request to Channelmanager
 var resultTransferData = [];
+
 var doppelzimmerClassicSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420424\"/>";
 var einzelzimmerSommerstein = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420596\"/>";
 var doppelzimmerDeluxeHolzleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420590\"/>";
@@ -98,30 +96,37 @@ var departureDateForLink = "";
 var arrivalDateForLink = "";
 var dateIsInThePast = false;
 var autoAnswerIsOn = true;
+var senderIDTransfer = [];
+
+//data when user clicks sent to messenger button -> send to index.js REST-API
+var a = {};
+//object a stringified in order to make post request to REST-API
+var b = "";
+// c = messageData.recipient.id; called in updateDb function -> if sendAPI call failes
+var c = "";
+
+
+//local variables are declared globally, assigned a value in sendGenericMessageOfferX function
 app.locals.titleSummary = "";
 app.locals.subTitleSummary = "";
 app.locals.titleSummary2 = "";
 app.locals.subTitleSummary2 = "";
-app.locals.totalPrice = "";
 app.locals.titleSummaryDoppelzimmerSuperiorSteinleo = "";
 app.locals.subTitleSummaryDoppelzimmerSuperiorSteinleo = "";
 app.locals.titleSummaryDoppelzimmerClassicSteinleo = "";
 app.locals.subTitleSummaryDoppelzimmerClassicSteinleo = "";
+app.locals.totalPrice = "";
 app.locals.totalPrice = 0;
-app.locals.profileInfo = "";
-app.locals.profilePic = "";
-var senderIDTransfer = [];
-exports.profileInfo = [];
-exports.profilePic = [];
-var a = {};
-var b = "";
-var c = "";
 
 /*
  * If setting up a new app, change serverURL and pageAccessToken according to config.js file
  */
 
+//Used in sendGenericMessageOfferX functions
 var serverUrl = "https://www.salzburgerhof.servicio.io";
+//Used in the two requests to REST-API in index.js, function updateDB and function postNewUserToDB
+var hostUrl = "www.salzburgerhof.servicio.io";
+//Used in receivedAuthentication function
 var pageAccessToken = "EAAbPgy5UveYBAAigWt16bITQTfbCri5o7IyWxv4fR3IUZAcpoZBRxHqoVAnZAg0dnQqkCovgng3Ak7uuezE0kmfbxEntlO8SEGLZA1SV8wGL6HYaA3xN6tAU2dnly7NiVfLZCKsDWDwZCL5KuZC7wL4G38TGHFZCZBloFBkRdEeZBrjgZDZD";
 
 
@@ -244,7 +249,7 @@ app.get('/authorize', function(req, res) {
   });
 });
 
-
+//Function called in receivedMessage
 //send XML post request to Cultswitch channel manager. Recieved data is pushed to resultTransferData
 function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departureDate, doppelzimmerClassicSteinleo, einzelzimmerSommerstein, doppelzimmerDeluxeHolzleo, doppelzimmerSuperiorSteinleo) {
 
@@ -343,7 +348,7 @@ function verifyRequestSignature(req, res, buf) {
  *
  */
 
-//Recieve authentication from wlanlandingpage when user click Send to messenger - Send data to mongoDB database.
+//Recieve authentication from wlanlandingpage when user click Send to messenger button - Send data to mongoDB database.
 function receivedAuthentication(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
@@ -363,8 +368,10 @@ function receivedAuthentication(event) {
     // When an authentication is received, we'll send a message back to the sender
     // to let them know it was successful.
 
-    console.log("Whats worng with this ID: " + senderID);
-    sendTextMessage(senderID, "Sie haben sich erfolgreich angemeldet. Sie erhalten nun Neuigkeiten via Facebook Messenger von Ihrem Salzburger Hof Leogang team. Viel Spaß!");
+    sendTextMessage(senderID, "Sie haben sich erfolgreich angemeldet. " +
+        "Sie erhalten nun Neuigkeiten via Facebook Messenger " +
+        "von Ihrem Salzburger Hof Leogang team. Viel Spaß!");
+
     //Function initialised on line 651
     //exportSenderID(senderID);
 
@@ -374,7 +381,10 @@ function receivedAuthentication(event) {
     var optionsget = {
         host: 'graph.facebook.com',
         port: 443,
-        path: '/v2.6/' + senderID + '?fields=first_name,last_name,profile_pic,is_payment_enabled,locale,timezone,gender&access_token=' + pageAccessToken,
+        path: '/v2.6/' + senderID +
+        '?fields=first_name,last_name,profile_pic,is_payment_enabled,locale,timezone,gender&access_token=' +
+        pageAccessToken,
+
         method: 'GET'
     };
 
@@ -414,13 +424,12 @@ function receivedAuthentication(event) {
     });
     setTimeout(postNewUserToDB, 30000);
 }
-
+//New User is saved in DB, function called in receivedAuthentication - send to index.js /guests REST-FUL API
 function postNewUserToDB() {
-    console.log(b);
         // An object of options to indicate where to post to
         var post_options = {
             //Change URL to hotelmessengertagbag.herokuapp.com if deploying
-            host: 'hotelmessengertagbag.herokuapp.com',
+            host: "'" + hostUrl + "'",
             port: '80',
             path: '/guests',
             method: 'POST',
@@ -441,7 +450,7 @@ function postNewUserToDB() {
         post_req.write(b);
         post_req.end();
 }
-
+//Not in use rigth now
 function getAnalytics(){
     var buffer = "";
     var a = "";
@@ -478,7 +487,6 @@ function getAnalytics(){
     });
 }
 exports.getAnalytics = getAnalytics;
-
 //Stay range is the difference between arrivalday and departureday
 function calculateStayRange(arrivalDate, departureDate) {
     arrivalDateSplitted = arrivalDate.split("-");
@@ -496,7 +504,6 @@ function calculateStayRange(arrivalDate, departureDate) {
     }
     console.log("Stay Range: " + stayRange);
 }
-
 //Price is multiplied by the number of days the stay is long(stayRange), parsed to an integer and added to the initialised variable.
 function calculatePrice(stayRange, numberOfRooms) {
     console.log("DoppelzimmerDeluxeHolzleo: " + priceAllNightsDoppelzimmerDeluxeHolzleo + " | DoppelzimmerSuperiorSteinleo: " + priceAllNightsDoppelzimmerSuperiorSteinleo + " | EinzelzimmerSommerstein: " + priceAllNightsEinzelzimmerSommerstein + " | DoppelzimmerClassicSteinleo: " + priceAllNightsDoppelzimmerClassicSteinleo);
@@ -524,16 +531,19 @@ function calculatePrice(stayRange, numberOfRooms) {
     exports.priceAllNightsDoppelzimmerClassicSteinleo = priceAllNightsDoppelzimmerClassicSteinleo;
     exports.priceAllNightsDoppelzimmerDeluxeHolzleo = priceAllNightsDoppelzimmerDeluxeHolzleo;
 }
-
+//Creating a booking Link, which links to the booking engine on www.salzburgerhof.eu website - https://hotel-salzburgerhof.viomassl.com/de/zimmer-angebote/anfrage -> Called in receivedMessage function -> Used in sendPaymentButton function
 function createBookingLink(arrivalDateSplitted, departureDateSplitted, numberOfPersons){
     console.log("ArrivaldateSplitted : " + arrivalDateSplitted + "Departuredate splitted :" + departureDateSplitted);
     arrivalDateForLink = arrivalDateSplitted[2] + "." + arrivalDateSplitted[1] + "." + arrivalDateSplitted[0];
     departureDateForLink = departureDateSplitted[2] + "." + departureDateSplitted[1] + "." + departureDateSplitted[0];
     console.log(arrivalDateForLink);
     console.log(departureDateForLink);
-    bookingLink = "https://hotel-salzburgerhof.viomassl.com/de/zimmer-angebote/anfrage/vsc.php?calendar_date_from=" + arrivalDateForLink + "&calendar_date_to=" + departureDateForLink + "&persons_adults=" + numberOfPersons + "&submitbook=Suchen&step=roomtypes&page=2.page1&PHPSESSID=fif62okvks52atf111b8a237v4";
+    bookingLink = "https://hotel-salzburgerhof.viomassl.com/de/zimmer-angebote/anfrage/vsc.php?calendar_date_from=" + arrivalDateForLink +
+        "&calendar_date_to=" + departureDateForLink +
+        "&persons_adults=" + numberOfPersons +
+        "&submitbook=Suchen&step=roomtypes&page=2.page1&PHPSESSID=fif62okvks52atf111b8a237v4";
 }
-
+//If request is bigger than 2, the basic arguments for the request are reset. Function called in receivedMessage function on line 761 after -> quickReplyPayload === "1 person" ...
 function resetData(){
     count++;
     if (count >= 1) {
@@ -569,13 +579,13 @@ function resetData(){
         app.locals.totalPrice = 0;
     }
 }
-
+//Function called in receivedMessage
 function assigningNumberOfPersonsVar(quickReplyPayload){
     numberOfPersonsSplitted = quickReplyPayload.split(" ");
     numberOfPersons = parseInt(numberOfPersonsSplitted[0]);
     exports.numberOfPersons = numberOfPersons;
 }
-
+//Function called in receivedMessage
 function assigningNumberOfRoomsVar(quickReplyPayload) {
     numberOfRoomsSplitted = quickReplyPayload.split(" ");
     console.log("Number of rooms splitted: " + numberOfRoomsSplitted);
@@ -583,12 +593,12 @@ function assigningNumberOfRoomsVar(quickReplyPayload) {
     console.log("Number of rooms INT: " + numberOfRooms);
     exports.numberOfRooms = numberOfRooms;
 }
-
+//Function called in receivedMessage
 function assigningNumberOfMonthsVar(quickReplyPayload) {
     arrivalDateMonth = quickReplyPayload;
     arrivalDateMonthCalculations = parseInt(arrivalDateMonth);
 }
-
+//Function called in receivedMessage
 function assigningArrivalDateVar(quickReplyPayload) {
     arrivalDayDateSplitted = quickReplyPayload.split(" ");
     arrivalDateDay = arrivalDayDateSplitted[1];
@@ -596,7 +606,7 @@ function assigningArrivalDateVar(quickReplyPayload) {
     arrivalDate = "2017-" + arrivalDateMonth + "-" + arrivalDateDay;
     exports.arrivalDate = arrivalDate;
 }
-
+//Function called in receivedMessage
 function createDepartureDateSuggestion(){
     console.log(arrivalDateMonthCalculations);
     if(arrivalDateMonthCalculations === 1) {
@@ -663,13 +673,13 @@ function createDepartureDateSuggestion(){
     console.log(arrivalDateMonth);
     console.log(arrivalDate);
 }
-
+//Function called in receivedMessage
 function assignDepartureDateVar(quickReplyPayload){
     departureDate = quickReplyPayload;
     console.log("Departure Date: " + departureDate);
     exports.departureDate = departureDate;
 }
-
+//Function called in receivedMessage
 function checkIfDateIsInPast(senderID){
     var d = new Date();
     var f = JSON.stringify(d);
@@ -688,7 +698,6 @@ function checkIfDateIsInPast(senderID){
         dateIsInThePast = false;
     }
 }
-
 //If hotel is closed or if there are no availabilities the rest of the receivedMessage is not executed
 function checkIfHotelIsClosed(senderID) {
     console.log(resultTransferData[0].OTA_HotelAvailRS.RoomStays[0].RoomStay[0].RoomRates[0].RoomRate[1].Rates[0].Rate[0].Base[0].$.AmountAfterTax);
@@ -725,7 +734,7 @@ function exportSenderID(senderID){
  *
  */
 
-
+//Main function where most answer functions are called from
 function receivedMessage(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
@@ -925,8 +934,6 @@ function receivedPostback(event) {
    }
 }
 
-
-
 /*
  * Message Read Event
  *
@@ -1015,6 +1022,7 @@ function sendPersonalFeedback(recipientId) {
  * Send a text message using the Send API.
  *
  */
+//sendMessage example -> used and called in receivedAuthentication function
 function sendTextMessage(recipientId, messageText) {
     var messageData = {
         recipient: {
@@ -1028,7 +1036,7 @@ function sendTextMessage(recipientId, messageText) {
 
     callSendAPI(messageData);
 }
-
+//Function called if user signes up first time
 function sendWelcomeMessage(recipientId) {
     var messageData = {
         recipient: {
@@ -1056,7 +1064,7 @@ function sendWelcomeMessage(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendStatusFeedbackRequest(recipientId) {
     var messageData = {
         recipient: {
@@ -1070,7 +1078,7 @@ function sendStatusFeedbackRequest(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendDepartureDateSuggestion(recipientId) {
 
     var messageData = {
@@ -1141,7 +1149,7 @@ function sendDepartureDateSuggestion(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//function called if case: 'Menü' in receivedMessage
 function sendMenu(recipientId) {
   var messageData = {
     recipient: {
@@ -1169,7 +1177,7 @@ function sendMenu(recipientId) {
 
   callSendAPI(messageData);
 }
-
+//function called if case: 'Zimmer Anfrage' in receivedMessage
 function sendPersonRequest(recipientId) {
 
     autoAnswerIsOn = true;
@@ -1212,7 +1220,7 @@ function sendPersonRequest(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendRoomRequest(recipientId) {
     var messageData = {
         recipient: {
@@ -1252,7 +1260,7 @@ function sendRoomRequest(recipientId) {
     
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendArrivalDateMonth(recipientId) {
     var messageData = {
         recipient: {
@@ -1302,7 +1310,7 @@ function sendArrivalDateMonth(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendArrivalDateMonth2(recipientId) {
     var messageData = {
         recipient: {
@@ -1348,7 +1356,7 @@ function sendArrivalDateMonth2(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendArrivalDay(recipientId) {
     var messageData = {
         recipient: {
@@ -1419,7 +1427,7 @@ function sendArrivalDay(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendArrivalDay2(recipientId) {
     var messageData = {
         recipient: {
@@ -1490,7 +1498,7 @@ function sendArrivalDay2(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Function called in receivedMessage
 function sendArrivalDay3(recipientId) {
     var messageData = {
         recipient: {
@@ -1560,7 +1568,7 @@ function sendArrivalDay3(recipientId) {
 
     callSendAPI(messageData);
 }
-
+//Called in receivedMessage if all data is recieved -> calls the right sendGenericMessageOffer1 function
 function checkTypeOfOffer(senderID) {
     switch (numberOfRooms + "|" + numberOfPersons) {
         case "1|1":
@@ -1640,7 +1648,6 @@ function checkTypeOfOffer(senderID) {
             break;
     }
 }
-
 //Send Payment button
 function sendPaymentButton(recipientId) {
     var messageData = {
@@ -1697,13 +1704,11 @@ function sendPaymentButton(recipientId) {
 
     callSendAPI(messageData);
 }
-
 /* Message Offer
  * "1|1" ----> double checked | WORKS
  * item_url - Link image links to
  * serverUrl - global variable, same as in config.json
  */
-
 function sendGenericMessageOffer1(recipientId) {
     var messageData = {
         recipient: {
@@ -2430,7 +2435,7 @@ function sendAccountLinking(recipientId) {
 /*
  * Call the Send API. The message data goes in the body. If successful, we'll 
  * get the message id in a response 
- *
+ * If Failed calling Send API a put request is made to the the REST-FUL API in index.js
  */
 function callSendAPI(messageData) {
     console.log("SEND API CALLLED <------------");
@@ -2461,7 +2466,7 @@ function callSendAPI(messageData) {
       console.log(messageData.recipient.id);
       // var c is assigned to the current recipient id
       c = messageData.recipient.id;
-      //updateDB  is called with current reciüinet id value -> c which is a global variable
+      //updateDB  is called with current recipient id value -> c which is a global variable
       updateDB();
       //var index = senderIDTransfer.indexOf(messageData.recipient.id);
       //console.log(index);
@@ -2480,8 +2485,8 @@ function updateDB(){
 
      // An object of options to indicate where to post to
      var put_options = {
-        //Change URL to hotelmessengertagbag.herokuapp.com if deploying
-        host: 'hotelmessengertagbag.herokuapp.com',
+        //Change URL on top if deploying
+        host: "'" + hostUrl + "'",
         port: '80',
         path: '/guests',
         method: 'PUT',
@@ -2503,6 +2508,7 @@ function updateDB(){
      put_req.end();
 }
 
+//Exports callSendAPI to index.js file
 exports.callSendAPI = callSendAPI;
 
 /*
