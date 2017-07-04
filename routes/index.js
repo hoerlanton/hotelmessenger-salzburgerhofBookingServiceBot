@@ -177,7 +177,9 @@ router.get('/facebookLogin', function(req, res, next) {
 
 //Recieve Checkout Form data, Make Reservation request and charge the Credit card via Stripe
 router.post('/checkout', function(req, res, next){
-    console.log("Checkout calles <<<<------");
+    console.log("Checkout called <<<<------");
+
+    //Setting up variables - aggregating data from the checkout form
     var checkoutData = JSON.stringify(req.body);
     var checkoutDataSplitted = checkoutData.split(",");
     var checkoutDataSplittedTwiceName = checkoutDataSplitted[0].split(":");
@@ -188,25 +190,38 @@ router.post('/checkout', function(req, res, next){
     var checkoutDataCardName = checkoutDataSplittedTwiceCardName[1].slice(1, -1);
     var checkoutDataSplittedTwiceCardNumber = checkoutDataSplitted[3].split(":");
     var checkoutDataCardNumber = checkoutDataSplittedTwiceCardNumber[1].slice(1, -1);
-    var checkoutDataSplittedTwiceCardExpiryMonth = checkoutDataSplitted[4].split(":");
-    var checkoutDataCardExpiryMonth = checkoutDataSplittedTwiceCardExpiryMonth[1].slice(1, -1);
     var checkoutDataSplittedTwiceCardExpiryYear = checkoutDataSplitted[5].split(":");
     var checkoutDataCardExpiryYear = checkoutDataSplittedTwiceCardExpiryYear[1].slice(1, -1);
     var checkoutDataSplittedTwiceCardCvc = checkoutDataSplitted[6].split(":");
     var checkoutDataCardCvc = checkoutDataSplittedTwiceCardCvc[1].slice(1, -1);
+    //var checkoutDataSplittedTwiceCardExpiryMonth = checkoutDataSplitted[4].split(":");
+    //var checkoutDataCardExpiryMonth = checkoutDataSplittedTwiceCardExpiryMonth[1].slice(1, -1);
+
+    //Exported on line 576
     var numberOfPersonsReservation = sourceFile.numberOfPersons - 1;
+
     if (numberOfPersonsReservation < 1) {
         numberOfPersonsReservation = 1
         }
         else if (numberOfPersonsReservation > 2) {
-            numberOfPersonsReservation = 2
-        }
+        numberOfPersonsReservation = 2
+    }
+
+    /*
+     * Adding data from the app.js - exporting by exports.
+     * Exported on line 584
+     */
     var numberOfRoomsReservation = sourceFile.numberOfRooms;
+    //Exported on line 597
     var arrivalDateReservation = sourceFile.arrivalDate;
+    //Exported on line 670
     var departureDateReservation = sourceFile.departureDate;
+    //Exported in function sendGenericMessageOfferX
     var ratePlanIDReservation = sourceFile.ratePlanID;
-    var senderID = sourceFile.senderID;
+
+    //var senderID = sourceFile.senderID;
     //console.log("1:" + checkoutDataName + "2:" + checkoutDataAddress + "3:" + checkoutDataCardName + "4:" + checkoutDataCardNumber +"5:" + checkoutDataCardExpiryYear + "6:" + checkoutDataCardCvc + "7:" + numberOfPersonsReservation + "8:" + numberOfRoomsReservation + "9:" + arrivalDateReservation + "10:" + departureDateReservation + "11:" + ratePlanIDReservation);
+
     resetData();
     sendHotelResRQ(checkoutDataName, checkoutDataAddress, checkoutDataCardName, checkoutDataCardNumber, checkoutDataCardExpiryYear, checkoutDataCardCvc, numberOfPersonsReservation, numberOfRoomsReservation, arrivalDateReservation, departureDateReservation, ratePlanIDReservation);
     setTimeout(function () {
@@ -254,7 +269,75 @@ function sendHotelResRQ(checkoutDataName, checkoutDataAddress, checkoutDataCardN
             'Content-type': 'application/x-www-form-urlencoded'
         }
     };
-    var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelResRQ xmlns="http://www.opentravel.org/OTA/2003/05" TimeStamp="2012-05-10T09:30:47" Target="Production" Version="3.30" PrimaryLangID="en" ResStatus="Initiate"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ" /><BookingChannel Type="7" /></Source></POS><HotelReservations><HotelReservation RoomStayReservation="true"><UniqueID Type="10" ID_Context="CLTZ" ID="50114" /><RoomStays><RoomStay IndexNumber="11"><RoomRates>' + ratePlanIDReservation + '</RoomRates><GuestCounts IsPerRoom="0"><GuestCount Count="' + numberOfPersonsReservation + '" AgeQualifyingCode="10" /></GuestCounts><TimeSpan Start="' + arrivalDateReservation + '" End="' + departureDateReservation + '" /><Comments><Comment GuestViewable="1" Name="GuestMessage"><Text Formatted="1" Language="en"><![CDATA[Test Booking]]></Text></Comment></Comments></RoomStay></RoomStays><ResGuests><ResGuest ResGuestRPH="1"><Profiles><ProfileInfo><Profile><Customer Gender="Male"><PersonName><NameTitle>mr</NameTitle><GivenName>' + checkoutDataName + '</GivenName><Surname>' + checkoutDataName + '</Surname></PersonName><Telephone PhoneNumber="06649219838"/><Email>anton.hoerl@gmx.at</Email><Address FormattedInd="false"><StreetNmbr>' + checkoutDataAddress + '</StreetNmbr><CityName>' + checkoutDataAddress + '</CityName><PostalCode>' + checkoutDataAddress + '</PostalCode><CountryName Code="AU">' + checkoutDataAddress + '</CountryName><StateProv StateCode="2">' + checkoutDataAddress + '</StateProv><CompanyName CompanyShortName="Bon">HotelSalzburgerhofLeogang</CompanyName></Address></Customer></Profile></ProfileInfo></Profiles></ResGuest></ResGuests><ResGlobalInfo><Guarantee GuaranteeCode="3" GuaranteeType="CC/DC/Voucher"><GuaranteesAccepted><GuaranteeAccepted><PaymentCard CardCode="MA" CardNumber="' + checkoutDataCardNumber + '" CardType="1" ExpireDate="' + checkoutDataCardExpiryYear + '" SeriesCode="' + checkoutDataCardCvc + '"><CardHolderName>' + checkoutDataCardName + '</CardHolderName></PaymentCard></GuaranteeAccepted></GuaranteesAccepted></Guarantee><HotelReservationIDs><HotelReservationID ResID_SourceContext="TransactionNumber" ResID_Source="AntonHoerlResID" ResID_Value="12587424885" /><HotelReservationID ResID_SourceContext="eBayItemID" ResID_Source="eBay" ResID_Value="12547895" /></HotelReservationIDs></ResGlobalInfo></HotelReservation></HotelReservations></OTA_HotelResRQ>';
+    var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?>' +
+        '<OTA_HotelResRQ xmlns="http://www.opentravel.org/OTA/2003/05" TimeStamp="2012-05-10T09:30:47" Target="Production" Version="3.30" PrimaryLangID="en" ResStatus="Initiate">' +
+            '<POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ" />' +
+            '<BookingChannel Type="7" /></Source></POS>' +
+        '<HotelReservations>' +
+            '<HotelReservation RoomStayReservation="true">' +
+            '<UniqueID Type="10" ID_Context="CLTZ" ID="50114" />' +
+            '<RoomStays>' +
+                '<RoomStay IndexNumber="11"><RoomRates>' +
+                ratePlanIDReservation +
+                    '</RoomRates>' +
+                    '<GuestCounts IsPerRoom="0">' +
+                        '<GuestCount Count="' + numberOfPersonsReservation + '" AgeQualifyingCode="10" />' +
+                    '</GuestCounts>' +
+                    '<TimeSpan Start="' + arrivalDateReservation + '" End="' + departureDateReservation + '" />' +
+                    '<Comments>' +
+                        '<Comment GuestViewable="1" Name="GuestMessage">' +
+                        '<Text Formatted="1" Language="en"><![CDATA[Test Booking]]>' +
+                        '</Text>' +
+                        '</Comment>' +
+                    '</Comments>' +
+                '</RoomStay>' +
+            '</RoomStays>' +
+            '<ResGuests>' +
+                '<ResGuest ResGuestRPH="1">' +
+                    '<Profiles>' +
+                        '<ProfileInfo>' +
+                            '<Profile>' +
+                                '<Customer Gender="Male">' +
+                                    '<PersonName>' +
+                                        '<NameTitle>mr</NameTitle>' +
+                                        '<GivenName>' + checkoutDataName + '</GivenName>' +
+                                        '<Surname>' + checkoutDataName + '</Surname>' +
+                                    '</PersonName>' +
+                                    '<Telephone PhoneNumber="06649219838"/>' +
+                                    '<Email>anton.hoerl@gmx.at</Email>' +
+                                    '<Address FormattedInd="false">' +
+                                        '<StreetNmbr>' + checkoutDataAddress + '</StreetNmbr>' +
+                                        '<CityName>' + checkoutDataAddress + '</CityName>' +
+                                        '<PostalCode>' + checkoutDataAddress + '</PostalCode>' +
+                                        '<CountryName Code="AU">' + checkoutDataAddress + '</CountryName>' +
+                                        '<StateProv StateCode="2">' + checkoutDataAddress + '</StateProv>' +
+                                        '<CompanyName CompanyShortName="Bon">HotelSalzburgerhofLeogang</CompanyName>' +
+                                    '</Address>' +
+                                '</Customer>' +
+                            '</Profile>' +
+                        '</ProfileInfo>' +
+                    '</Profiles>' +
+                '</ResGuest>' +
+        '</ResGuests>' +
+        '<ResGlobalInfo>' +
+            '<Guarantee GuaranteeCode="3" GuaranteeType="CC/DC/Voucher">' +
+                '<GuaranteesAccepted>' +
+                    '<GuaranteeAccepted>' +
+                        '<PaymentCard CardCode="MA" CardNumber="' + checkoutDataCardNumber + '" CardType="1" ExpireDate="' + checkoutDataCardExpiryYear + '" SeriesCode="' + checkoutDataCardCvc + '">' +
+                            '<CardHolderName>' + checkoutDataCardName + '</CardHolderName>' +
+                        '</PaymentCard>' +
+                    '</GuaranteeAccepted>' +
+                '</GuaranteesAccepted>' +
+            '</Guarantee>' +
+            '<HotelReservationIDs>' +
+                '<HotelReservationID ResID_SourceContext="TransactionNumber" ResID_Source="AntonHoerlResID" ResID_Value="12587424885" />' +
+                    '<HotelReservationID ResID_SourceContext="eBayItemID" ResID_Source="eBay" ResID_Value="12547895" />' +
+            '</HotelReservationIDs>' +
+            '</ResGlobalInfo>' +
+        '</HotelReservation>' +
+        '</HotelReservations>' +
+        '</OTA_HotelResRQ>';
+
 
     var req = http.request(postRequest, function (res) {
         console.log(res.statusCode);
@@ -315,7 +398,19 @@ function sendBookingConfirmation(recipientId, a, b, c, d, e, f, g) {
             id: recipientId
         },
         message: {
-            text: "Sehr geehrte/r Frau/Herr " + a + "\nVielen Dank für Ihre Buchung im Hotel Salzburger Hof Leogang. Hiermit senden wir Ihnen die Buchungsbestätigung und freuen und bis bald im Hotel Salzburger Hof Leogang.\n\nMit Freundlichen Grüßen\nFamilie Hörl samt Team\n\nBeispiel Buchungsbestätigung:\n\nAdresse: " + b + "\nPersonenanzahl: " + c + "\nZimmeranzahl: " + d + "\nAnreisedatum: " + e + "\nAbreisedatum: " + f + "\nAbgebuchter Betrag: " + g + ",00 EUR",
+            text: "Sehr geehrte/r Frau/Herr " + a +
+            "\nVielen Dank für Ihre Buchung im Hotel Salzburger Hof Leogang. " +
+            "Hiermit senden wir Ihnen die Buchungsbestätigung und freuen und bis bald im Hotel Salzburger Hof Leogang." +
+            "\n\nMit Freundlichen Grüßen\nFamilie Hörl samt Team" +
+            "\n\nBeispiel Buchungsbestätigung:" +
+            "\n\nAdresse: " + b +
+            "\nPersonenanzahl: " + c +
+            "\nZimmeranzahl: " + d +
+            "\nAnreisedatum: " + e +
+            "\nAbreisedatum: " + f +
+            "\nAbgebuchter Betrag: " + g +
+            ",00 EUR",
+
             metadata: "DEVELOPER_DEFINED_METADATA"
         }
 };

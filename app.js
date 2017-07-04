@@ -22,6 +22,7 @@ const
   routes = require('./routes/index'),
   app = express();
 
+//Require DB
 var mongojs = require('mongojs');
 var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['gaeste']);
 
@@ -258,7 +259,28 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
             'Content-type': 'application/x-www-form-urlencoded'
         }
     };
-        var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?><OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de"><POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f"><RequestorID Type="10" ID="50114" ID_Context="CLTZ"/><BookingChannel Type="7"/></Source></POS><AvailRequestSegments><AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay"><StayDateRange Start="' + arrivalDate + '" End="' + departureDate + '"/><RatePlanCandidates>' + doppelzimmerClassicSteinleo + einzelzimmerSommerstein + doppelzimmerDeluxeHolzleo + doppelzimmerSuperiorSteinleo + '</RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="' + numberOfRooms + '"><GuestCounts><GuestCount AgeQualifyingCode="10" Count="' + numberOfPersons + '"/><GuestCount Age="10" Count="10"/></GuestCounts></RoomStayCandidate></RoomStayCandidates></AvailRequestSegment></AvailRequestSegments></OTA_HotelAvailRQ>';
+        var body = 'otaRQ=<?xml version="1.0" encoding="UTF-8"?>' +
+            '<OTA_HotelAvailRQ xmlns="http://www.opentravel.org/OTA/2003/05" Version="3.30" TimeStamp="2011-07-12T05:59:49" PrimaryLangID="de">' +
+            '<POS><Source AgentSine="49082" AgentDutyCode="513f3eb9b082756f">' +
+            '<RequestorID Type="10" ID="50114" ID_Context="CLTZ"/>' +
+            '<BookingChannel Type="7"/>' +
+            '</Source></POS>' +
+            '<AvailRequestSegments>' +
+            '<AvailRequestSegment ResponseType="RateInfoDetails" InfoSource="MyPersonalStay">' +
+            '<StayDateRange Start="' + arrivalDate + '" End="' + departureDate + '"/>' +
+            '<RatePlanCandidates>' +
+            doppelzimmerClassicSteinleo + einzelzimmerSommerstein + doppelzimmerDeluxeHolzleo + doppelzimmerSuperiorSteinleo +
+            '</RatePlanCandidates><RoomStayCandidates><RoomStayCandidate Quantity="' + numberOfRooms + '">' +
+            '<GuestCounts>' +
+            '<GuestCount AgeQualifyingCode="10" Count="' + numberOfPersons + '"/>' +
+            '<GuestCount Age="10" Count="10"/>' +
+            '</GuestCounts>' +
+            '</RoomStayCandidate>' +
+            '</RoomStayCandidates>' +
+            '</AvailRequestSegment>' +
+            '</AvailRequestSegments>' +
+            '</OTA_HotelAvailRQ>';
+
         var req = http.request(postRequest, function (res) {
         console.log(res.statusCode);
         res.on("data", function (data) {
@@ -1679,6 +1701,7 @@ function sendPaymentButton(recipientId) {
 /* Message Offer
  * "1|1" ----> double checked | WORKS
  * item_url - Link image links to
+ * serverUrl - global variable, same as in config.json
  */
 
 function sendGenericMessageOffer1(recipientId) {
@@ -2449,7 +2472,9 @@ function callSendAPI(messageData) {
     });
 }
 
-//Send update to REST-ful API in index.js if signed-out, change signed-up field to false
+/*
+ * Send update to REST-ful API in index.js if signed-out, change signed-up field to false
+ */
 function updateDB(){
     console.log("updateDB function called" + c);
 
@@ -2485,7 +2510,6 @@ exports.callSendAPI = callSendAPI;
  * Webhooks must be available via SSL with a certificate signed by a valid
  * certificate authority.
  */
-
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
