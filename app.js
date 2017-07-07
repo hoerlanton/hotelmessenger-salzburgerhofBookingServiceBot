@@ -1,12 +1,3 @@
-/*
- * Copyright 2016-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 /* jshint node: true, devel: true */
 'use strict';
  
@@ -20,14 +11,9 @@ const
   http = require('http'),
   parseString = require('xml2js').parseString,
   routes = require('./routes/index'),
-  app = express();
-
-
-// BACKEND (anodejs - express)
-// npm install express multer
-
-var multer = require('multer');
-var path = require('path');
+  app = express(),
+  multer = require('multer'),
+  path = require('path');
 
 //Bodyparser middleware
 app.use(bodyParser.urlencoded({ extended: false}));
@@ -39,9 +25,6 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-
-//Require upload files test folder
-require("./uploadedFiles/app.js")(app);
 
 //Setting port
 app.set('port', process.env.PORT || 8000);
@@ -127,6 +110,20 @@ var b = "";
 // c = messageData.recipient.id; called in updateDb function -> if sendAPI call failes
 var c = "";
 
+//Store uploaded files - destination set / name of file set
+var storage = multer.diskStorage({
+    // Destination of upload
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    // Rename of file
+    filename: function (req, file, cb) {
+        cb(null, Math.random() * 100 + file.originalname.replace(/ /g, ""));
+    }
+});
+
+var upload = multer({ storage: storage });
+
 //local variables are declared globally, assigned a value in sendGenericMessageOfferX function
 app.locals.titleSummary = "";
 app.locals.subTitleSummary = "";
@@ -150,9 +147,6 @@ app.locals.totalPrice = 0;
  *
  */
 
-// HOST_URL used for DB calls - without https or www
-const HOST_URL = "www.salzburgerhof.servicio.io";
-
 // App Secret can be retrieved from the App Dashboard
 const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ? 
   process.env.MESSENGER_APP_SECRET :
@@ -174,31 +168,22 @@ const SERVER_URL = (process.env.SERVER_URL) ?
   (process.env.SERVER_URL) :
   config.get('serverURL');
 
+// HOST_URL used for DB calls - SERVER_URL without https or https://
+const HOST_URL = 'www.salzburgerhof.servicio.io';
+
 if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   console.error("Missing config values");
   process.exit(1);
 }
 
-
-var storage = multer.diskStorage({
-    // destino del fichero
-    destination: function (req, file, cb) {
-        cb(null, './uploads/')
-    },
-    // renombrar fichero
-    filename: function (req, file, cb) {
-        cb(null, Math.random() * 100 + file.originalname.replace(/ /g, ""));
-    }
-});
-
-var upload = multer({ storage: storage });
-
-//https://gist.github.com/aitoribanez/8b2d38601f6916139f5754aae5bcc15f
+//source: https://gist.github.com/aitoribanez/8b2d38601f6916139f5754aae5bcc15f
+//New file got attached to message
 app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
     console.log("console log in app.post upload", 'files', req.files);
     exports.uploadedFileName = req.files[0].filename;
     newFileUploaded = true;
     console.log("New file uploaded status:" + newFileUploaded);
+    //Export value to index.js - a new file got uploaded
     exports.newFileUploaded = newFileUploaded;
     console.log("New file uploaded status:" + newFileUploaded);
     console.log("New file uploaded status:" + newFileUploaded);
@@ -2510,6 +2495,7 @@ function callSendAPI(messageData) {
       console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
       //If error is because attached file can not be found, DB is not getting updated
       var errorMsgNoDBUpdate = "Failed to fetch the file from the url";
+      //if error message if that it Failed to fetch the file from the url, function is returned
       if(body.error.message.indexOf(errorMsgNoDBUpdate) !== -1){
           return
       }

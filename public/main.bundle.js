@@ -202,8 +202,6 @@ var TasksComponent = (function () {
             date: this.dateGenerated
         };
         console.log(newTask);
-        //this.sentMessages.push(newTask);
-        //console.log(Messages);
         this.taskService.addTask(newTask)
             .subscribe(function (Messages) {
             _this.sentMessages.push(Messages);
@@ -211,8 +209,6 @@ var TasksComponent = (function () {
         });
     };
     TasksComponent.prototype.ngOnInit = function () {
-        // 1st parameter is a flash message text
-        // 2nd parameter is optional. You can pass object with options.
     };
     TasksComponent.prototype.upload = function () {
         var _this = this;
@@ -220,7 +216,11 @@ var TasksComponent = (function () {
         var files = this.filesToUpload;
         formData.append("uploads[]", files[0], files[0]['name']);
         this.http.post('/upload', formData)
-            .map(function (files) { return files.json(); }).map(function (res) { return _this._flashMessagesService.show('Erfolgreich Datei angehängt', { cssClass: 'alert-success', timeout: 10000 }); })
+            .map(function (files) { return files.json(); }).map(function (res) {
+            // 1st parameter is a flash message text
+            // 2nd parameter is optional. You can pass object with options.
+            return _this._flashMessagesService.show('Erfolgreich Datei angehängt', { cssClass: 'alert-success', timeout: 10000 });
+        })
             .subscribe(function (files) { return console.log('files', files); });
     };
     TasksComponent.prototype.fileChangeEvent = function (fileInput) {

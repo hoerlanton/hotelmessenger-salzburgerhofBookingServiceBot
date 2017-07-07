@@ -116,6 +116,7 @@ router.post('/guestsMessage', function(req, res, next){
     console.log(message);
     var broadcast = req.body.text;
     var uploadedFileName = sourceFile.uploadedFileName;
+    //Destation URL for uploaded files
     var URLUploadedFile = String(config.get('serverURL') + "/uploads/" + uploadedFileName);
     console.log("New file uploaded status:" + newFileUploaded);
     newFileUploaded = sourceFile.newFileUploaded;
@@ -130,6 +131,7 @@ router.post('/guestsMessage', function(req, res, next){
                     sendBroadcast(gaeste[i].senderId, broadcast);
                     console.log("New file uploaded status: FINAALLLL!!!! ******" + newFileUploaded);
                     console.log("UploadedFileName: FINAALLLL!!!! ******" + uploadedFileName);
+                    //If a new file got attached, also send the attachment
                     if(uploadedFileName !== undefined && newFileUploaded === true) {
                         console.log("sendbroadcastfile runned");
                         sendBroadcastFile(gaeste[i].senderId, URLUploadedFile);
@@ -137,6 +139,7 @@ router.post('/guestsMessage', function(req, res, next){
                 }
             }
             errMsg = "";
+            //set the boolean that a new file got uploaded to false
             newFileUploaded = false;
             sourceFile.newFileUploaded = false;
         }
