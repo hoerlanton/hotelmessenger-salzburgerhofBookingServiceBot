@@ -151,7 +151,7 @@ app.locals.totalPrice = 0;
  */
 
 // HOST_URL used for DB calls - without https or www
-const HOST_URL = "salzburgerhof.servicio.io";
+const HOST_URL = "www.salzburgerhof.servicio.io";
 
 // App Secret can be retrieved from the App Dashboard
 const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ? 
@@ -179,6 +179,7 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   process.exit(1);
 }
 
+
 var storage = multer.diskStorage({
     // destino del fichero
     destination: function (req, file, cb) {
@@ -192,6 +193,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
+//https://gist.github.com/aitoribanez/8b2d38601f6916139f5754aae5bcc15f
 app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
     console.log("console log in app.post upload", 'files', req.files);
     exports.uploadedFileName = req.files[0].filename;
