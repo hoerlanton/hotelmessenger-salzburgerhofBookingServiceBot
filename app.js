@@ -187,7 +187,7 @@ var storage = multer.diskStorage({
     },
     // renombrar fichero
     filename: function (req, file, cb) {
-        cb(null, Math.random() * 100 + file.originalname)
+        cb(null, Math.random() * 100 + file.originalname.replace(/ /g, ""));
     }
 });
 
