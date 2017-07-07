@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e97f89fe-21ab-44d6-b3b0-c19d42291d92" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -22,8 +23,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="117">
-              <caret line="154" column="0" lean-forward="true" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
+            <state relative-caret-position="241">
+              <caret line="362" column="30" lean-forward="true" selection-start-line="362" selection-start-column="30" selection-end-line="362" selection-end-column="30" />
               <folding>
                 <element signature="n#!!block;n#sendXmlPostRequest#0" expanded="false" />
                 <element signature="n#!!block;n#getAnalytics#0" expanded="false" />
@@ -103,7 +104,7 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
+            <state relative-caret-position="846">
               <caret line="63" column="26" lean-forward="true" selection-start-line="63" selection-start-column="26" selection-end-line="63" selection-end-column="26" />
               <folding />
             </state>
@@ -113,8 +114,8 @@
       <file leaf-file-name="default.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config/default.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="56" lean-forward="true" selection-start-line="4" selection-start-column="56" selection-end-line="4" selection-end-column="56" />
+            <state relative-caret-position="0">
+              <caret line="0" column="1" lean-forward="true" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -155,6 +156,8 @@
       <find>exports</find>
       <find>test</find>
       <find>gaeste</find>
+      <find>Successfully sent message</find>
+      <find>x-hub-signature</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -174,9 +177,9 @@
         <option value="$PROJECT_DIR$/client/src/app/components/tasks/tasks.component.css" />
         <option value="$PROJECT_DIR$/client/src/app/components/tasks/tasks.component.html" />
         <option value="$PROJECT_DIR$/client/src/app/components/tasks/tasks.component.ts" />
-        <option value="$PROJECT_DIR$/config/default.json" />
         <option value="$PROJECT_DIR$/routes/index.js" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/config/default.json" />
         <option value="$PROJECT_DIR$/app.js" />
       </list>
     </option>
@@ -389,12 +392,12 @@
       <workItem from="1498829648493" duration="8464000" />
       <workItem from="1498998439310" duration="899000" />
       <workItem from="1499334215370" duration="11088000" />
-      <workItem from="1499349318194" duration="20264000" />
+      <workItem from="1499349318194" duration="21178000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="288071000" />
+    <option name="totallyTimeSpent" value="288985000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1145,22 +1148,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/default.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="56" lean-forward="true" selection-start-line="4" selection-start-column="56" selection-end-line="4" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="63" column="26" lean-forward="true" selection-start-line="63" selection-start-column="26" selection-end-line="63" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -1169,10 +1156,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/routes/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="846">
+          <caret line="63" column="26" lean-forward="true" selection-start-line="63" selection-start-column="26" selection-end-line="63" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/default.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="1" lean-forward="true" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="154" column="0" lean-forward="true" selection-start-line="154" selection-start-column="0" selection-end-line="154" selection-end-column="0" />
+        <state relative-caret-position="241">
+          <caret line="362" column="30" lean-forward="true" selection-start-line="362" selection-start-column="30" selection-end-line="362" selection-end-column="30" />
           <folding>
             <element signature="n#!!block;n#sendXmlPostRequest#0" expanded="false" />
             <element signature="n#!!block;n#getAnalytics#0" expanded="false" />

@@ -360,7 +360,9 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
  */
 function verifyRequestSignature(req, res, buf) {
   var signature = req.headers["x-hub-signature"];
-    console.log(signature);
+  console.log("Req headers:");
+  console.log(req.headers);
+    console.log("Signature:" + signature);
   if (!signature) {
     // For testing, let's log an error. In production, you should throw an 
     // error.
