@@ -4,7 +4,7 @@ h3 {
     display: inline-block;
     float: left;
     position: relative;
-    left: 10%;
+    left: 20%;
 }
 
 .row1 {
@@ -17,7 +17,7 @@ h3 {
 
 .form-group1 {
     overflow: auto;
-    height:400px;
+    height: 330px;
     margin: 0 auto;
     display: inline-block;
     width: 100%;
@@ -35,4 +35,10 @@ h3 {
 }
 .row1 .col:nth-child(3) {
     order: 2;
+}
+
+.row {
+    border-bottom-style: solid;
+    border-bottom: 10px;
+    border-bottom-color: #ffffff;
 }

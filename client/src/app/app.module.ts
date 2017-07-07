@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { TasksComponent } from './components/tasks/tasks.component';
+import { FlashMessagesModule } from 'angular2-flash-messages';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { TasksComponent } from './components/tasks/tasks.component';
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    FlashMessagesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

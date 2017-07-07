@@ -8,7 +8,8 @@ var sourceFile = require('../app');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['Messages', 'gaeste']);
+var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['Messages', 'gaeste', 'test']);
+var config = require('config');
 
 //Bodyparser middleware
 router.use(bodyParser.urlencoded({ extended: false}));
@@ -26,6 +27,10 @@ var totalPriceChargeReservationInt = 0;
 var totalPriceChargeReservationIntSliced = "";
 var count = 0;
 var redirect = false;
+var SERVER_URL = config.get('serverURL');
+var newFileUploaded = false;
+
+
 
 //----->REST-FUL API<------//
 
@@ -40,6 +45,15 @@ router.get('/guestsMessages', function(req, res, next) {
         res.json(message);
     });
 });
+
+//File Upload
+router.post('/hallo', function(req, res, next) {
+    console.log(req.body);
+    console.log(req.file);
+    console.log(req.formData);
+    console.log("hallo post sent req.body" + res.body);
+});
+
 
 //Get all guests
 router.get('/guests', function(req, res, next) {
@@ -101,7 +115,12 @@ router.post('/guestsMessage', function(req, res, next){
     var message = req.body;
     console.log(message);
     var broadcast = req.body.text;
-
+    var uploadedFileName = sourceFile.uploadedFileName;
+    var URLUploadedFile = String(config.get('serverURL') + "/uploads/" + uploadedFileName);
+    console.log("New file uploaded status:" + newFileUploaded);
+    newFileUploaded = sourceFile.newFileUploaded;
+    console.log("New file uploaded status: FINAALLLL!!!!" + newFileUploaded);
+    console.log("UploadedFileName: FINAALLLL!!!!" + uploadedFileName);
     db.gaeste.find(function(err, gaeste){
         if (err){
             errMsg = "Das senden der Nachricht ist nicht möglich. Es sind keine Gäste angemeldet.";
@@ -109,6 +128,12 @@ router.post('/guestsMessage', function(req, res, next){
             for (var i = 0; i < gaeste.length; i++) {
                 if(gaeste[i].signed_up === true) {
                     sendBroadcast(gaeste[i].senderId, broadcast);
+                    console.log("New file uploaded status: FINAALLLL!!!! ******" + newFileUploaded);
+                    console.log("UploadedFileName: FINAALLLL!!!! ******" + uploadedFileName);
+                    if(uploadedFileName !== undefined && newFileUploaded === true) {
+                        console.log("sendbroadcastfile runned");
+                        sendBroadcastFile(gaeste[i].senderId, URLUploadedFile);
+                    }
                 }
             }
             errMsg = "";
@@ -121,11 +146,14 @@ router.post('/guestsMessage', function(req, res, next){
         }
         res.json(message);
     });
+
 });
 
 //Get W-Lan-landingpage
 router.get('/wlanlandingpage', function(req, res, next) {
     res.render('wlanlandingpage', { title: 'Jetzt buchen', errMsg: errMsg, noError: !errMsg});
+    console.log("wlanlandingpage ejs rendered");
+
 });
 
 //Get checkout form page
@@ -444,12 +472,31 @@ function sendBroadcast(recipientId, broadcastText) {
         },
         message: {
             text: broadcastText,
-            metadata: "DEVELOPER_DEFINED_METADATA"
+            metadata: "DEVELOPER_DEFINED_METADATA",
         }
     };
-
     sourceFile.callSendAPI(messageData);
 }
 
+//Broadcast gesendet von Dashboard to all angemeldete Gäste - Wenn Anhang hochgeladen, diese function wird gecalled
+function sendBroadcastFile(recipientId, URLUploadedFile) {
+    console.log(URLUploadedFile);
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "file",
+                payload: {
+                    url: URLUploadedFile
+                }
+            }
+        }
+    };
+    sourceFile.callSendAPI(messageData);
+    newFileUploaded = false;
+    sourceFile.newFileUploaded = false;
+}
 
 module.exports = router;

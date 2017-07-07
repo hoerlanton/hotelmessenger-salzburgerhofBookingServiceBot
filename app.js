@@ -22,9 +22,26 @@ const
   routes = require('./routes/index'),
   app = express();
 
+
+// BACKEND (anodejs - express)
+// npm install express multer
+
+var multer = require('multer');
+var path = require('path');
+
 //Bodyparser middleware
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
+
+// para CORN
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+//Require upload files test folder
+require("./uploadedFiles/app.js")(app);
 
 //Setting port
 app.set('port', process.env.PORT || 8000);
@@ -34,6 +51,9 @@ app.set('view engine', 'ejs');
 
 //Set Public folder as static folder
 app.use(express.static('public'));
+
+// le dice a express que el directorio 'uploads', es estatico.
+app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
 
 //Use ./routes/index.js as routes root /
 app.use('/', routes);
@@ -97,14 +117,15 @@ var arrivalDateForLink = "";
 var dateIsInThePast = false;
 var autoAnswerIsOn = true;
 var senderIDTransfer = [];
+var newFileUploaded = false;
+exports.newFileUploaded = false;
 
-//data when user clicks sent to messenger button -> send to index.js REST-API
+//data when user clicks send to messenger button -> send to index.js REST-API
 var a = {};
 //object a stringified in order to make post request to REST-API
 var b = "";
 // c = messageData.recipient.id; called in updateDb function -> if sendAPI call failes
 var c = "";
-
 
 //local variables are declared globally, assigned a value in sendGenericMessageOfferX function
 app.locals.titleSummary = "";
@@ -118,23 +139,19 @@ app.locals.subTitleSummaryDoppelzimmerClassicSteinleo = "";
 app.locals.totalPrice = "";
 app.locals.totalPrice = 0;
 
+
 /*
- * If setting up a new app, change serverURL and pageAccessToken according to config.js file
+ * If setting up a new app, change SERVER_URL and PAGE_ACCESS_TOKEN according to config.js file
  */
-
-//Used in sendGenericMessageOfferX functions
-var serverUrl = "https://www.salzburgerhof.servicio.io";
-//Used in the two requests to REST-API in index.js, function updateDB and function postNewUserToDB
-var hostUrl = "www.salzburgerhof.servicio.io";
-//Used in receivedAuthentication function
-var pageAccessToken = "EAAbPgy5UveYBAAigWt16bITQTfbCri5o7IyWxv4fR3IUZAcpoZBRxHqoVAnZAg0dnQqkCovgng3Ak7uuezE0kmfbxEntlO8SEGLZA1SV8wGL6HYaA3xN6tAU2dnly7NiVfLZCKsDWDwZCL5KuZC7wL4G38TGHFZCZBloFBkRdEeZBrjgZDZD";
-
 
 /*
  * Be sure to setup your config values before running this code. You can 
  * set them using environment variables or modifying the config file in /config.
  *
  */
+
+// HOST_URL used for DB calls - without https or www
+const HOST_URL = "salzburgerhof.servicio.io";
 
 // App Secret can be retrieved from the App Dashboard
 const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ? 
@@ -161,6 +178,30 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   console.error("Missing config values");
   process.exit(1);
 }
+
+var storage = multer.diskStorage({
+    // destino del fichero
+    destination: function (req, file, cb) {
+        cb(null, './uploads/')
+    },
+    // renombrar fichero
+    filename: function (req, file, cb) {
+        cb(null, Math.random() * 100 + file.originalname)
+    }
+});
+
+var upload = multer({ storage: storage });
+
+app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
+    console.log("console log in app.post upload", 'files', req.files);
+    exports.uploadedFileName = req.files[0].filename;
+    newFileUploaded = true;
+    console.log("New file uploaded status:" + newFileUploaded);
+    exports.newFileUploaded = newFileUploaded;
+    console.log("New file uploaded status:" + newFileUploaded);
+    console.log("New file uploaded status:" + newFileUploaded);
+    res.send(req.files);
+});
 
 /*
  * Use your own validation token. Check that the token used in the Webhook
@@ -307,8 +348,6 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
     req.end();
 }
 
-
-
 /*
  * Verify that the callback came from Facebook. Using the App Secret from 
  * the App Dashboard, we can verify the signature that is sent with each 
@@ -323,7 +362,7 @@ function verifyRequestSignature(req, res, buf) {
   if (!signature) {
     // For testing, let's log an error. In production, you should throw an 
     // error.
-    console.error("Couldn't validate the signature. Line 304 app.js // Callback from Facebook. If Server URL is not the same as webhook URL on facebook");
+    console.error("Couldn't validate the signature. Line 358 app.js // Callback from Facebook. If Server URL is not the same as webhook URL on facebook");
   } else {
     var elements = signature.split('=');
     var method = elements[0];
@@ -383,8 +422,7 @@ function receivedAuthentication(event) {
         port: 443,
         path: '/v2.6/' + senderID +
         '?fields=first_name,last_name,profile_pic,is_payment_enabled,locale,timezone,gender&access_token=' +
-        pageAccessToken,
-
+        PAGE_ACCESS_TOKEN,
         method: 'GET'
     };
 
@@ -429,7 +467,7 @@ function postNewUserToDB() {
         // An object of options to indicate where to post to
         var post_options = {
             //Change URL to hotelmessengertagbag.herokuapp.com if deploying
-            host: "'" + hostUrl + "'",
+            host: HOST_URL,
             port: '80',
             path: '/guests',
             method: 'POST',
@@ -450,7 +488,7 @@ function postNewUserToDB() {
         post_req.write(b);
         post_req.end();
 }
-//Not in use rigth now
+//Not in use right now
 function getAnalytics(){
     var buffer = "";
     var a = "";
@@ -486,7 +524,6 @@ function getAnalytics(){
         console.error(e);
     });
 }
-exports.getAnalytics = getAnalytics;
 //Stay range is the difference between arrivalday and departureday
 function calculateStayRange(arrivalDate, departureDate) {
     arrivalDateSplitted = arrivalDate.split("-");
@@ -531,7 +568,9 @@ function calculatePrice(stayRange, numberOfRooms) {
     exports.priceAllNightsDoppelzimmerClassicSteinleo = priceAllNightsDoppelzimmerClassicSteinleo;
     exports.priceAllNightsDoppelzimmerDeluxeHolzleo = priceAllNightsDoppelzimmerDeluxeHolzleo;
 }
-//Creating a booking Link, which links to the booking engine on www.salzburgerhof.eu website - https://hotel-salzburgerhof.viomassl.com/de/zimmer-angebote/anfrage -> Called in receivedMessage function -> Used in sendPaymentButton function
+//Creating a booking Link, which links to the booking engine on www.salzburgerhof.eu website -
+// https://hotel-salzburgerhof.viomassl.com/de/zimmer-angebote/anfrage
+// -> Called in receivedMessage function -> Used in sendPaymentButton function
 function createBookingLink(arrivalDateSplitted, departureDateSplitted, numberOfPersons){
     console.log("ArrivaldateSplitted : " + arrivalDateSplitted + "Departuredate splitted :" + departureDateSplitted);
     arrivalDateForLink = arrivalDateSplitted[2] + "." + arrivalDateSplitted[1] + "." + arrivalDateSplitted[0];
@@ -734,7 +773,7 @@ function exportSenderID(senderID){
  *
  */
 
-//Main function where most answer functions are called from
+//------>Main function where most answer functions are called from<------
 function receivedMessage(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
@@ -743,19 +782,18 @@ function receivedMessage(event) {
     console.log("Received message for user %d and page %d at %d with message:",
         senderID, recipientID, timeOfMessage);
     console.log(JSON.stringify(message));
-    console.log(quickReplyPayload);
     var isEcho = message.is_echo;
     var messageId = message.mid;
     var appId = message.app_id;
     var metadata = message.metadata;
 
-    // You may get a text or attachment but not both
+    //You may get a text or attachment but not both
     var messageText = message.text;
     var messageAttachments = message.attachments;
     var quickReply = message.quick_reply;
 
     if (isEcho) {
-        // Just logging message echoes to console
+        //Just logging message echoes to console
         console.log("Received echo for message %s and app %d with metadata %s",
             messageId, appId, metadata);
         return;
@@ -868,9 +906,12 @@ function receivedMessage(event) {
                 break;
 
             default:
-                //if (typeof quickReplyPayload === "undefined") {
-                //   sendMenu(senderID);
-                //}
+                /* Auto reply Menu disabled
+                 *
+                 *if (typeof quickReplyPayload === "undefined") {
+                 *   sendMenu(senderID);
+                 * }
+                 */
             }
         }
 }
@@ -1707,7 +1748,7 @@ function sendPaymentButton(recipientId) {
 /* Message Offer
  * "1|1" ----> double checked | WORKS
  * item_url - Link image links to
- * serverUrl - global variable, same as in config.json
+ * SERVER_URL - global variable, same as in config.json
  */
 function sendGenericMessageOffer1(recipientId) {
     var messageData = {
@@ -1724,11 +1765,11 @@ function sendGenericMessageOffer1(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + ".2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsenen ",
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1764,11 +1805,11 @@ function sendGenericMessageOffer2(recipientId) {
                     elements: [{
                         title: String(numberOfRooms) + " Doppelzimmer Deluxe Holzleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerDeluxeHolzleo) + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene ",
-                        item_url: serverUrl + "/DoppelzimmerDeluxeHolzleo",
+                        item_url: SERVER_URL + "/DoppelzimmerDeluxeHolzleo",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/zimmer_holzleo_uebersicht.jpg",
                         buttons: [{
                             type: "web_url",
-                            url: serverUrl + "/DoppelzimmerDeluxeHolzleo",
+                            url: SERVER_URL + "/DoppelzimmerDeluxeHolzleo",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1779,11 +1820,11 @@ function sendGenericMessageOffer2(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Superior Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerSuperiorSteinleo) + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene ",
-                            item_url: serverUrl + "/DoppelzimmerSuperiorSteinleo",
+                            item_url: SERVER_URL + "/DoppelzimmerSuperiorSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/DoppelzimmerSuperiorSteinleo",
+                                url: SERVER_URL + "/DoppelzimmerSuperiorSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1794,11 +1835,11 @@ function sendGenericMessageOffer2(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: serverUrl + "/DoppelzimmerClassicSteinleo",
+                            item_url: SERVER_URL + "/DoppelzimmerClassicSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/DoppelzimmerClassicSteinleo",
+                                url: SERVER_URL + "/DoppelzimmerClassicSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1841,11 +1882,11 @@ function sendGenericMessageOffer3(recipientId) {
                     elements: [{
                         title: String(numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                        item_url: serverUrl + "/checkout",
+                        item_url: SERVER_URL + "/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: serverUrl + "/checkout",
+                            url: SERVER_URL + "/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1856,11 +1897,11 @@ function sendGenericMessageOffer3(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein) + ",00 EUR + " + String(priceAllNightsDoppelzimmerClassicSteinleo) + ",00 EUR  = " + String(priceAllNightsDoppelzimmerClassicSteinleo + priceAllNightsEinzelzimmerSommerstein + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1901,11 +1942,11 @@ function sendGenericMessageOffer4(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms ) + ",00 EUR "),
-                        item_url: serverUrl + "/checkout",
+                        item_url: SERVER_URL + "/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: serverUrl + "/checkout",
+                            url: SERVER_URL + "/checkout",
                             title: "Open Web URL"
                         }, {
                             type: "postback",
@@ -1916,11 +1957,11 @@ function sendGenericMessageOffer4(recipientId) {
                         {
                             title: String(numberOfRooms / numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR + " + String(priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ",00 EUR  = " + String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + (priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1960,11 +2001,11 @@ function sendGenericMessageOffer5(recipientId) {
                     elements: [{
                         title: String(numberOfRooms) + " Doppelzimmer Deluxe Holzleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerDeluxeHolzleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                        item_url: serverUrl + "/DoppelzimmerDeluxeHolzleo",
+                        item_url: SERVER_URL + "/DoppelzimmerDeluxeHolzleo",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/zimmer_holzleo_uebersicht.jpg",
                         buttons: [{
                             type: "web_url",
-                            url: serverUrl + "/DoppelzimmerDeluxeHolzleo",
+                            url: SERVER_URL + "/DoppelzimmerDeluxeHolzleo",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -1975,11 +2016,11 @@ function sendGenericMessageOffer5(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Superior Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerSuperiorSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: serverUrl + "/DoppelzimmerSuperiorSteinleo",
+                            item_url: SERVER_URL + "/DoppelzimmerSuperiorSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-Superior-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/DoppelzimmerSuperiorSteinleo",
+                                url: SERVER_URL + "/DoppelzimmerSuperiorSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -1990,11 +2031,11 @@ function sendGenericMessageOffer5(recipientId) {
                         {
                             title: String(numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo + ",00 EUR  | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: serverUrl + "/DoppelzimmerClassicSteinleo",
+                            item_url: SERVER_URL + "/DoppelzimmerClassicSteinleo",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/DoppelzimmerClassicSteinleo",
+                                url: SERVER_URL + "/DoppelzimmerClassicSteinleo",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -2038,11 +2079,11 @@ function sendGenericMessageOffer6(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR = " + String(priceAllNightsEinzelzimmerSommerstein +  ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons) + " Erwachsene "),
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -2080,11 +2121,11 @@ function sendGenericMessageOffer7(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms * 2) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) * 2) + ",00 EUR | Preis ist kalkuliert für " + (numberOfPersons -1)+ " Erwachsene ",
-                        item_url: serverUrl + "/checkout",
+                        item_url: SERVER_URL + "/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: serverUrl + "/checkout",
+                            url: SERVER_URL + "/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -2095,11 +2136,11 @@ function sendGenericMessageOffer7(recipientId) {
                         {
                             title: String(numberOfRooms / numberOfRooms ) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) * 2) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / numberOfRooms) + ",00 EUR = " + String(((priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) * 2) + (priceAllNightsEinzelzimmerSommerstein / numberOfRooms)) + ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -2139,11 +2180,11 @@ function sendGenericMessageOffer8(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: String(priceAllNightsEinzelzimmerSommerstein / 3) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / 3) + ",00 EUR + " + String(priceAllNightsEinzelzimmerSommerstein / 3) + ",00 EUR = " + String(priceAllNightsEinzelzimmerSommerstein) +  ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -2182,11 +2223,11 @@ function sendGenericMessageOffer9(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle:  String(priceAllNightsEinzelzimmerSommerstein) +  ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -2224,11 +2265,11 @@ function sendGenericMessageOffer10(recipientId) {
                         {
                             title: String(numberOfRooms) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle:  String(priceAllNightsEinzelzimmerSommerstein) +  ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene",
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -2266,11 +2307,11 @@ function sendGenericMessageOffer11(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ",00 EUR",
-                        item_url: serverUrl + "/checkout",
+                        item_url: SERVER_URL + "/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: serverUrl + "/checkout",
+                            url: SERVER_URL + "/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -2325,11 +2366,11 @@ function sendGenericMessageOffer12(recipientId) {
                     elements: [{
                         title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ",00 EUR ",
-                        item_url: serverUrl + "/checkout",
+                        item_url: SERVER_URL + "/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
                         buttons: [{
                             type: "web_url",
-                            url: serverUrl + "/checkout",
+                            url: SERVER_URL + "/checkout",
                             title: "Buchen & Details"
                         }, {
                             type: "postback",
@@ -2340,11 +2381,11 @@ function sendGenericMessageOffer12(recipientId) {
                         {
                             title: String((numberOfRooms/ numberOfRooms) * 3) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: (priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 3 + ",00 EUR + " + priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ",00 EUR  = " + (priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ((priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 3)) + ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene" ,
-                            item_url: serverUrl + "/checkout",
+                            item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
                             buttons: [{
                                 type: "web_url",
-                                url: serverUrl + "/checkout",
+                                url: SERVER_URL + "/checkout",
                                 title: "Buchen & Details"
                             }, {
                                 type: "postback",
@@ -2462,7 +2503,12 @@ function callSendAPI(messageData) {
         recipientId);
       }
     } else {
-      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error, messageData.recipient.id);
+      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+      //If error is because attached file can not be found, DB is not getting updated
+      var errorMsgNoDBUpdate = "Failed to fetch the file from the url";
+      if(body.error.message.indexOf(errorMsgNoDBUpdate) !== -1){
+          return
+      }
       console.log(messageData.recipient.id);
       // var c is assigned to the current recipient id
       c = messageData.recipient.id;
@@ -2477,6 +2523,9 @@ function callSendAPI(messageData) {
     });
 }
 
+//Exports callSendAPI to index.js file
+exports.callSendAPI = callSendAPI;
+
 /*
  * Send update to REST-ful API in index.js if signed-out, change signed-up field to false
  */
@@ -2486,7 +2535,7 @@ function updateDB(){
      // An object of options to indicate where to post to
      var put_options = {
         //Change URL on top if deploying
-        host: "'" + hostUrl + "'",
+        host: HOST_URL,
         port: '80',
         path: '/guests',
         method: 'PUT',
@@ -2507,9 +2556,6 @@ function updateDB(){
      put_req.write(c);
      put_req.end();
 }
-
-//Exports callSendAPI to index.js file
-exports.callSendAPI = callSendAPI;
 
 /*
  * Start server

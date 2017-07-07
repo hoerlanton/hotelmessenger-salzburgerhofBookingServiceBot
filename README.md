@@ -11,3 +11,10 @@ More information on: www.servicio.io
 - Change „pageAccessToken“ and „serverUrl" variable in app.js
 - Change mongoDB collection types in index.js and app.js
 - Update hostUrl in app.js
+
+## Data for Salzburger Hof bot
+
+serverUrl = https://www.salzburgerhof.servicio.io
+hostUrl = salzburgerhof.servicio.io
+index.js insert geaste collection
+
