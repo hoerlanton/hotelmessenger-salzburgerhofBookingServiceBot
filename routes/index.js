@@ -137,6 +137,8 @@ router.post('/guestsMessage', function(req, res, next){
                 }
             }
             errMsg = "";
+            newFileUploaded = false;
+            sourceFile.newFileUploaded = false;
         }
     });
     //Save Message to DB
@@ -495,8 +497,6 @@ function sendBroadcastFile(recipientId, URLUploadedFile) {
         }
     };
     sourceFile.callSendAPI(messageData);
-    newFileUploaded = false;
-    sourceFile.newFileUploaded = false;
 }
 
 module.exports = router;
