@@ -8,7 +8,7 @@ var sourceFile = require('../app');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['Messages', 'gaeste', 'test']);
+var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['salzburgerhofMessages', 'salzburgerhofGaeste']);
 var config = require('config');
 
 //Bodyparser middleware
@@ -38,7 +38,7 @@ var newFileUploaded = false;
 router.get('/guestsMessages', function(req, res, next) {
     console.log("guestsMessages get called");
     //Get guests from Mongo DB
-    db.Messages.find(function(err, message){
+    db.salzburgerhofMessages.find(function(err, message){
         if (err){
             res.send(err);
         }
@@ -46,20 +46,11 @@ router.get('/guestsMessages', function(req, res, next) {
     });
 });
 
-//File Upload
-router.post('/hallo', function(req, res, next) {
-    console.log(req.body);
-    console.log(req.file);
-    console.log(req.formData);
-    console.log("hallo post sent req.body" + res.body);
-});
-
-
 //Get all guests
 router.get('/guests', function(req, res, next) {
     console.log("guests get called");
     //Get guests from Mongo DB
-    db.gaeste.find(function(err, gaeste){
+    db.salzburgerhofGaeste.find(function(err, gaeste){
         if (err){
             res.send(err);
         }
@@ -71,7 +62,6 @@ router.get('/guests', function(req, res, next) {
 router.post('/guests', function(req, res, next) {
     //JSON string is parsed to a JSON object
     console.log("Post request made to ****Guest*****");
-    console.dir(req.body);
     var guest = req.body;
     console.dir(guest);
     if(!guest.first_name || !guest.last_name){
@@ -80,7 +70,7 @@ router.post('/guests', function(req, res, next) {
             error: "Bad data"
         });
     } else {
-        db.gaeste.save(guest, function (err, guest) {
+        db.salzburgerhofGaeste.save(guest, function (err, guest) {
             if (err) {
                 res.send(err);
             }
@@ -97,7 +87,7 @@ router.put('/guests', function(req, res, next) {
     var guestUpdateString = JSON.stringify(guestUpdate);
     var guestUpdateHoi = guestUpdateString.slice(2, -5);
     console.log(guestUpdateHoi);
-    db.gaeste.update({
+    db.salzburgerhofGaeste.update({
         senderId:  guestUpdateHoi  },
         {
             $set: { signed_up: false }
@@ -111,7 +101,6 @@ router.put('/guests', function(req, res, next) {
 
 //Post message to guests
 router.post('/guestsMessage', function(req, res, next){
-    console.log(req.body);
     var message = req.body;
     console.log(message);
     var broadcast = req.body.text;
@@ -122,7 +111,7 @@ router.post('/guestsMessage', function(req, res, next){
     newFileUploaded = sourceFile.newFileUploaded;
     console.log("New file uploaded status: FINAALLLL!!!!" + newFileUploaded);
     console.log("UploadedFileName: FINAALLLL!!!!" + uploadedFileName);
-    db.gaeste.find(function(err, gaeste){
+    db.salzburgerhofGaeste.find(function(err, gaeste){
         if (err){
             errMsg = "Das senden der Nachricht ist nicht möglich. Es sind keine Gäste angemeldet.";
         } else {
@@ -145,7 +134,7 @@ router.post('/guestsMessage', function(req, res, next){
         }
     });
     //Save Message to DB
-    db.Messages.save(message, function (err, message) {
+    db.salzburgerhofMessages.save(message, function (err, message) {
         if (err) {
             res.send(err);
         }

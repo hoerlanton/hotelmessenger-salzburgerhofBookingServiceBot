@@ -50,6 +50,7 @@
                 </div>
             </form>
         </div>
+        <button (click)="clicked($event)" style=" background-color: white; color: #0a7a74 " type="submit" class="btn btn-send">JSONHTMLREQUEST</button>
         <h3 style="color: white; text-align: center; padding-top: 20px; border-top-style: solid; border-top: 10px; border-top-color: #ffffff">Gesendete Nachrichten</h3>
             <div class="form-group1">
                 <div *ngFor="let Messages of sentMessages">

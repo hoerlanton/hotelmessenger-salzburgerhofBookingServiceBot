@@ -17,6 +17,8 @@ const
 
 //Bodyparser middleware
 app.use(bodyParser.urlencoded({ extended: false}));
+
+//Throws errors if callbacks are not from facebook
 app.use(bodyParser.json({ verify: verifyRequestSignature }));
 
 // para CORN
@@ -40,6 +42,8 @@ app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
 
 //Use ./routes/index.js as routes root /
 app.use('/', routes);
+
+
 
 //Global variables
 //Data recieved from the sendXmlPostRequest request to Channelmanager
@@ -169,7 +173,7 @@ const SERVER_URL = (process.env.SERVER_URL) ?
   config.get('serverURL');
 
 // HOST_URL used for DB calls - SERVER_URL without https or https://
-const HOST_URL = 'www.salzburgerhof.servicio.io';
+const HOST_URL = config.get('hostURL');
 
 if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   console.error("Missing config values");
@@ -215,7 +219,7 @@ app.get('/webhook', function(req, res) {
  */
 app.post('/webhook', function (req, res) {
   var data = req.body;
-
+    console.log("/webhook to app.post called -> Calls signature error?" + data);
   // Make sure this is a page subscription
   if (data.object == 'page') {
     // Iterate over each entry
@@ -251,7 +255,6 @@ app.post('/webhook', function (req, res) {
     res.sendStatus(200);
   }
 });
-
 
 
 /*
@@ -335,6 +338,8 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
     req.end();
 }
 
+
+
 /*
  * Verify that the callback came from Facebook. Using the App Secret from 
  * the App Dashboard, we can verify the signature that is sent with each 
@@ -351,7 +356,7 @@ function verifyRequestSignature(req, res, buf) {
   if (!signature) {
     // For testing, let's log an error. In production, you should throw an 
     // error.
-    console.error("Couldn't validate the signature. Line 358 app.js // Callback from Facebook. If Server URL is not the same as webhook URL on facebook");
+    console.error("Couldn't validate the signature. Line 358 app.js // Callback from Facebook. If Server URL is not the same as webhook URL on facebook // Every callback is parsed in the bodyparser on top - Line 20 - so errors in logs are because of - but are not a problem");
   } else {
     var elements = signature.split('=');
     var method = elements[0];
@@ -381,7 +386,7 @@ function receivedAuthentication(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfAuth = event.timestamp;
-
+    console.log("Request body receivedAuthentication" + req.body);
     // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
     // The developer can set this to an arbitrary value to associate the
     // authentication callback with the 'Send to Messenger' click event. This is
@@ -396,13 +401,10 @@ function receivedAuthentication(event) {
     // When an authentication is received, we'll send a message back to the sender
     // to let them know it was successful.
 
+    //Function initialised on line 651
     sendTextMessage(senderID, "Sie haben sich erfolgreich angemeldet. " +
         "Sie erhalten nun Neuigkeiten via Facebook Messenger " +
         "von Ihrem Salzburger Hof Leogang team. Viel Spaß!");
-
-    //Function initialised on line 651
-    //exportSenderID(senderID);
-
 
     //https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
     var buffer = "";
@@ -443,12 +445,12 @@ function receivedAuthentication(event) {
             b = JSON.stringify(a);
         });
     });
-            // Build the post string from an object
-            reqGet.end();
-            reqGet.on('error', function (e) {
-                console.error(e);
-
+    // Build the post string from an object
+    reqGet.end();
+    reqGet.on('error', function (e) {
+    console.error("Error line 450:" + e);
     });
+
     setTimeout(postNewUserToDB, 30000);
 }
 //New User is saved in DB, function called in receivedAuthentication - send to index.js /guests REST-FUL API
@@ -795,7 +797,7 @@ function receivedMessage(event) {
         if (quickReplyPayload === "1 person" || quickReplyPayload === "2 persons" || quickReplyPayload === "3 persons" || quickReplyPayload === "4 persons" || quickReplyPayload === "5 persons") {
             //Every request is counted.
             //If request is bigger than 2, the basic arguments for the request are reset.
-            resetData();
+            booking.resetData();
             //indicated value (how many persons are joining) from the user is added to the numberOfPersons variable
             assigningNumberOfPersonsVar(quickReplyPayload);
             //Number of rooms is the next question
@@ -2417,6 +2419,7 @@ function sendTypingOn(recipientId) {
 
   callSendAPI(messageData);
 }
+
 
 /*
  * Turn typing indicator off

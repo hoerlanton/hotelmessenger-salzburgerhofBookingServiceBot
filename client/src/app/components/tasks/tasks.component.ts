@@ -73,4 +73,8 @@ export class TasksComponent implements OnInit {
         //console.log(this.successMsg);
         //this.product.photo = fileInput.target.files[0]['name'];
     }
+
+    clicked(event) {
+
+    }
 }
