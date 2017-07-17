@@ -125,7 +125,7 @@ router.post('/guestsMessage', function(req, res, next){
                         console.log("sendbroadcastfile runned");
                         var uploadedFileNameSplitted = uploadedFileName.split("*");
                         var uploadedFileWithoutNumber = uploadedFileNameSplitted[uploadedFileNameSplitted.length - 1];
-                        message.text += " Datei angehängt: " + uploadedFileWithoutNumber;
+                        message.text += "| Folgende Datei angehängt: " + uploadedFileWithoutNumber;
                         sendBroadcastFile(gaeste[i].senderId, URLUploadedFile);
                     }
                 }
@@ -136,6 +136,7 @@ router.post('/guestsMessage', function(req, res, next){
             sourceFile.newFileUploaded = false;
         }
     });
+
     //Save Message to DB
     db.salzburgerhofMessages.save(message, function (err, message) {
         if (err) {
