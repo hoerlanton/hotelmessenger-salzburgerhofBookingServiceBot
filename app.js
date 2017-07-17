@@ -13,7 +13,8 @@ const
   routes = require('./routes/index'),
   app = express(),
   multer = require('multer'),
-  path = require('path');
+  path = require('path'),
+  moment = require('moment-timezone');
 
 //Bodyparser middleware
 app.use(bodyParser.urlencoded({ extended: false}));
@@ -122,7 +123,7 @@ var storage = multer.diskStorage({
     },
     // Rename of file
     filename: function (req, file, cb) {
-        cb(null, Math.random() * 100 + file.originalname.replace(/ /g, ""));
+        cb(null, Math.random() * 100 + "*" + file.originalname.replace(/ /g, ""));
     }
 });
 
@@ -339,7 +340,6 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
 }
 
 
-
 /*
  * Verify that the callback came from Facebook. Using the App Secret from 
  * the App Dashboard, we can verify the signature that is sent with each 
@@ -386,7 +386,6 @@ function receivedAuthentication(event) {
     var senderID = event.sender.id;
     var recipientID = event.recipient.id;
     var timeOfAuth = event.timestamp;
-    console.log("Request body receivedAuthentication" + req.body);
     // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
     // The developer can set this to an arbitrary value to associate the
     // authentication callback with the 'Send to Messenger' click event. This is
@@ -440,7 +439,10 @@ function receivedAuthentication(event) {
             a["senderId"] = senderID;
             //User is a "angemeldeter Gast" and is able to recieve messages
             a["signed_up"] = true;
-            a["signed_up_at"] = new Date();
+            var time = moment().tz('Europe/Vienna').format();
+            var time2 = time.replace(/T/gi, " | ");
+            var time3 = time2.slice(0, -6);
+            a["signed_up_at"] = time3;
             //Parse JSON object to JSON string
             b = JSON.stringify(a);
         });
@@ -2498,9 +2500,10 @@ function callSendAPI(messageData) {
       console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
       //If error is because attached file can not be found, DB is not getting updated
       var errorMsgNoDBUpdate = "Failed to fetch the file from the url";
+      var errorMsgNoDBUpdate2 = "Message cannot be empty, must provide valid attachment or text";
       //if error message if that it Failed to fetch the file from the url, function is returned
-      if(body.error.message.indexOf(errorMsgNoDBUpdate) !== -1){
-          return
+      if(body.error.message.indexOf(errorMsgNoDBUpdate) !== -1  || body.error.message.indexOf(errorMsgNoDBUpdate2) !== -1){
+          return;
       }
       console.log(messageData.recipient.id);
       // var c is assigned to the current recipient id

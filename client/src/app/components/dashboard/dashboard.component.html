@@ -1,0 +1,81 @@
+<html>
+<head>
+    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"   integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="   crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+                <ul class="nav navbar-nav">
+                    <li><img alt="Brand" href="http://www.servicio.io" src="http://servicio.io/wp-content/uploads/2016/05/servicio-logo-hellblau-auto-ohne-hintergrund-1.png" style="height: 45px; width: auto; margin-top:15px; margin-right: 50px; text-align: left; display:table-cell; vertical-align:middle;"></li>
+                    <li style="text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px"><a href="http://www.salzburgerhof.servicio.io/wlanlandingpage">LANDINGPAGE</a></li>
+                    <li style="text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px"><a href="http://servicio.io/tester-info">INFO</a></li>
+                </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><img alt="Partner" href="http://www.salzburgerhof.servicio.io/wlanlandingpage" src="http://servicio.io/wp-content/uploads/2017/06/Salzburger-Hof_Marke_CMYK-ohne-hintergrund.png" style="height: 45px; width: auto; margin-top: 10px; margin-bottom: 5px; margin-right: 5px;float: right; text-align: right; display:table-cell; vertical-align:middle;"></li>
+        </ul>
+    </div>
+</nav>
+
+<div id="charge-error" class="alert alert-danger <% if ( !errMsg ) { %> hidden <% } %>">
+    <%= errMsg  %>
+</div>
+
+<div class="row">
+    <div class="col-md-4" style="background-color: #f3efe4; padding-top: 20px; "><h3>Angemeldete Gäste</h3>
+        <div class="row1" style="padding-top: 20px">
+            <div *ngFor="let guest of guests">
+                <div *ngIf="guest.signed_up">
+                    <img src="{{guest.profile_pic}}" style=" width: 60px; height: 60px; position: relative; border-radius: 50%; margin: 5px; margin-left: 60%">
+                    <p style="padding-left:20px">{{"Name: " + guest.first_name + " "}}{{guest.last_name}}<br>{{"Geschlecht: " + guest.gender}}<br>{{"Kann zahlen: " + guest.is_payment_enabled}}<br>{{"Heimat: " + guest.locale}}<br>{{"FacebookID: " + guest.senderId}}<br>{{"Angemeldet am: " + guest.signed_up_at}}<br>{{"Zeitzone: " + guest.timezone}}<br></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4" style="background-color: #0a7a74;">
+        <div class="row" style="padding-top: 20px; padding-bottom: 10px; border-bottom: 1px solid white;">
+            <h3 style="color: white" align="center">Nachricht an Gäste senden</h3>
+            <form class="SendMessage" (submit)="sendMessage($event)">
+                <div class="col-xs-12" style="padding: 40px">
+                    <div class="form-group">
+                        <input type="text" style="margin-bottom: 10px" [(ngModel)]="title" name="title" id="nachrichtSenden" class="form-control" required>
+                        <input type="file" style="float: left; margin-top: 10px; color: white" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
+                        <button style=" background-color: white; float: right; color: #0a7a74 " type="button" class="btn btn-send" (click)="upload()">DATEI ANHÄNGEN</button>
+                    </div>
+                </div>
+                <div class="col-xs-12" style="padding-left: 40px">
+                    <div class="form-group">
+                        <button style=" background-color: white; color: #0a7a74 " type="submit" class="btn btn-send">JETZT SENDEN</button> <!--Title for button is same as that of the page-->
+                    </div>
+                </div>
+            </form>
+        </div>
+        <h3 style="color: white; text-align: center; padding-top: 20px; border-top-style: solid; border-top: 10px; border-top-color: #ffffff">Gesendete Nachrichten</h3>
+            <div class="form-group1">
+                <div *ngFor="let Messages of sentMessages">
+                    <p style="color: #ffffff; padding-top: 30px; padding-left: 20px">Nachricht gesendet am: {{Messages.date | amCalendar}}<br><br>Nachricht: {{Messages.text}}</p>
+                </div>
+            </div>
+    </div>
+
+    <div class="col-md-4" style="background-color: #f3efe4; padding-top: 20px; "><h3>Abgemeldete Gäste</h3>
+        <div class="row1" style="padding-top: 20px">
+            <div *ngFor="let guest of guests">
+                <div *ngIf="!guest.signed_up">
+                    <img src="{{guest.profile_pic}}" style=" width: 60px; height: 60px; position: relative; border-radius: 50%; margin: 5px; margin-left: 60%">
+                    <p style="padding-left:20px">{{"Name: " + guest.first_name + " "}}{{guest.last_name}}<br>{{"Geschlecht: " + guest.gender}}<br>{{"Kann zahlen: " + guest.is_payment_enabled}}<br>{{"Heimat: " + guest.locale}}<br>{{"FacebookID: " + guest.senderId}}<br>{{"Angemeldet am: " + guest.signed_up_at}}<br>{{"Zeitzone: " + guest.timezone}}<br></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

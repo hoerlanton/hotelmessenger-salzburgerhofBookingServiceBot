@@ -3,18 +3,21 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
-import { TasksComponent } from './components/tasks/tasks.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FlashMessagesModule } from 'angular2-flash-messages';
+import { MomentModule } from 'angular2-moment';
+
 
 @NgModule({
   declarations: [
-    AppComponent, TasksComponent
+    AppComponent, DashboardComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    FlashMessagesModule
+    FlashMessagesModule,
+    MomentModule
   ],
   providers: [],
   bootstrap: [AppComponent]

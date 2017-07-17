@@ -123,6 +123,9 @@ router.post('/guestsMessage', function(req, res, next){
                     //If a new file got attached, also send the attachment
                     if(uploadedFileName !== undefined && newFileUploaded === true) {
                         console.log("sendbroadcastfile runned");
+                        var uploadedFileNameSplitted = uploadedFileName.split("*");
+                        var uploadedFileWithoutNumber = uploadedFileNameSplitted[uploadedFileNameSplitted.length - 1];
+                        message.text += " Datei angehängt: " + uploadedFileWithoutNumber;
                         sendBroadcastFile(gaeste[i].senderId, URLUploadedFile);
                     }
                 }
@@ -475,7 +478,9 @@ function sendBroadcast(recipientId, broadcastText) {
 //Broadcast gesendet von Dashboard to all angemeldete Gäste - Wenn Anhang hochgeladen, diese function wird gecalled
 function sendBroadcastFile(recipientId, URLUploadedFile) {
     var messageData;
-    if (URLUploadedFile.substr(URLUploadedFile.length - 3) === "png" || URLUploadedFile.substr(URLUploadedFile.length - 3) === "jpg") {
+    var imageEnding = "jpg";
+    var imageEnding2 = "png";
+    if (URLUploadedFile.indexOf(imageEnding) !== -1 || URLUploadedFile.indexOf(imageEnding2) !== -1 ) {
         messageData = {
             recipient: {
                 id: recipientId
