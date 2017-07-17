@@ -474,21 +474,39 @@ function sendBroadcast(recipientId, broadcastText) {
 
 //Broadcast gesendet von Dashboard to all angemeldete Gäste - Wenn Anhang hochgeladen, diese function wird gecalled
 function sendBroadcastFile(recipientId, URLUploadedFile) {
-    console.log(URLUploadedFile);
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "file",
-                payload: {
-                    url: URLUploadedFile
+    var messageData;
+    if (URLUploadedFile.substr(URLUploadedFile.length - 3) === "png" || URLUploadedFile.substr(URLUploadedFile.length - 3) === "jpg") {
+        messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "image",
+                    payload: {
+                        url: URLUploadedFile
+                    }
                 }
             }
-        }
-    };
-    sourceFile.callSendAPI(messageData);
+        };
+        sourceFile.callSendAPI(messageData);
+    } else {
+        messageData = {
+            recipient: {
+                id: recipientId
+            },
+            message: {
+                attachment: {
+                    type: "file",
+                    payload: {
+                        url: URLUploadedFile
+                    }
+                }
+            }
+        };
+        sourceFile.callSendAPI(messageData);
+    }
+
 }
 
 module.exports = router;
