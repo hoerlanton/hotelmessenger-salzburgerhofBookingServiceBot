@@ -105,10 +105,18 @@ router.post('/guestsMessage', function(req, res, next){
     console.log(message);
     var broadcast = req.body.text;
     var uploadedFileName = sourceFile.uploadedFileName;
-    //Destation URL for uploaded files
+    //Destination URL for uploaded files
     var URLUploadedFile = String(config.get('serverURL') + "/uploads/" + uploadedFileName);
     console.log("New file uploaded status:" + newFileUploaded);
     newFileUploaded = sourceFile.newFileUploaded;
+    if(uploadedFileName !== undefined && newFileUploaded === true) {
+        var uploadedFileNameSplitted = uploadedFileName.split("*");
+        console.log(" uploadedFileNameSplitted: " + uploadedFileNameSplitted);
+        var uploadedFileWithoutNumber = uploadedFileNameSplitted[uploadedFileNameSplitted.length - 1];
+        console.log(" uploadedFileWithoutNumber: " + uploadedFileWithoutNumber);
+        message.text += " | Folgende Datei wurde angehängt: " + uploadedFileWithoutNumber;
+        console.log("messagetext1:" + message.text);
+    }
     console.log("New file uploaded status: FINAALLLL!!!!" + newFileUploaded);
     console.log("UploadedFileName: FINAALLLL!!!!" + uploadedFileName);
     db.salzburgerhofGaeste.find(function(err, gaeste){
@@ -123,9 +131,6 @@ router.post('/guestsMessage', function(req, res, next){
                     //If a new file got attached, also send the attachment
                     if(uploadedFileName !== undefined && newFileUploaded === true) {
                         console.log("sendbroadcastfile runned");
-                        var uploadedFileNameSplitted = uploadedFileName.split("*");
-                        var uploadedFileWithoutNumber = uploadedFileNameSplitted[uploadedFileNameSplitted.length - 1];
-                        message.text += "| Folgende Datei angehängt: " + uploadedFileWithoutNumber;
                         sendBroadcastFile(gaeste[i].senderId, URLUploadedFile);
                     }
                 }
@@ -139,6 +144,7 @@ router.post('/guestsMessage', function(req, res, next){
 
     //Save Message to DB
     db.salzburgerhofMessages.save(message, function (err, message) {
+        console.log("messagetext2: " + message.text);
         if (err) {
             res.send(err);
         }
