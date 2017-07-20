@@ -453,7 +453,7 @@ function receivedAuthentication(event) {
     console.error("Error line 450:" + e);
     });
 
-    setTimeout(postNewUserToDB, 30000);
+    setTimeout(postNewUserToDB, 15000);
 }
 //New User is saved in DB, function called in receivedAuthentication - send to index.js /guests REST-FUL API
 function postNewUserToDB() {
@@ -2473,8 +2473,8 @@ function sendAccountLinking(recipientId) {
  * If Failed calling Send API a put request is made to the the REST-FUL API in index.js
  */
 function callSendAPI(messageData) {
-    console.log("SEND API CALLLED <------------");
-    console.log("Recipient ID: top " + messageData.recipient.id);
+    console.log("callSendAPI function in app.js called - line 2476");
+    console.log("recipient ID: - line 2477 " + messageData.recipient.id);
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: PAGE_ACCESS_TOKEN },
@@ -2484,38 +2484,31 @@ function callSendAPI(messageData) {
   }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var recipientId = body.recipient_id;
-            console.log("Recipient ID:" + recipientId);
-      var messageId = body.message_id;
+            var messageId = body.message_id;
 
-      if (messageId) {
-        console.log("Successfully sent message with id %s to recipient %s", 
-          messageId, recipientId);
-          //senderIDTransfer.splice((0), senderIDTransfer.length);
-          //senderIDTransfer.push(recipientId);
-      } else {
-      console.log("Successfully called Send API for recipient %s", 
-        recipientId);
-      }
-    } else {
-      console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
-      //If error is because attached file can not be found, DB is not getting updated
-      var errorMsgNoDBUpdate = "Failed to fetch the file from the url";
-      var errorMsgNoDBUpdate2 = "Message cannot be empty, must provide valid attachment or text";
-      //if error message if that it Failed to fetch the file from the url, function is returned
-      if(body.error.message.indexOf(errorMsgNoDBUpdate) !== -1  || body.error.message.indexOf(errorMsgNoDBUpdate2) !== -1){
+        if (messageId) {
+            console.log("Successfully sent message with id %s to recipient %s",
+            messageId, recipientId);
+        } else {
+            console.log("Successfully called Send API for recipient %s",
+            recipientId);
+        }
+        } else {
+            //Fehlercodes hier zu finden: https://developers.facebook.com/docs/messenger-platform/send-api-reference/errors
+            console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+            //If error is because attached file can not be found, DB is not getting updated
+            var errorMsgNoDBUpdate = "Failed to fetch the file from the url";
+            //If error is because message is empty, DB is not getting updated
+            var errorMsgNoDBUpdate2 = "Message cannot be empty, must provide valid attachment or text";
+        if (body.error.message.indexOf(errorMsgNoDBUpdate) !== -1  || body.error.message.indexOf(errorMsgNoDBUpdate2) !== -1) {
           return;
-      }
-      console.log(messageData.recipient.id);
-      // var c is assigned to the current recipient id
-      c = messageData.recipient.id;
-      //updateDB  is called with current recipient id value -> c which is a global variable
-      updateDB();
-      //var index = senderIDTransfer.indexOf(messageData.recipient.id);
-      //console.log(index);
-      //senderIDTransfer.splice(index, 1);
-      //console.log(senderIDTransfer);
-      //Problem with c = is changed everytime the function Call send api is called - when updateDB function is called the value is the same as the call send api is called the last time
-      }
+        }
+            console.log(messageData.recipient.id);
+            // var c is assigned to the current recipient id
+            c = messageData.recipient.id;
+            //updateDB  is called with current recipient id value -> c which is a global variable
+        updateDB();
+        }
     });
 }
 
@@ -2526,7 +2519,7 @@ exports.callSendAPI = callSendAPI;
  * Send update to REST-ful API in index.js if signed-out, change signed-up field to false
  */
 function updateDB(){
-    console.log("updateDB function called" + c);
+    console.log("updateDB function called to REST API /guests - line 2521 with recipientId: " + c);
 
      // An object of options to indicate where to post to
      var put_options = {
@@ -2544,7 +2537,7 @@ function updateDB(){
      var put_req = http.request(put_options, function(res) {
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
-            console.log('Response: ' + chunk);
+            console.log('Response: of put request - line 2540 + chunk var (deleted): ');
         });
      });
 

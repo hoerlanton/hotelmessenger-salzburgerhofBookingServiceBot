@@ -20,6 +20,7 @@ router.use(cors());
 //Global variables
 var errMsg = "";
 var successMsg = "";
+
 //Data recieved from the HotelResRQ request to Channelmanager
 var resultTransferData2 = [];
 var totalPriceChargeReservation = 0;
@@ -27,9 +28,7 @@ var totalPriceChargeReservationInt = 0;
 var totalPriceChargeReservationIntSliced = "";
 var count = 0;
 var redirect = false;
-var SERVER_URL = config.get('serverURL');
 var newFileUploaded = false;
-
 
 
 //----->REST-FUL API<------//
@@ -61,7 +60,7 @@ router.get('/guests', function(req, res, next) {
 //Save new guests
 router.post('/guests', function(req, res, next) {
     //JSON string is parsed to a JSON object
-    console.log("Post request made to ****Guest*****");
+    console.log("Post request made to /guests");
     var guest = req.body;
     console.dir(guest);
     if(!guest.first_name || !guest.last_name){
@@ -81,12 +80,11 @@ router.post('/guests', function(req, res, next) {
 
 //Update guest
 router.put('/guests', function(req, res, next) {
-    console.log("Put request made to ****Guest*****");
-    console.log(req.body);
+    console.log("Put request made to /guest");
     var guestUpdate = req.body;
     var guestUpdateString = JSON.stringify(guestUpdate);
     var guestUpdateHoi = guestUpdateString.slice(2, -5);
-    console.log(guestUpdateHoi);
+    console.log("SenderId:" + guestUpdateHoi);
     db.salzburgerhofGaeste.update({
         senderId:  guestUpdateHoi  },
         {
@@ -95,12 +93,13 @@ router.put('/guests', function(req, res, next) {
             if(err) {
                 console.log("error: " + err);
             } else {
-                console.log(gaeste);
+                console.log("Updated successfully, gaeste var (deleted)");
             }});
 });
 
 //Post message to guests
 router.post('/guestsMessage', function(req, res, next){
+    console.log("Post request made to /guestsMessage");
     var message = req.body;
     console.log(message);
     var broadcast = req.body.text;
@@ -117,8 +116,6 @@ router.post('/guestsMessage', function(req, res, next){
         message.text += " | Folgende Datei wurde angehängt: " + uploadedFileWithoutNumber;
         console.log("messagetext1:" + message.text);
     }
-    console.log("New file uploaded status: FINAALLLL!!!!" + newFileUploaded);
-    console.log("UploadedFileName: FINAALLLL!!!!" + uploadedFileName);
     db.salzburgerhofGaeste.find(function(err, gaeste){
         if (err){
             errMsg = "Das senden der Nachricht ist nicht möglich. Es sind keine Gäste angemeldet.";
