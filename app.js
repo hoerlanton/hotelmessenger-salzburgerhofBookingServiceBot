@@ -400,11 +400,6 @@ function receivedAuthentication(event) {
     // When an authentication is received, we'll send a message back to the sender
     // to let them know it was successful.
 
-    //Function initialised on line 651
-    sendTextMessage(senderID, "Sie haben sich erfolgreich angemeldet. " +
-        "Sie erhalten nun Neuigkeiten via Facebook Messenger " +
-        "von Ihrem Salzburger Hof Leogang team. Viel Spaß!");
-
     //https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
     var buffer = "";
     var optionsget = {
@@ -435,6 +430,9 @@ function receivedAuthentication(event) {
             a = JSON.parse(buffer);
             console.log("Data recieving from Send to messenger button" + a);
             console.log(a.first_name);
+            sendTextMessage(senderID, "Hallo " +  a.first_name + " " + a.last_name + "! Sie haben sich erfolgreich angemeldet. " +
+                "Sie erhalten nun Neuigkeiten via Facebook Messenger " +
+                "von Ihrem Salzburger Hof Leogang team. Viel Spaß!");
             //Additionally senderID is added to the Javascript object, which is saved to the MongoDB
             a["senderId"] = senderID;
             //User is a "angemeldeter Gast" and is able to recieve messages
