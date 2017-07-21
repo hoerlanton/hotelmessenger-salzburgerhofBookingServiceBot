@@ -799,7 +799,7 @@ function receivedMessage(event) {
         if (quickReplyPayload === "1 person" || quickReplyPayload === "2 persons" || quickReplyPayload === "3 persons" || quickReplyPayload === "4 persons" || quickReplyPayload === "5 persons") {
             //Every request is counted.
             //If request is bigger than 2, the basic arguments for the request are reset.
-            booking.resetData();
+            resetData();
             //indicated value (how many persons are joining) from the user is added to the numberOfPersons variable
             assigningNumberOfPersonsVar(quickReplyPayload);
             //Number of rooms is the next question
