@@ -173,6 +173,9 @@ const SERVER_URL = (process.env.SERVER_URL) ?
   (process.env.SERVER_URL) :
   config.get('serverURL');
 
+//Used in receivedAuthentication function
+const HOTEL_NAME = config.get('hotelName');
+
 // HOST_URL used for DB calls - SERVER_URL without https or https://
 const HOST_URL = config.get('hostURL');
 
@@ -432,7 +435,7 @@ function receivedAuthentication(event) {
             console.log(a.first_name);
             sendTextMessage(senderID, "Hallo " +  a.first_name + " " + a.last_name + "! Sie haben sich erfolgreich angemeldet. " +
                 "Sie erhalten nun Neuigkeiten via Facebook Messenger " +
-                "von Ihrem Salzburger Hof Leogang team. Viel Spaß!");
+                "von Ihrem " + HOTEL_NAME +  " team. Viel Spaß!");
             //Additionally senderID is added to the Javascript object, which is saved to the MongoDB
             a["senderId"] = senderID;
             //User is a "angemeldeter Gast" and is able to recieve messages
