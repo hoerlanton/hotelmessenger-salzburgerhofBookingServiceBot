@@ -1,26 +1,50 @@
-h3 {
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background-color: #0a7a74;
+}
+
+.row {
+    height: 100%;
+}
+
+.row .col-md-4 {
+    background-color: #f3efe4;
+    padding-left: 25px;
+    padding-top: 20px;
+    border-left: 10px solid #0a7a74;
+    border-right: 10px solid #0a7a74;
+    height: 100%;
+    border-bottom: 40px solid #0a7a74;
+}
+
+.row .col-md-4 .row1 {
+    overflow: auto;
+    margin: 0 auto;
+    display: inline-block;
+    width: 100%;
+    max-height: 400px;
+    padding-top: 20px;
+}
+
+
+.row .col-md-4 h3 {
     align-content: center;
     margin: 0 auto;
     display: inline-block;
-    float: left;
+    color: #0a7a74;
     position: relative;
-    left: 20%;
-}
-
-.row1 {
-    overflow: auto;
-    height:614px;
-    margin: 0 auto;
-    display: inline-block;
-    width: 100%;
+    text-align:center;
 }
 
 .form-group1 {
+    margin-top: 20px;
     overflow: auto;
-    height: 330px;
     margin: 0 auto;
     display: inline-block;
     width: 100%;
+    height: 660px;
 }
 
 .row1 .col {
@@ -37,8 +61,25 @@ h3 {
     order: 2;
 }
 
-.row {
-    border-bottom-style: solid;
-    border-bottom: 10px;
-    border-bottom-color: #ffffff;
+.row .col-md-4 .row2 {
+    padding-bottom: 10px;
+    position: relative;
+    min-height: 100%;
+    border-bottom: 1px solid red;
+}
+
+.card {
+    background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */
+    background: rgba(255,255,255, 1);
+}
+
+.row .col-md-4 .row1 .card p {
+    padding-left:20px;
+    padding-bottom: 10px;
+}
+
+.row .col-md-4 .form-group1 p {
+    padding: 20px;
+    background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */
+    background: rgba(255,255,255, 1);
 }

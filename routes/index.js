@@ -106,15 +106,15 @@ router.post('/guestsMessage', function(req, res, next){
     var uploadedFileName = sourceFile.uploadedFileName;
     //Destination URL for uploaded files
     var URLUploadedFile = String(config.get('serverURL') + "/uploads/" + uploadedFileName);
-    console.log("New file uploaded status:" + newFileUploaded);
+    //console.log("New file uploaded status:" + newFileUploaded);
     newFileUploaded = sourceFile.newFileUploaded;
     if(uploadedFileName !== undefined && newFileUploaded === true) {
         var uploadedFileNameSplitted = uploadedFileName.split("*");
-        console.log(" uploadedFileNameSplitted: " + uploadedFileNameSplitted);
+        //console.log(" uploadedFileNameSplitted: " + uploadedFileNameSplitted);
         var uploadedFileWithoutNumber = uploadedFileNameSplitted[uploadedFileNameSplitted.length - 1];
-        console.log(" uploadedFileWithoutNumber: " + uploadedFileWithoutNumber);
+        //console.log(" uploadedFileWithoutNumber: " + uploadedFileWithoutNumber);
         message.text += " | Folgende Datei wurde angehängt: " + uploadedFileWithoutNumber;
-        console.log("messagetext1:" + message.text);
+        //console.log("messagetext1:" + message.text);
     }
     db.salzburgerhofGaeste.find(function(err, gaeste){
         if (err){
@@ -123,8 +123,8 @@ router.post('/guestsMessage', function(req, res, next){
             for (var i = 0; i < gaeste.length; i++) {
                 if(gaeste[i].signed_up === true) {
                     sendBroadcast(gaeste[i].senderId, broadcast);
-                    console.log("New file uploaded status: FINAALLLL!!!! ******" + newFileUploaded);
-                    console.log("UploadedFileName: FINAALLLL!!!! ******" + uploadedFileName);
+                    //console.log("New file uploaded status: FINAALLLL!!!! ******" + newFileUploaded);
+                    //console.log("UploadedFileName: FINAALLLL!!!! ******" + uploadedFileName);
                     //If a new file got attached, also send the attachment
                     if(uploadedFileName !== undefined && newFileUploaded === true) {
                         console.log("sendbroadcastfile runned");

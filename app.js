@@ -20,7 +20,8 @@ const
 app.use(bodyParser.urlencoded({ extended: false}));
 
 //Throws errors if callbacks are not from facebook
-app.use(bodyParser.json({ verify: verifyRequestSignature }));
+//{ verify: verifyRequestSignature } deleted from function because it throws errors if JSON.parse function is called
+app.use(bodyParser.json());
 
 // para CORN
 app.use(function (req, res, next) {
@@ -190,11 +191,8 @@ app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
     console.log("console log in app.post upload", 'files', req.files);
     exports.uploadedFileName = req.files[0].filename;
     newFileUploaded = true;
-    console.log("New file uploaded status:" + newFileUploaded);
     //Export value to index.js - a new file got uploaded
     exports.newFileUploaded = newFileUploaded;
-    console.log("New file uploaded status:" + newFileUploaded);
-    console.log("New file uploaded status:" + newFileUploaded);
     res.send(req.files);
 });
 
@@ -353,7 +351,7 @@ function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departu
  */
 function verifyRequestSignature(req, res, buf) {
   var signature = req.headers["x-hub-signature"];
-  console.log("Req headers:");
+  console.log("Req headers: (In verifyRequestSignature function");
   console.log(req.headers);
     console.log("Signature:" + signature);
   if (!signature) {
@@ -400,9 +398,6 @@ function receivedAuthentication(event) {
         "through param '%s' at %d", senderID, recipientID, passThroughParam,
         timeOfAuth);
 
-    // When an authentication is received, we'll send a message back to the sender
-    // to let them know it was successful.
-
     //https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
     var buffer = "";
     var optionsget = {
@@ -422,23 +417,22 @@ function receivedAuthentication(event) {
     var reqGet = https.request(optionsget, function (res) {
         console.log("statusCode: ", res.statusCode);
         // uncomment it for header details
-        console.log("headers: ", res.headers);
+        // console.log("headers: ", res.headers);
 
         res.on('data', function (d) {
             console.info('GET result:\n');
             process.stdout.write(d);
             buffer += d;
-            console.log(buffer);
             //parse buffer to JSON object
             a = JSON.parse(buffer);
-            console.log("Data recieving from Send to messenger button" + a);
-            console.log(a.first_name);
+            // When an authentication is received, we'll send a message back to the sender
+            // to let them know it was successful.
             sendTextMessage(senderID, "Hallo " +  a.first_name + " " + a.last_name + "! Sie haben sich erfolgreich angemeldet. " +
                 "Sie erhalten nun Neuigkeiten via Facebook Messenger " +
                 "von Ihrem " + HOTEL_NAME +  " team. Viel Spaß!");
             //Additionally senderID is added to the Javascript object, which is saved to the MongoDB
             a["senderId"] = senderID;
-            //User is a "angemeldeter Gast" and is able to recieve messages
+            //User is a "Angemeldeter Gast" and is able to receive messages
             a["signed_up"] = true;
             var time = moment().tz('Europe/Vienna').format();
             var time2 = time.replace(/T/gi, " | ");

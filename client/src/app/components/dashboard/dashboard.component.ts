@@ -74,3 +74,7 @@ export class DashboardComponent implements OnInit {
         //this.product.photo = fileInput.target.files[0]['name'];
     }
 }
+
+
+// html file deleted:
+// {{"Kann zahlen: " + guest.is_payment_enabled}}
