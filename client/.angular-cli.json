@@ -19,9 +19,14 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css"
+        "styles.css",
+        "../bower_components/bootstrap/dist/css/bootstrap.css",
+        "../node_modules/ng2-datetime/src/bootstrap-datepicker/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css",
+        "../node_modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css"
       ],
-      "scripts": [],
+      "scripts": ["../bower_components/jquery/dist/jquery.js",
+        "../node_modules/ng2-datetime/src/bootstrap-datepicker/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js",
+      "../node_modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js"],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

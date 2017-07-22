@@ -73,6 +73,12 @@ html, body {
     background: rgba(255,255,255, 1);
 }
 
+.card1 {
+    background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */
+    background: rgba(255,255,255, 1);
+    height: 300px;
+}
+
 .row .col-md-4 .row1 .card p {
     padding-left:20px;
     padding-bottom: 10px;
