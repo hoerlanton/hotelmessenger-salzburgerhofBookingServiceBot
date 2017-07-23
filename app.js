@@ -283,6 +283,12 @@ app.get('/authorize', function(req, res) {
   });
 });
 
+/*
+cron.schedule('0-59 * * * * *', function(){
+    console.log('running a task every second');
+});
+*/
+
 //Function called in receivedMessage
 //send XML post request to Cultswitch channel manager. Recieved data is pushed to resultTransferData
 function sendXmlPostRequest(numberOfRooms, numberOfPersons, arrivalDate, departureDate, doppelzimmerClassicSteinleo, einzelzimmerSommerstein, doppelzimmerDeluxeHolzleo, doppelzimmerSuperiorSteinleo) {

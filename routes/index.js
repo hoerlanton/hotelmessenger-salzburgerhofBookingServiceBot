@@ -8,8 +8,10 @@ var sourceFile = require('../app');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['salzburgerhofMessages', 'salzburgerhofGaeste']);
+var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['testMessages', 'testGaeste']);
 var config = require('config');
+var cron = require('node-cron');
+var CronJob = require('cron').CronJob;
 
 //Bodyparser middleware
 router.use(bodyParser.urlencoded({ extended: false}));
@@ -29,6 +31,15 @@ var totalPriceChargeReservationIntSliced = "";
 var count = 0;
 var redirect = false;
 var newFileUploaded = false;
+var gaesteGlobalSenderID =[];
+var i = 0;
+var broadcast = "";
+var dateNowFormatted = "";
+var dateReqFormatted = "";
+var dateDay = "";
+var dateMonth = "";
+var dateHour = "";
+var dateMinute = "";
 
 
 //----->REST-FUL API<------//
@@ -37,7 +48,19 @@ var newFileUploaded = false;
 router.get('/guestsMessages', function(req, res, next) {
     console.log("guestsMessages get called");
     //Get guests from Mongo DB
-    db.salzburgerhofMessages.find(function(err, message){
+    db.testMessages.find(function(err, message){
+        if (err){
+            res.send(err);
+        }
+        res.json(message);
+    });
+});
+
+//Get all ScheduldedMessages
+router.get('/guestsScheduledMessages', function(req, res, next) {
+    console.log("guestsMessages get called");
+    //Get guests from Mongo DB
+    db.testScheduledMessages.find(function(err, message){
         if (err){
             res.send(err);
         }
@@ -49,7 +72,7 @@ router.get('/guestsMessages', function(req, res, next) {
 router.get('/guests', function(req, res, next) {
     console.log("guests get called");
     //Get guests from Mongo DB
-    db.salzburgerhofGaeste.find(function(err, gaeste){
+    db.testGaeste.find(function(err, gaeste){
         if (err){
             res.send(err);
         }
@@ -69,7 +92,7 @@ router.post('/guests', function(req, res, next) {
             error: "Bad data"
         });
     } else {
-        db.salzburgerhofGaeste.save(guest, function (err, guest) {
+        db.testGaeste.save(guest, function (err, guest) {
             if (err) {
                 res.send(err);
             }
@@ -85,7 +108,7 @@ router.put('/guests', function(req, res, next) {
     var guestUpdateString = JSON.stringify(guestUpdate);
     var guestUpdateHoi = guestUpdateString.slice(2, -5);
     console.log("SenderId:" + guestUpdateHoi);
-    db.salzburgerhofGaeste.update({
+    db.testGaeste.update({
         senderId:  guestUpdateHoi  },
         {
             $set: { signed_up: false }
@@ -100,55 +123,163 @@ router.put('/guests', function(req, res, next) {
 //Post message to guests
 router.post('/guestsMessage', function(req, res, next){
     console.log("Post request made to /guestsMessage");
+
     var message = req.body;
-    console.log(message);
-    var broadcast = req.body.text;
+    var dateNow = new Date();
+    var dateString = JSON.stringify(dateNow);
+    dateNowFormatted = dateString.slice(1, 20);
+    dateReqFormatted = req.body.date.slice(0, 19);
+    dateDay = req.body.date.slice(8, 10);
+    dateMonth = req.body.date.slice(3, 7);
+    dateHour = req.body.date.slice(15, 18);
+    dateMinute = req.body.date.slice(19, 21);
+    broadcast = req.body.text;
     var uploadedFileName = sourceFile.uploadedFileName;
     //Destination URL for uploaded files
     var URLUploadedFile = String(config.get('serverURL') + "/uploads/" + uploadedFileName);
-    //console.log("New file uploaded status:" + newFileUploaded);
     newFileUploaded = sourceFile.newFileUploaded;
+
     if(uploadedFileName !== undefined && newFileUploaded === true) {
         var uploadedFileNameSplitted = uploadedFileName.split("*");
-        //console.log(" uploadedFileNameSplitted: " + uploadedFileNameSplitted);
         var uploadedFileWithoutNumber = uploadedFileNameSplitted[uploadedFileNameSplitted.length - 1];
-        //console.log(" uploadedFileWithoutNumber: " + uploadedFileWithoutNumber);
         message.text += " | Folgende Datei wurde angehängt: " + uploadedFileWithoutNumber;
-        //console.log("messagetext1:" + message.text);
     }
-    db.salzburgerhofGaeste.find(function(err, gaeste){
-        if (err){
+
+    db.testGaeste.find(function(err, gaeste) {
+        if (err) {
             errMsg = "Das senden der Nachricht ist nicht möglich. Es sind keine Gäste angemeldet.";
         } else {
-            for (var i = 0; i < gaeste.length; i++) {
-                if(gaeste[i].signed_up === true) {
-                    sendBroadcast(gaeste[i].senderId, broadcast);
-                    //console.log("New file uploaded status: FINAALLLL!!!! ******" + newFileUploaded);
-                    //console.log("UploadedFileName: FINAALLLL!!!! ******" + uploadedFileName);
-                    //If a new file got attached, also send the attachment
-                    if(uploadedFileName !== undefined && newFileUploaded === true) {
-                        console.log("sendbroadcastfile runned");
-                        sendBroadcastFile(gaeste[i].senderId, URLUploadedFile);
-                    }
-                }
+            var AllIds = function getAllIds(gaeste) {
+                return gaeste.senderId;
+            };
+            function myFunction() {
+                gaesteGlobalSenderID = gaeste.map(AllIds);
+            }
+            myFunction();
+            console.log("gaesteglobalSenderID:" + gaesteGlobalSenderID);
+            broadcastMessages();
+        }
+    });
+
+function broadcastMessages() {
+    console.log(dateReqFormatted + "=" + dateNowFormatted);
+    if (dateReqFormatted !== dateNowFormatted) {
+        console.log("scheduled event fired!");
+        //Save Message to DB
+        db.testScheduledMessages.save(message, function (err, message) {
+            console.log("scheduleMessage saved: " + message.text + " " + message.date);
+            if (err) {
+                res.send(err);
+            }
+            res.json(message);
+        });
+        var job = new CronJob({
+            cronTime: "00 " + dateMinute + " " + dateHour + " " + dateDay + " " + dateMonth + " *",
+            onTick: function () {
+                console.log("00 " + dateMinute + " " + dateHour + " " + dateDay + " " + dateMonth + " *");
+                console.log('job ticked');
+                var regex = String(dateMonth + " " + dateDay + " 2017" + dateHour + ":" + dateMinute);
+                console.log(regex);
+                console.log(gaesteGlobalSenderID + " " + broadcast);
+                        console.log("guestsMessages get called");
+                        //Get guests from Mongo DB
+
+                //https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
+                var buffer = "";
+                var optionsget = {
+                    host: 'b4770d3b.ngrok.io',
+                    path: '/guestsScheduledMessages',
+                    method: 'GET'
+                };
+
+                console.info('Options prepared:');
+                console.info(optionsget);
+                console.info('Do the GET call');
+
+                // do the GET request to retrieve data from the user's graph API
+                var reqGet = https.request(optionsget, function (res) {
+                    console.log("statusCode: ", res.statusCode);
+                    // uncomment it for header details
+                    // console.log("headers: ", res.headers);
+
+                    res.on('data', function (d) {
+                        console.info('GET result:\n');
+                        process.stdout.write(d);
+                        buffer += d;
+                        //parse buffer to JSON object
+                        a = JSON.parse(buffer);
+                        //Parse JSON object to JSON string
+                        b = JSON.stringify(a);
+
+                        console.log(b.text);
+                        var scheduleMessageString = b;
+                        console.log(scheduleMessageString);
+                        var scheduledText = scheduleMessageString.text;
+
+                        //console.log(message.date.contains(dateMinute && dateHour && dateDay && dateMonth));
+
+                        for (var l = 0; l < gaesteGlobalSenderID.length; l++) {
+                            sendBroadcast(gaesteGlobalSenderID[l], scheduledText);
+                        }
+
+                    });
+                });
+                // Build the post string from an object
+                reqGet.end();
+                reqGet.on('error', function (e) {
+                    console.error("Error line 450:" + e);
+                });
+
+
+
+
+
+
+            },
+            start: false,
+            timeZone: 'Europe/Berlin'
+        });
+        job.start(); // job 1 started
+    } else {
+        for (var j = 0; j < gaesteGlobalSenderID.length; j++) {
+            console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[j]);
+            sendBroadcast(gaesteGlobalSenderID[j], broadcast);
+        }
+        //Save Message to DB
+        db.testMessages.save(message, function (err, message) {
+            console.log("Message saved: " + message.text + " " + message.date);
+            if (err) {
+                res.send(err);
+            }
+            res.json(message);
+        });
+        if (uploadedFileName !== undefined && newFileUploaded === true) {
+            console.log("sendbroadcastfile runned");
+            for (var k = 0; k < gaesteGlobalSenderID.length; k++) {
+                console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[k]);
+                sendBroadcastFile(gaesteGlobalSenderID[k], URLUploadedFile);
             }
             errMsg = "";
             //set the boolean that a new file got uploaded to false
             newFileUploaded = false;
             sourceFile.newFileUploaded = false;
         }
-    });
+    }
+}
 
-    //Save Message to DB
-    db.salzburgerhofMessages.save(message, function (err, message) {
-        console.log("messagetext2: " + message.text);
+
+});
+
+function getScheduledText() {
+    db.testScheduledMessages.find({"date": /j/}, function (err, scheduleMessage) {
         if (err) {
             res.send(err);
         }
-        res.json(message);
-    });
 
-});
+
+    });
+}
+
 
 //Get W-Lan-landingpage
 router.get('/wlanlandingpage', function(req, res, next) {
@@ -285,6 +416,9 @@ router.post('/checkout', function(req, res, next){
         }
     }, 20000);
 });
+
+
+
 
 //Sending Hotel Reservation Request -> HotelResRQ
 function sendHotelResRQ(checkoutDataName, checkoutDataAddress, checkoutDataCardName, checkoutDataCardNumber, checkoutDataCardExpiryYear, checkoutDataCardCvc, numberOfPersonsReservation, numberOfRoomsReservation, arrivalDateReservation, departureDateReservation, ratePlanIDReservation) {
@@ -473,7 +607,7 @@ function sendBroadcast(recipientId, broadcastText) {
         },
         message: {
             text: broadcastText,
-            metadata: "DEVELOPER_DEFINED_METADATA",
+            metadata: "DEVELOPER_DEFINED_METADATA"
         }
     };
     sourceFile.callSendAPI(messageData);
