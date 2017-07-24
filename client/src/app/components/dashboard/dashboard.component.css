@@ -103,16 +103,20 @@ html, body {
     background: rgba(255,255,255, 1);
 }
 
-.row .col-md-4 .row1 .card p {
+.row .container-fluid .col-md-4 .row1 .card p {
     padding:10px 10px 10px 10px;
 }
 
-.row .col-md-4 .card p {
+.row .container-fluid .col-md-4 .card p {
     padding:10px 10px 10px 10px;
 }
 
-.row .col-md-4 .row1 p {
+.row .container-fluid .col-md-4 .row3 .row1 p {
     padding: 10px 10px 10px 10px;
     background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */
     background: rgba(255,255,255, 1);
+}
+
+.row .container-fluid .col-md-4 .col-xs-12 .row1 .card p {
+    padding: 10px 10px 10px 10px;
 }
