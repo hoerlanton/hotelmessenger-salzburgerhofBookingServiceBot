@@ -324,12 +324,13 @@ router.post('/guestsMessage', function(req, res, next) {
                             console.log("Updated successfully, messages var (deleted)");
                         }
                     });
-            }
+
 
                 console.log("sendbroadcastfile runned");
                 for (var k = 0; k < gaesteGlobalSenderID.length; k++) {
                     console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[k]);
                     sendBroadcastFile(gaesteGlobalSenderID[k], URLUploadedFile);
+                }
                 }
 
             }
