@@ -9,7 +9,7 @@ html, body {
     height: 100%;
 }
 
-.row .col-md-4 {
+.row .container-fluid .col-md-4 {
     background-color: #f3efe4;
     padding: 20px 10px 20px 10px;
     border-left: 10px solid #0a7a74;
@@ -18,7 +18,7 @@ html, body {
     border-bottom: 40px solid #0a7a74;
 }
 
-.row .col-md-4 .row1 {
+.row .container-fluid .col-md-4 .row1 {
     overflow: auto;
     margin: 0 auto;
     display: inline-block;
@@ -27,8 +27,16 @@ html, body {
     padding-top: 20px;
 }
 
+.row .container-fluid .col-md-4 .row3 {
+    margin: 0 auto;
+    display: inline-block;
+    width: 100%;
+    height: 800px;
+    padding-top: 20px;
+}
 
-.row .col-md-4 .col-xs-12 .row1 {
+
+.row .container-fluid .col-md-4 .col-xs-12 .row1 {
     overflow: auto;
     margin: 0 auto;
     display: inline-block;
@@ -38,7 +46,7 @@ html, body {
 }
 
 
-.row .col-md-4 h3 {
+.row .container-fluid .col-md-4 h3 {
     align-content: center;
     margin: 0 auto;
     display: inline-block;
@@ -47,24 +55,23 @@ html, body {
     text-align:center;
 }
 
-.form-group {
+.row .container-fluid .col-md-4 .row3 .col-xs-12 .form-group {
     border-top:3px solid #0a7a74;
     width: 105%;
     padding: 10px 10px 10px 30px;
 }
 
-.group {
+.row .container-fluid .col-md-4 .row3 .col-xs-12  .group {
     border-top:3px solid #0a7a74;
     width: 105%;
     padding: 10px 10px 10px 30px;
 }
 
-
-.form-group1 {
+.row .container-fluid .col-md-4 .row3 .col-xs-12 .form-group1 {
     margin-top: 20px;
     overflow: auto;
+    max-height: 300px;
     display: inline-block;
-    height: 350px;
     border-top:3px solid #0a7a74;
     width: 102%;
     padding: 10px 10px 10px 25px;
@@ -104,7 +111,7 @@ html, body {
     padding:10px 10px 10px 10px;
 }
 
-.row .col-md-4 .form-group1 p {
+.row .col-md-4 .row1 p {
     padding: 10px 10px 10px 10px;
     background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */
     background: rgba(255,255,255, 1);
