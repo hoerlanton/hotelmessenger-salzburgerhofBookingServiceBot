@@ -8,7 +8,7 @@ var sourceFile = require('../app');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['testMessages', 'testGaeste']);
+var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['testMessages', 'testGaeste, testScheduldedMessages']);
 var config = require('config');
 var cron = require('node-cron');
 var CronJob = require('cron').CronJob;
@@ -332,11 +332,11 @@ router.post('/guestsMessage', function(req, res, next) {
                     sendBroadcastFile(gaesteGlobalSenderID[k], URLUploadedFile);
                 }
 
-                errMsg = "";
-                //set the boolean that a new file got uploaded to false
-                newFileUploaded = false;
-                sourceFile.newFileUploaded = false;
             }
+        errMsg = "";
+        //set the boolean that a new file got uploaded to false
+        newFileUploaded = false;
+        sourceFile.newFileUploaded = false;
         }
 });
 

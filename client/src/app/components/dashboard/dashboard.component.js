@@ -100,7 +100,7 @@ DashboardComponent = __decorate([
     core_1.Component({
         selector: 'dashboard',
         templateUrl: 'dashboard.component.html',
-        styleUrls: ['dashboard.component.css']
+        styleUrls: ['dashboard.component.css'],
     }),
     __metadata("design:paramtypes", [dashboard_service_1.DashboardService, http_1.Http, angular2_flash_messages_1.FlashMessagesService])
 ], DashboardComponent);
