@@ -1,5 +1,5 @@
-// This file is required by karma.conf.js and loads recursively all the .spec and framework files
 "use strict";
+// This file is required by karma.conf.js and loads recursively all the .spec and framework files
 Object.defineProperty(exports, "__esModule", { value: true });
 require("zone.js/dist/long-stack-trace-zone");
 require("zone.js/dist/proxy.js");

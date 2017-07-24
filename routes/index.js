@@ -13,6 +13,14 @@ var config = require('config');
 var cron = require('node-cron');
 var CronJob = require('cron').CronJob;
 
+// HOST_URL used for DB calls - SERVER_URL without https or https://
+const HOST_URL = config.get('hostURL');
+// URL where the app is running (include protocol). Used to point to scripts and
+// assets located at this address.
+const SERVER_URL = (process.env.SERVER_URL) ?
+    (process.env.SERVER_URL) :
+    config.get('serverURL');
+
 //Bodyparser middleware
 router.use(bodyParser.urlencoded({ extended: false}));
 
@@ -40,6 +48,7 @@ var dateDay = "";
 var dateMonth = "";
 var dateHour = "";
 var dateMinute = "";
+var scheduledMessageText = "";
 
 
 //----->REST-FUL API<------//
@@ -121,7 +130,7 @@ router.put('/guests', function(req, res, next) {
 });
 
 //Post message to guests
-router.post('/guestsMessage', function(req, res, next){
+router.post('/guestsMessage', function(req, res, next) {
     console.log("Post request made to /guestsMessage");
 
     var message = req.body;
@@ -139,147 +148,197 @@ router.post('/guestsMessage', function(req, res, next){
     var URLUploadedFile = String(config.get('serverURL') + "/uploads/" + uploadedFileName);
     newFileUploaded = sourceFile.newFileUploaded;
 
-    if(uploadedFileName !== undefined && newFileUploaded === true) {
-        var uploadedFileNameSplitted = uploadedFileName.split("*");
-        var uploadedFileWithoutNumber = uploadedFileNameSplitted[uploadedFileNameSplitted.length - 1];
-        message.text += " | Folgende Datei wurde angehängt: " + uploadedFileWithoutNumber;
-    }
-
-    db.testGaeste.find(function(err, gaeste) {
+    db.testGaeste.find(function (err, gaeste) {
         if (err) {
             errMsg = "Das senden der Nachricht ist nicht möglich. Es sind keine Gäste angemeldet.";
         } else {
             var AllIds = function getAllIds(gaeste) {
                 return gaeste.senderId;
             };
+
             function myFunction() {
                 gaesteGlobalSenderID = gaeste.map(AllIds);
             }
+
             myFunction();
             console.log("gaesteglobalSenderID:" + gaesteGlobalSenderID);
             broadcastMessages();
         }
     });
 
-function broadcastMessages() {
-    console.log(dateReqFormatted + "=" + dateNowFormatted);
-    if (dateReqFormatted !== dateNowFormatted) {
-        console.log("scheduled event fired!");
-        //Save Message to DB
-        db.testScheduledMessages.save(message, function (err, message) {
-            console.log("scheduleMessage saved: " + message.text + " " + message.date);
-            if (err) {
-                res.send(err);
-            }
-            res.json(message);
-        });
-        var job = new CronJob({
-            cronTime: "00 " + dateMinute + " " + dateHour + " " + dateDay + " " + dateMonth + " *",
-            onTick: function () {
-                console.log("00 " + dateMinute + " " + dateHour + " " + dateDay + " " + dateMonth + " *");
-                console.log('job ticked');
-                var regex = String(dateMonth + " " + dateDay + " 2017" + dateHour + ":" + dateMinute);
-                console.log(regex);
-                console.log(gaesteGlobalSenderID + " " + broadcast);
-                        console.log("guestsMessages get called");
-                        //Get guests from Mongo DB
+    function broadcastMessages() {
+        console.log(dateReqFormatted + "=" + dateNowFormatted);
 
-                //https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
-                var buffer = "";
-                var optionsget = {
-                    host: 'b4770d3b.ngrok.io',
-                    path: '/guestsScheduledMessages',
-                    method: 'GET'
-                };
+        if (dateReqFormatted !== dateNowFormatted) {
+            console.log("scheduled event fired!");
+            //Save Message to DB
+            db.testScheduledMessages.save(message, function (err, message) {
+                console.log("scheduleMessage saved: " + message.text + " " + message.date);
+                if (err) {
+                    res.send(err);
+                }
+                res.json(message);
+            });
 
-                console.info('Options prepared:');
-                console.info(optionsget);
-                console.info('Do the GET call');
+            if (uploadedFileName !== undefined && newFileUploaded === true) {
 
-                // do the GET request to retrieve data from the user's graph API
-                var reqGet = https.request(optionsget, function (res) {
-                    console.log("statusCode: ", res.statusCode);
-                    // uncomment it for header details
-                    // console.log("headers: ", res.headers);
-
-                    res.on('data', function (d) {
-                        console.info('GET result:\n');
-                        process.stdout.write(d);
-                        buffer += d;
-                        //parse buffer to JSON object
-                        a = JSON.parse(buffer);
-                        //Parse JSON object to JSON string
-                        b = JSON.stringify(a);
-
-                        console.log(b.text);
-                        var scheduleMessageString = b;
-                        console.log(scheduleMessageString);
-                        var scheduledText = scheduleMessageString.text;
-
-                        //console.log(message.date.contains(dateMinute && dateHour && dateDay && dateMonth));
-
-                        for (var l = 0; l < gaesteGlobalSenderID.length; l++) {
-                            sendBroadcast(gaesteGlobalSenderID[l], scheduledText);
+                db.testScheduledMessages.update({
+                        text: message.text
+                    },
+                    {
+                        $set: {uploaded_file: uploadedFileName}
+                    }, {multi: true}, function (err, message) {
+                        if (err) {
+                            console.log("error: " + err);
+                        } else {
+                            console.log("Updated successfully, scheduled messages var (deleted)");
                         }
-
                     });
-                });
-                // Build the post string from an object
-                reqGet.end();
-                reqGet.on('error', function (e) {
-                    console.error("Error line 450:" + e);
-                });
-
-
-
-
-
-
-            },
-            start: false,
-            timeZone: 'Europe/Berlin'
-        });
-        job.start(); // job 1 started
-    } else {
-        for (var j = 0; j < gaesteGlobalSenderID.length; j++) {
-            console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[j]);
-            sendBroadcast(gaesteGlobalSenderID[j], broadcast);
-        }
-        //Save Message to DB
-        db.testMessages.save(message, function (err, message) {
-            console.log("Message saved: " + message.text + " " + message.date);
-            if (err) {
-                res.send(err);
             }
-            res.json(message);
-        });
-        if (uploadedFileName !== undefined && newFileUploaded === true) {
-            console.log("sendbroadcastfile runned");
-            for (var k = 0; k < gaesteGlobalSenderID.length; k++) {
-                console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[k]);
-                sendBroadcastFile(gaesteGlobalSenderID[k], URLUploadedFile);
+            var job = new CronJob({
+                cronTime: "00 " + dateMinute + " " + dateHour + " " + dateDay + " " + dateMonth + " *",
+                onTick: function () {
+                    console.log("00 " + dateMinute + " " + dateHour + " " + dateDay + " " + dateMonth + " *");
+                    console.log('job ticked');
+                    console.log(gaesteGlobalSenderID + " " + broadcast);
+                    console.log("guestsMessages get called");
+                    //Get guests from Mongo DB
+
+                    //https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
+                    var buffer = "";
+                    var optionsget = {
+                        host: HOST_URL,
+                        path: '/guestsScheduledMessages',
+                        method: 'GET'
+                    };
+
+                    console.info('Options prepared:');
+                    console.info(optionsget);
+                    console.info('Do the GET call');
+
+                    // do the GET request to retrieve data from the user's graph API
+                    var reqGet = https.request(optionsget, function (res) {
+                        console.log("statusCode: ", res.statusCode);
+                        // uncomment it for header details
+                        // console.log("headers: ", res.headers);
+
+                        res.on('data', function (d) {
+                            console.info('GET result:\n');
+                            //process.stdout.write(d);
+                            buffer += d;
+                            //console.log(buffer);
+                            var bufferObject = JSON.parse(buffer);
+
+                            //console.log(bufferObject);
+                            console.log("jobcoirntime: " + job.cronTime.toString());
+                            console.log("jobcoirntime: " + job.cronTime.toString().slice(2, 4));
+
+                            var minutes = job.cronTime.toString().slice(2, 4);
+                            if (minutes.length === 1) {
+                                minutes = "0" + minutes
+                            }
+                            var hour = job.cronTime.toString().slice(5, 7);
+                            if (hour.length === 1) {
+                                hour = "0" + hour
+                            }
+                            var day = job.cronTime.toString().slice(8, 10);
+                            if (day.length === 1) {
+                                day = "0" + day
+                            }
+                            var monthNumber = job.cronTime.toString().slice(11, 12);
+
+                            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                            var month = monthNames[monthNumber];
+
+                            //Filter the right message
+                            var regex = String(month + " " + day + " 2017 " + hour + ":" + minutes);
+                            console.log(regex);
+
+                            for (var m = 0; m < bufferObject.length; m++) {
+                                var rightMessage = bufferObject[m];
+                                //console.log(rightMessage.date);
+                                //console.log("rightmessage ohne date:" + rightMessage);
+                                if (rightMessage.date.indexOf(regex) !== -1) {
+                                    console.log("HHHH:" + rightMessage.date + rightMessage.text);
+                                    for (var l = 0; l < gaesteGlobalSenderID.length; l++) {
+                                        sendBroadcast(gaesteGlobalSenderID[l], rightMessage.text);
+                                        if (rightMessage.uploaded_file) {
+                                            console.log("URLUploadedFile:" + URLUploadedFile);
+                                            console.log("rightMessage.uploadedfile: " + rightMessage.uploaded_file);
+                                            sendBroadcastFile(gaesteGlobalSenderID[l], SERVER_URL + "/uploads/" + rightMessage.uploaded_file);
+                                        }
+                                    }
+                                }
+                            }
+                            db.testScheduledMessages.update({
+                                    text: rightMessage.text
+                                },
+                                {
+                                    $set: {isInThePast: true}
+                                }, {multi: true}, function (err, message) {
+                                    if (err) {
+                                        console.log("error: " + err);
+                                    } else {
+                                        console.log("Updated successfully, scheduled messages isInThePast var (deleted)");
+                                    }
+                                });
+                        });
+                    });
+                    // Build the post string from an object
+                    reqGet.end();
+                    reqGet.on('error', function (e) {
+                        console.error("Error line 450:" + e);
+                    });
+                },
+                start: false,
+                timeZone: 'Europe/Berlin'
+            });
+            job.start(); // job 1 started
+        } else {
+            for (var j = 0; j < gaesteGlobalSenderID.length; j++) {
+                console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[j]);
+                sendBroadcast(gaesteGlobalSenderID[j], broadcast);
             }
-            errMsg = "";
-            //set the boolean that a new file got uploaded to false
-            newFileUploaded = false;
-            sourceFile.newFileUploaded = false;
+            //Save Message to DB
+            db.testMessages.save(message, function (err, message) {
+                console.log("Message saved: " + message.text + " " + message.date);
+                if (err) {
+                    res.send(err);
+                }
+                res.json(message);
+            });
+
+            if (uploadedFileName !== undefined && newFileUploaded === true) {
+
+                db.testMessages.update({
+                        text: message.text
+                    },
+                    {
+                        $set: {uploaded_file: uploadedFileName}
+                    }, {multi: true}, function (err, message) {
+                        if (err) {
+                            console.log("error: " + err);
+                        } else {
+                            console.log("Updated successfully, messages var (deleted)");
+                        }
+                    });
+            }
+
+                console.log("sendbroadcastfile runned");
+                for (var k = 0; k < gaesteGlobalSenderID.length; k++) {
+                    console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[k]);
+                    sendBroadcastFile(gaesteGlobalSenderID[k], URLUploadedFile);
+                }
+
+                errMsg = "";
+                //set the boolean that a new file got uploaded to false
+                newFileUploaded = false;
+                sourceFile.newFileUploaded = false;
+            }
         }
-    }
-}
-
-
 });
-
-function getScheduledText() {
-    db.testScheduledMessages.find({"date": /j/}, function (err, scheduleMessage) {
-        if (err) {
-            res.send(err);
-        }
-
-
-    });
-}
-
 
 //Get W-Lan-landingpage
 router.get('/wlanlandingpage', function(req, res, next) {

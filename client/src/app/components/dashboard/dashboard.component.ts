@@ -8,7 +8,6 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { FlashMessagesService } from 'angular2-flash-messages';
 
-
 @Component({
     selector: 'dashboard',
     templateUrl: 'dashboard.component.html',
@@ -21,6 +20,7 @@ export class DashboardComponent implements OnInit {
     dateGenerated: any;
     filesToUpload: Array<File> = [];
     scheduledDate: Date = new Date(2016, 5, 10);
+    scheduledMessages: Messages[];
     datepickerOpts = {
         startDate: new Date(2016, 5, 10),
         autoclose: true,
@@ -28,8 +28,8 @@ export class DashboardComponent implements OnInit {
         todayHighlight: true,
         assumeNearbyYear: true,
         format: 'D, d MM yyyy'
-    }
-    scheduledMessages: Messages[];
+    };
+
 
     constructor(private dashboardService: DashboardService, private http: Http, private _flashMessagesService: FlashMessagesService) {
         this.dashboardService.getGuests()
@@ -48,11 +48,13 @@ export class DashboardComponent implements OnInit {
             });
     }
 
+
+
     clicked(event) {
         console.log(this.scheduledDate);
         let scheduledMessage = {
             text: this.title,
-            date: this.scheduledDate.toString()
+            date: this.scheduledDate.toString(),
         };
         console.log(scheduledMessage);
 

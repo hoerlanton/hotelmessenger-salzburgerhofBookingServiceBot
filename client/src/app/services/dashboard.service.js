@@ -12,31 +12,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/map");
-var TaskService = (function () {
-    function TaskService(http) {
+var DashboardService = (function () {
+    function DashboardService(http) {
         this.http = http;
         console.log('Task service initialized!');
     }
-    TaskService.prototype.getTasks = function () {
+    DashboardService.prototype.getGuests = function () {
         return this.http.get('guests')
             .map(function (res) { return res.json(); });
     };
-    TaskService.prototype.getMessages = function () {
+    DashboardService.prototype.getMessages = function () {
         return this.http.get('guestsMessages')
             .map(function (res) { return res.json(); });
     };
-    TaskService.prototype.addTask = function (newTask) {
+    DashboardService.prototype.getScheduledMessages = function () {
+        return this.http.get('guestsScheduledMessages')
+            .map(function (res) { return res.json(); });
+    };
+    DashboardService.prototype.sendMessage = function (newMessage) {
         var headers = new http_1.Headers();
         headers.append('Content-Type', 'application/json');
         console.log(headers);
-        return this.http.post('guestsMessage', newTask, { headers: headers })
+        return this.http.post('guestsMessage', newMessage, { headers: headers })
             .map(function (res) { return res.json(); });
     };
-    return TaskService;
+    DashboardService.prototype.scheduleMessage = function (scheduledMessage) {
+        var headers = new http_1.Headers();
+        headers.append('Content-Type', 'application/json');
+        console.log(headers);
+        return this.http.post('guestsMessage', scheduledMessage, { headers: headers })
+            .map(function (res) { return res.json(); });
+    };
+    return DashboardService;
 }());
-TaskService = __decorate([
+DashboardService = __decorate([
     core_1.Injectable(),
     __metadata("design:paramtypes", [http_1.Http])
-], TaskService);
-exports.TaskService = TaskService;
-//# sourceMappingURL=task.service.js.map
+], DashboardService);
+exports.DashboardService = DashboardService;
+//# sourceMappingURL=dashboard.service.js.map

@@ -195,6 +195,33 @@ app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
     //Export value to index.js - a new file got uploaded
     exports.newFileUploaded = newFileUploaded;
     res.send(req.files);
+
+    /*
+
+    // An object of options to indicate where to post to
+    var put_options = {
+        //Change URL on top if deploying
+        host: HOST_URL,
+        port: '80',
+        path: '/guests',
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
+
+    // Set up the request
+    var put_req = http.request(put_options, function(res) {
+        res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+            console.log('Response: of put request - line 2540 + chunk var (deleted): ');
+        });
+    });
+
+    // post the data
+    put_req.write(c);
+    put_req.end();
+*/
 });
 
 /*

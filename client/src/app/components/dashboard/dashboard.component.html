@@ -88,11 +88,11 @@
                 <button style=" background-color: #0a7a74; margin-top: 20px; color: white" type="submit" class="btn btn-send" (click)="clicked()">SPÄTER SENDEN</button> <!--Title for button is same as that of the page-->
             </div>
         </div>
-        <div class="col-xs-12" style="padding: 0px 0px 0px 0px; right: 2.5%">
+        <div class="col-xs-12" style="padding: 0px 0px 0px 0px; right: 1.5%">
         <div class="form-group1">
             <h3>Gesendete Nachrichten</h3>
             <div *ngFor="let Messages of sentMessages">
-                <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><br><b>Nachricht: </b>{{Messages.text}}</p>
+                <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
             </div>
         </div>
         </div>
@@ -102,7 +102,11 @@
         <div class="col-xs-12" style="padding: 0px 0px 0px 0px;">
             <div class="row1">
                     <div class="card" style="margin-top: 10px" *ngFor="let Messages of scheduledMessages">
-                        <p><b>Nachricht wird gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><br><b>Nachricht: </b>{{Messages.text}}</p>
+                        <div [ngStyle]="{'background-color': Messages.isInThePast? 'white' : '#0a7a74'}">
+                            <div [ngStyle]="{'color': Messages.isInThePast? 'black' : 'white'}">
+                            <p><b>Nachricht wird gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
+                            </div>
+                        </div>
                     </div>
             </div>
         </div>

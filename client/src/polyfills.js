@@ -1,3 +1,4 @@
+"use strict";
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.
@@ -13,7 +14,6 @@
  *
  * Learn more in https://angular.io/docs/ts/latest/guide/browser-support.html
  */
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /***************************************************************************************************
  * BROWSER POLYFILLS

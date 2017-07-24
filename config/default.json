@@ -1,6 +1,6 @@
 {
-    "appSecret": "b10e2533f7775ae2d99a0cb1fedeb3c5",
-    "pageAccessToken": "EAAbPgy5UveYBAAigWt16bITQTfbCri5o7IyWxv4fR3IUZAcpoZBRxHqoVAnZAg0dnQqkCovgng3Ak7uuezE0kmfbxEntlO8SEGLZA1SV8wGL6HYaA3xN6tAU2dnly7NiVfLZCKsDWDwZCL5KuZC7wL4G38TGHFZCZBloFBkRdEeZBrjgZDZD",
+    "appSecret": "aa0ff220041bcb3551ce1d5318e336cb",
+    "pageAccessToken": "EAABmDV3l5aUBADaIbvS6ZCXpqZCVWxZB7miSg2gfZCvzauy6sSL8FIkRv8hq8V8lNY2HjzWEblWHRft8sxCLOK988yuZAYe5wjBeGeP83U6MWkxrHHyr3NSvcb0VKrHDGNvZCnWySkQYbW9ZCeaHqCJH23NMqqdZAQa1qsMCbGI6agZDZD",
     "validationToken": "anton1234",
     "serverURL": "https://b4770d3b.ngrok.io",
     "hostURL": "b4770d3b.ngrok.io",

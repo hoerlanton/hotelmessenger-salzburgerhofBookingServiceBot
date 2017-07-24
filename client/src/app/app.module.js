@@ -11,7 +11,21 @@ var core_1 = require("@angular/core");
 var forms_1 = require("@angular/forms");
 var http_1 = require("@angular/http");
 var app_component_1 = require("./app.component");
-var tasks_component_1 = require("./components/tasks/tasks.component");
+var dashboard_component_1 = require("./components/dashboard/dashboard.component");
+var angular2_flash_messages_1 = require("angular2-flash-messages");
+var angular2_moment_1 = require("angular2-moment");
+var ng2_datetime_1 = require("ng2-datetime/ng2-datetime");
+require("@angular/platform-browser");
+require("@angular/platform-browser-dynamic");
+require("@angular/core");
+require("@angular/common");
+require("rxjs");
+require("../../bower_components/bootstrap/dist/css/bootstrap.css");
+require("../../bower_components/jquery/dist/jquery.min.js");
+require("../../bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css");
+require("../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js");
+require("../../node_modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css");
+require("../../node_modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -20,12 +34,15 @@ var AppModule = (function () {
 AppModule = __decorate([
     core_1.NgModule({
         declarations: [
-            app_component_1.AppComponent, tasks_component_1.TasksComponent
+            app_component_1.AppComponent, dashboard_component_1.DashboardComponent
         ],
         imports: [
+            ng2_datetime_1.NKDatetimeModule,
             platform_browser_1.BrowserModule,
             forms_1.FormsModule,
-            http_1.HttpModule
+            http_1.HttpModule,
+            angular2_flash_messages_1.FlashMessagesModule,
+            angular2_moment_1.MomentModule
         ],
         providers: [],
         bootstrap: [app_component_1.AppComponent]
