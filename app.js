@@ -2566,7 +2566,7 @@ function updateDB(){
      var put_req = http.request(put_options, function(res) {
         res.setEncoding('utf8');
         res.on('data', function (chunk) {
-            console.log('Response: of put request - line 2540 + chunk var (deleted): ');
+            console.log('Response: of successful put request + chunk var (deleted): //app.js 2540');
         });
      });
 

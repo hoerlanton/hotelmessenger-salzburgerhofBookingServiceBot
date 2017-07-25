@@ -125,7 +125,7 @@ router.put('/guests', function(req, res, next) {
             if(err) {
                 console.log("error: " + err);
             } else {
-                console.log("Updated successfully, gaeste var (deleted)");
+                console.log("Updated successfully, gaeste var (deleted) - put request signed_up: false successful. //index.js 128");
             }});
 });
 
