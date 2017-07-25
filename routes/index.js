@@ -270,20 +270,20 @@ router.post('/guestsMessage', function(req, res, next) {
                                             sendBroadcastFile(gaesteGlobalSenderID[l], SERVER_URL + "/uploads/" + rightMessage.uploaded_file);
                                         }
                                     }
+                                    db.salzburgerhofScheduledMessages.update({
+                                            text: rightMessage.text
+                                        },
+                                        {
+                                            $set: {isInThePast: true}
+                                        }, {multi: true}, function (err, message) {
+                                            if (err) {
+                                                console.log("error: " + err);
+                                            } else {
+                                                console.log("Updated successfully, scheduled messages isInThePast var (deleted)");
+                                            }
+                                        });
                                 }
                             }
-                            db.salzburgerhofScheduledMessages.update({
-                                    text: rightMessage.text
-                                },
-                                {
-                                    $set: {isInThePast: true}
-                                }, {multi: true}, function (err, message) {
-                                    if (err) {
-                                        console.log("error: " + err);
-                                    } else {
-                                        console.log("Updated successfully, scheduled messages isInThePast var (deleted)");
-                                    }
-                                });
                         });
                     });
                     // Build the post string from an object
