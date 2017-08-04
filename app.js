@@ -17,6 +17,9 @@ const
   moment = require('moment-timezone'),
   cron = require('node-cron');
 
+require("babel-polyfill");
+
+
 //Bodyparser middleware
 app.use(bodyParser.urlencoded({ extended: false}));
 
