@@ -226,31 +226,36 @@ router.post('/guestsMessage', function(req, res, next) {
                             var bufferObject = JSON.parse(buffer);
 
                             //console.log(bufferObject);
-                            console.log("jobcoirntime: " + job.cronTime.toString());
-                            console.log("jobcoirntime: " + job.cronTime.toString().slice(2, 4));
+                            var crontTimeString = job.cronTime.toString();
+                            var cronTimeSplitted = crontTimeString.split(" ");
 
-                            var minutes = job.cronTime.toString().slice(2, 4);
+                            console.log("jobcrontime splitted: " + cronTimeSplitted);
+
+                            var minutes = cronTimeSplitted[1];
                             if (minutes.length === 1) {
-                                minutes = "0" + minutes
+                                minutes = "0" + minutes;
                             }
-                            var hour = job.cronTime.toString().slice(5, 7);
+                            var hour = cronTimeSplitted[2];
                             if (hour.length === 1) {
-                                hour = "0" + hour
+                                hour = "0" + hour;
                             }
-                            var day = job.cronTime.toString().slice(8, 10);
+                            var day = cronTimeSplitted[3];
                             if (day.length === 1) {
-                                day = "0" + day
+                                day = "0" + day;
                             }
-                            var monthNumber = job.cronTime.toString().slice(11, 12);
+                            var monthNumber = cronTimeSplitted[4];
+
+                            console.log("---->>>monthnumber" + monthNumber);
 
                             var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
                             var month = monthNames[monthNumber];
 
+                            console.log("---->>>month" + monthNames[monthNumber]);
                             //Filter the right message
                             var regex = String(month + " " + day + " 2017 " + hour + ":" + minutes);
-                            console.log(regex);
+                            console.log("---->regex:"+regex);
 
                             for (var m = 0; m < bufferObject.length; m++) {
                                 var rightMessage = bufferObject[m];

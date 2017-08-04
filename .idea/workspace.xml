@@ -3,9 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="e97f89fe-21ab-44d6-b3b0-c19d42291d92" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/polyfills.js" afterPath="$PROJECT_DIR$/client/src/polyfills.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/polyfills.js.map" afterPath="$PROJECT_DIR$/client/src/polyfills.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/polyfills.ts" afterPath="$PROJECT_DIR$/client/src/polyfills.ts" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/node_modules/mdn-polyfills/package.json" afterPath="$PROJECT_DIR$/client/node_modules/mdn-polyfills/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/app/app.module.js.map" afterPath="$PROJECT_DIR$/client/src/app/app.module.js.map" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/app/app.module.ts" afterPath="$PROJECT_DIR$/client/src/app/app.module.ts" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/main.bundle.js.map" afterPath="$PROJECT_DIR$/public/main.bundle.js.map" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -22,21 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="tsconfig.spec.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client/src/tsconfig.spec.json">
+      <file leaf-file-name="default.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/default.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name=".angular-cli.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client/.angular-cli.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="17" lean-forward="false" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
+            <state relative-caret-position="75">
+              <caret line="5" column="47" lean-forward="false" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -52,6 +44,23 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/routes/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="243" column="48" lean-forward="true" selection-start-line="243" selection-start-column="48" selection-end-line="243" selection-end-column="48" />
+              <folding>
+                <element signature="e#16721#20912#0" expanded="false" />
+                <element signature="n#!!block;n#sendHotelResRQ#0" expanded="false" />
+                <element signature="n#!!block;n#assignTotalPriceReservation#0" expanded="false" />
+                <element signature="n#!!block;n#resetData#0" expanded="false" />
+                <element signature="n#!!block;n#sendBookingConfirmation#0" expanded="false" />
+                <element signature="n#!!block;n#sendPDF#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="config.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/node_modules/@angular/cli/models/config.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -62,11 +71,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="polyfills.ts" pinned="false" current-in-tab="true">
+      <file leaf-file-name="polyfills.ts" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/src/polyfills.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="32" column="25" lean-forward="true" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
+            <state relative-caret-position="240">
+              <caret line="30" column="27" lean-forward="false" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
               <folding>
                 <element signature="e#1646#1675#0" expanded="true" />
               </folding>
@@ -77,11 +86,9 @@
       <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="49" column="29" lean-forward="false" selection-start-line="49" selection-start-column="29" selection-end-line="49" selection-end-column="29" />
-              <folding>
-                <marker date="1501863716000" expanded="true" signature="976:1807" ph="{&quot;@angular/animations&quot;: &quot;~4.2.0&quot;...}" />
-              </folding>
+            <state relative-caret-position="354">
+              <caret line="49" column="30" lean-forward="false" selection-start-line="49" selection-start-column="30" selection-end-line="49" selection-end-column="30" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -89,8 +96,8 @@
       <file leaf-file-name="app.module.ts" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/src/app/app.module.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
+            <state relative-caret-position="165">
+              <caret line="11" column="37" lean-forward="false" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -102,14 +109,14 @@
             <state relative-caret-position="-322">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <marker date="1501864007000" expanded="true" signature="1000:1401" ph="//..." />
-                <marker date="1501864007000" expanded="true" signature="1402:1481" ph="/**...*/" />
-                <marker date="1501864007000" expanded="true" signature="1703:1744" ph="/**...*/" />
-                <marker date="1501864007000" expanded="true" signature="1809:1892" ph="/**...*/" />
-                <marker date="1501864007000" expanded="true" signature="1970:2116" ph="/** Zone JS is required by Angular itself. ...*/" />
-                <marker date="1501864007000" expanded="true" signature="2177:2304" ph="/** APPLICATION IMPORTS ...*/" />
-                <marker date="1501864007000" expanded="true" signature="2305:2423" ph="/** Date, currency, decimal and percent pipes. ...*/" />
-                <marker date="1501864007000" expanded="true" signature="2424:2512" ph="//..." />
+                <marker date="1501864067000" expanded="true" signature="1000:1401" ph="//..." />
+                <marker date="1501864067000" expanded="true" signature="1402:1481" ph="/**...*/" />
+                <marker date="1501864067000" expanded="true" signature="1703:1744" ph="/**...*/" />
+                <marker date="1501864067000" expanded="true" signature="1809:1892" ph="/**...*/" />
+                <marker date="1501864067000" expanded="true" signature="1970:2116" ph="/** Zone JS is required by Angular itself. ...*/" />
+                <marker date="1501864067000" expanded="true" signature="2177:2304" ph="/** APPLICATION IMPORTS ...*/" />
+                <marker date="1501864067000" expanded="true" signature="2305:2423" ph="/** Date, currency, decimal and percent pipes. ...*/" />
+                <marker date="1501864067000" expanded="true" signature="2424:2512" ph="//..." />
               </folding>
             </state>
           </provider>
@@ -218,12 +225,12 @@
         <option value="$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html" />
         <option value="$PROJECT_DIR$/views/googleAnalytics.ejs" />
         <option value="$PROJECT_DIR$/config/default.json" />
-        <option value="$PROJECT_DIR$/routes/index.js" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.ts" />
         <option value="$PROJECT_DIR$/client/package.json" />
-        <option value="$PROJECT_DIR$/client/src/app/app.module.ts" />
         <option value="$PROJECT_DIR$/client/src/polyfills.ts" />
+        <option value="$PROJECT_DIR$/client/src/app/app.module.ts" />
+        <option value="$PROJECT_DIR$/routes/index.js" />
       </list>
     </option>
   </component>
@@ -250,10 +257,10 @@
   <component name="PackageJsonUpdateNotifier">
     <dismissed value="$PROJECT_DIR$/client/bower_components/bootstrap-datepicker/package.json" />
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="1053" />
+    <option name="width" value="1280" />
+    <option name="height" value="773" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -282,32 +289,12 @@
             <path>
               <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
               <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
-              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
               <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
-              <item name="client" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
-              <item name="client" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
-              <item name="client" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="polyfills.ts" type="620a8d5e:NestingTreeNode" />
-            </path>
-            <path>
-              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
-              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
+              <item name="routes" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -439,12 +426,12 @@
       <workItem from="1500465168601" duration="4744000" />
       <workItem from="1500627735855" duration="20450000" />
       <workItem from="1500921220168" duration="13030000" />
-      <workItem from="1501748680196" duration="16502000" />
+      <workItem from="1501748680196" duration="18769000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="462153000" />
+    <option name="totallyTimeSpent" value="464420000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -456,18 +443,18 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
+    <frame x="0" y="23" width="1280" height="773" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18483412" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27879268" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32890856" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32890856" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32890856" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4756703" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21386431" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -754,21 +741,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="20" column="30" lean-forward="false" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="30" />
-          <folding>
-            <element signature="e#16551#20742#0" expanded="false" />
-            <element signature="n#!!block;n#sendHotelResRQ#0" expanded="false" />
-            <element signature="n#!!block;n#assignTotalPriceReservation#0" expanded="false" />
-            <element signature="n#!!block;n#resetData#0" expanded="false" />
-            <element signature="n#!!block;n#sendBookingConfirmation#0" expanded="false" />
-            <element signature="n#!!block;n#sendPDF#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/src/app/app.component.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -839,14 +811,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config/default.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="47" lean-forward="false" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/src/app/services/dashboard.service.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -913,16 +877,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="49" column="29" lean-forward="false" selection-start-line="49" selection-start-column="29" selection-end-line="49" selection-end-column="29" />
-          <folding>
-            <marker date="1501863716000" expanded="true" signature="976:1807" ph="{&quot;@angular/animations&quot;: &quot;~4.2.0&quot;...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/src/main.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -941,37 +895,68 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/src/app/app.module.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="10" column="37" lean-forward="false" selection-start-line="10" selection-start-column="37" selection-end-line="10" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/src/polyfills.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-322">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1501864007000" expanded="true" signature="1000:1401" ph="//..." />
-            <marker date="1501864007000" expanded="true" signature="1402:1481" ph="/**...*/" />
-            <marker date="1501864007000" expanded="true" signature="1703:1744" ph="/**...*/" />
-            <marker date="1501864007000" expanded="true" signature="1809:1892" ph="/**...*/" />
-            <marker date="1501864007000" expanded="true" signature="1970:2116" ph="/** Zone JS is required by Angular itself. ...*/" />
-            <marker date="1501864007000" expanded="true" signature="2177:2304" ph="/** APPLICATION IMPORTS ...*/" />
-            <marker date="1501864007000" expanded="true" signature="2305:2423" ph="/** Date, currency, decimal and percent pipes. ...*/" />
-            <marker date="1501864007000" expanded="true" signature="2424:2512" ph="//..." />
+            <marker date="1501864067000" expanded="true" signature="1000:1401" ph="//..." />
+            <marker date="1501864067000" expanded="true" signature="1402:1481" ph="/**...*/" />
+            <marker date="1501864067000" expanded="true" signature="1703:1744" ph="/**...*/" />
+            <marker date="1501864067000" expanded="true" signature="1809:1892" ph="/**...*/" />
+            <marker date="1501864067000" expanded="true" signature="1970:2116" ph="/** Zone JS is required by Angular itself. ...*/" />
+            <marker date="1501864067000" expanded="true" signature="2177:2304" ph="/** APPLICATION IMPORTS ...*/" />
+            <marker date="1501864067000" expanded="true" signature="2305:2423" ph="/** Date, currency, decimal and percent pipes. ...*/" />
+            <marker date="1501864067000" expanded="true" signature="2424:2512" ph="//..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="354">
+          <caret line="49" column="30" lean-forward="false" selection-start-line="49" selection-start-column="30" selection-end-line="49" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/src/app/app.module.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="37" lean-forward="false" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client/src/polyfills.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="32" column="25" lean-forward="true" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
+        <state relative-caret-position="240">
+          <caret line="30" column="27" lean-forward="false" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
           <folding>
             <element signature="e#1646#1675#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/default.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="47" lean-forward="false" selection-start-line="5" selection-start-column="47" selection-end-line="5" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="243" column="48" lean-forward="true" selection-start-line="243" selection-start-column="48" selection-end-line="243" selection-end-column="48" />
+          <folding>
+            <element signature="e#16721#20912#0" expanded="false" />
+            <element signature="n#!!block;n#sendHotelResRQ#0" expanded="false" />
+            <element signature="n#!!block;n#assignTotalPriceReservation#0" expanded="false" />
+            <element signature="n#!!block;n#resetData#0" expanded="false" />
+            <element signature="n#!!block;n#sendBookingConfirmation#0" expanded="false" />
+            <element signature="n#!!block;n#sendPDF#0" expanded="false" />
           </folding>
         </state>
       </provider>
