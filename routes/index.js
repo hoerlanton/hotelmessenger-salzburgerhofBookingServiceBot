@@ -152,16 +152,12 @@ router.post('/guestsMessage', function(req, res, next) {
         if (err) {
             errMsg = "Das senden der Nachricht ist nicht möglich. Es sind keine Gäste angemeldet.";
         } else {
-            var AllIds = function getAllIds(gaeste) {
-                return gaeste.senderId;
-            };
-
-            function myFunction() {
-                gaesteGlobalSenderID = gaeste.map(AllIds);
+            gaesteGlobalSenderID = [];
+            for(var l = 0; l < gaeste.length; l++){
+                if (gaeste[l].signed_up) {
+                    gaesteGlobalSenderID.push(gaeste[l].senderId);
+                }
             }
-
-            myFunction();
-            console.log("gaesteglobalSenderID:" + gaesteGlobalSenderID);
             broadcastMessages();
         }
     });
@@ -297,10 +293,6 @@ router.post('/guestsMessage', function(req, res, next) {
             });
             job.start(); // job 1 started
         } else {
-            for (var j = 0; j < gaesteGlobalSenderID.length; j++) {
-                console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[j]);
-                sendBroadcast(gaesteGlobalSenderID[j], broadcast);
-            }
             //Save Message to DB
             db.salzburgerhofMessages.save(message, function (err, message) {
                 console.log("Message saved: " + message.text + " " + message.date);
@@ -321,24 +313,26 @@ router.post('/guestsMessage', function(req, res, next) {
                         if (err) {
                             console.log("error: " + err);
                         } else {
-                            console.log("Updated successfully, messages var (deleted)");
+                            console.log("Updated successfully uploaded_file element with " + uploadedFileName + "value, messages var (deleted)");
                         }
                     });
-
 
                 console.log("sendbroadcastfile runned");
                 for (var k = 0; k < gaesteGlobalSenderID.length; k++) {
                     console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[k]);
                     sendBroadcastFile(gaesteGlobalSenderID[k], URLUploadedFile);
                 }
-                }
-
             }
+            for (var j = 0; j < gaesteGlobalSenderID.length; j++) {
+                console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[j]);
+                sendBroadcast(gaesteGlobalSenderID[j], broadcast);
+            }
+        }
         errMsg = "";
         //set the boolean that a new file got uploaded to false
         newFileUploaded = false;
         sourceFile.newFileUploaded = false;
-        }
+    }
 });
 
 //Get W-Lan-landingpage
@@ -347,6 +341,14 @@ router.get('/wlanlandingpage', function(req, res, next) {
     console.log("wlanlandingpage ejs rendered");
 
 });
+
+//Get Google Analytics
+router.get('/googleanalytics', function(req, res, next) {
+    res.render('googleAnalytics');
+    console.log("googleAnalytics ejs rendered");
+});
+
+
 
 //Get checkout form page
 router.get('/checkout', function(req, res, next) {
@@ -661,6 +663,7 @@ function sendPDF(recipientId) {
 
 //Broadcast gesendet von Dashboard to all angemeldete Gäste
 function sendBroadcast(recipientId, broadcastText) {
+    console.log("---->>>>>recipientId: in send broadcast function: "  + recipientId);
     var messageData = {
         recipient: {
             id: recipientId

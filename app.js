@@ -2536,7 +2536,9 @@ function callSendAPI(messageData) {
             // var c is assigned to the current recipient id
             c = messageData.recipient.id;
             //updateDB  is called with current recipient id value -> c which is a global variable
-        updateDB();
+            if(recipientId) {
+                updateDB();
+            }
         }
     });
 }
