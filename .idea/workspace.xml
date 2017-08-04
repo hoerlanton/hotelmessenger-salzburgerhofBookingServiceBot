@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e97f89fe-21ab-44d6-b3b0-c19d42291d92" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/package-lock.json" afterPath="$PROJECT_DIR$/client/package-lock.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/package.json" afterPath="$PROJECT_DIR$/client/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/polyfills.js" afterPath="$PROJECT_DIR$/client/src/polyfills.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/polyfills.js.map" afterPath="$PROJECT_DIR$/client/src/polyfills.js.map" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/polyfills.ts" afterPath="$PROJECT_DIR$/client/src/polyfills.ts" />
@@ -67,10 +65,10 @@
       <file leaf-file-name="polyfills.ts" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/src/polyfills.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="42" column="41" lean-forward="true" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
+            <state relative-caret-position="270">
+              <caret line="32" column="25" lean-forward="true" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
               <folding>
-                <element signature="e#1685#1714#0" expanded="true" />
+                <element signature="e#1646#1675#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -104,12 +102,14 @@
             <state relative-caret-position="-322">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding>
-                <marker date="1501863686000" expanded="true" signature="1716:1757" ph="/**...*/" />
-                <marker date="1501863686000" expanded="true" signature="1822:1905" ph="/**...*/" />
-                <marker date="1501863686000" expanded="true" signature="1983:2129" ph="/** Zone JS is required by Angular itself. ...*/" />
-                <marker date="1501863686000" expanded="true" signature="2190:2317" ph="/** APPLICATION IMPORTS ...*/" />
-                <marker date="1501863686000" expanded="true" signature="2318:2436" ph="/** Date, currency, decimal and percent pipes. ...*/" />
-                <marker date="1501863686000" expanded="true" signature="2437:2527" ph="//..." />
+                <marker date="1501864007000" expanded="true" signature="1000:1401" ph="//..." />
+                <marker date="1501864007000" expanded="true" signature="1402:1481" ph="/**...*/" />
+                <marker date="1501864007000" expanded="true" signature="1703:1744" ph="/**...*/" />
+                <marker date="1501864007000" expanded="true" signature="1809:1892" ph="/**...*/" />
+                <marker date="1501864007000" expanded="true" signature="1970:2116" ph="/** Zone JS is required by Angular itself. ...*/" />
+                <marker date="1501864007000" expanded="true" signature="2177:2304" ph="/** APPLICATION IMPORTS ...*/" />
+                <marker date="1501864007000" expanded="true" signature="2305:2423" ph="/** Date, currency, decimal and percent pipes. ...*/" />
+                <marker date="1501864007000" expanded="true" signature="2424:2512" ph="//..." />
               </folding>
             </state>
           </provider>
@@ -439,12 +439,12 @@
       <workItem from="1500465168601" duration="4744000" />
       <workItem from="1500627735855" duration="20450000" />
       <workItem from="1500921220168" duration="13030000" />
-      <workItem from="1501748680196" duration="16262000" />
+      <workItem from="1501748680196" duration="16502000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="461913000" />
+    <option name="totallyTimeSpent" value="462153000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -954,22 +954,24 @@
         <state relative-caret-position="-322">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1501863686000" expanded="true" signature="1716:1757" ph="/**...*/" />
-            <marker date="1501863686000" expanded="true" signature="1822:1905" ph="/**...*/" />
-            <marker date="1501863686000" expanded="true" signature="1983:2129" ph="/** Zone JS is required by Angular itself. ...*/" />
-            <marker date="1501863686000" expanded="true" signature="2190:2317" ph="/** APPLICATION IMPORTS ...*/" />
-            <marker date="1501863686000" expanded="true" signature="2318:2436" ph="/** Date, currency, decimal and percent pipes. ...*/" />
-            <marker date="1501863686000" expanded="true" signature="2437:2527" ph="//..." />
+            <marker date="1501864007000" expanded="true" signature="1000:1401" ph="//..." />
+            <marker date="1501864007000" expanded="true" signature="1402:1481" ph="/**...*/" />
+            <marker date="1501864007000" expanded="true" signature="1703:1744" ph="/**...*/" />
+            <marker date="1501864007000" expanded="true" signature="1809:1892" ph="/**...*/" />
+            <marker date="1501864007000" expanded="true" signature="1970:2116" ph="/** Zone JS is required by Angular itself. ...*/" />
+            <marker date="1501864007000" expanded="true" signature="2177:2304" ph="/** APPLICATION IMPORTS ...*/" />
+            <marker date="1501864007000" expanded="true" signature="2305:2423" ph="/** Date, currency, decimal and percent pipes. ...*/" />
+            <marker date="1501864007000" expanded="true" signature="2424:2512" ph="//..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/client/src/polyfills.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="42" column="41" lean-forward="true" selection-start-line="42" selection-start-column="41" selection-end-line="42" selection-end-column="41" />
+        <state relative-caret-position="270">
+          <caret line="32" column="25" lean-forward="true" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
           <folding>
-            <element signature="e#1685#1714#0" expanded="true" />
+            <element signature="e#1646#1675#0" expanded="true" />
           </folding>
         </state>
       </provider>
