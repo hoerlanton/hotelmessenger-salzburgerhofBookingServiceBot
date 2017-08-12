@@ -25,21 +25,19 @@ import '../../node_modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css
 import '../../node_modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js';
 
 
-
-
 @NgModule({
-  declarations: [
-    AppComponent, DashboardComponent
-  ],
-  imports: [
-      NKDatetimeModule,
-    BrowserModule,
-    FormsModule,
-    HttpModule,
-    FlashMessagesModule,
-    MomentModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent, DashboardComponent
+    ],
+    imports: [
+        NKDatetimeModule,
+        BrowserModule,
+        FormsModule,
+        HttpModule,
+        FlashMessagesModule,
+        MomentModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

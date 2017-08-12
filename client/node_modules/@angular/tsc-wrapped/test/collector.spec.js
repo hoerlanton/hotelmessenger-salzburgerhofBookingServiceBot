@@ -575,9 +575,6 @@ describe('Collector', function () {
         });
     });
     describe('with interpolations', function () {
-        function createSource(text) {
-            return ts.createSourceFile('', text, ts.ScriptTarget.Latest, true);
-        }
         function e(expr, prefix) {
             var source = createSource((prefix || '') + " export let value = " + expr + ";");
             var metadata = collector.getMetadata(source);
@@ -736,9 +733,20 @@ describe('Collector', function () {
     });
     describe('regerssion', function () {
         it('should be able to collect a short-hand property value', function () {
-            var source = ts.createSourceFile('', "\n        const children = { f1: 1 };\n        export const r = [\n          {path: ':locale', children}\n        ];\n      ", ts.ScriptTarget.Latest, true);
+            var source = createSource("\n        const children = { f1: 1 };\n        export const r = [\n          {path: ':locale', children}\n        ];\n      ");
             var metadata = collector.getMetadata(source);
             expect(metadata.metadata).toEqual({ r: [{ path: ':locale', children: { f1: 1 } }] });
+        });
+        // #17518
+        it('should skip a default function', function () {
+            var source = createSource("\n        export default function () {\n\n          const mainRoutes = [\n            {name: 'a', abstract: true, component: 'main'},\n\n            {name: 'a.welcome', url: '/welcome', component: 'welcome'}\n          ];\n\n          return mainRoutes;\n\n        }");
+            var metadata = collector.getMetadata(source);
+            expect(metadata).toBeUndefined();
+        });
+        it('should skip a named default export', function () {
+            var source = createSource("\n        function mainRoutes() {\n\n          const mainRoutes = [\n            {name: 'a', abstract: true, component: 'main'},\n\n            {name: 'a.welcome', url: '/welcome', component: 'welcome'}\n          ];\n\n          return mainRoutes;\n\n        }\n\n        exports = foo;\n        ");
+            var metadata = collector.getMetadata(source);
+            expect(metadata).toBeUndefined();
         });
     });
     function override(fileName, content) {
@@ -754,7 +762,7 @@ var FILES = {
             '`' +
             "\n        <h2>My Heroes</h2>\n        <ul class=\"heroes\">\n          <li *ngFor=\"#hero of heroes\"\n            (click)=\"onSelect(hero)\"\n            [class.selected]=\"hero === selectedHero\">\n            <span class=\"badge\">{{hero.id | lowercase}}</span> {{hero.name | uppercase}}\n          </li>\n        </ul>\n        <my-hero-detail [hero]=\"selectedHero\"></my-hero-detail>\n        " +
             '`' +
-            ",\n        directives: [HeroDetailComponent, common.NgFor],\n        providers: [HeroService],\n        pipes: [common.LowerCasePipe, common.UpperCasePipe]\n      })\n      export class AppComponent implements OnInit {\n        public title = 'Tour of Heroes';\n        public heroes: Hero[];\n        public selectedHero: Hero;\n\n        constructor(private _heroService: HeroService) { }\n\n        onSelect(hero: Hero) { this.selectedHero = hero; }\n\n        ngOnInit() {\n            this.getHeroes()\n        }\n\n        getHeroes() {\n          this._heroService.getHeroesSlowly().then(heros => this.heroes = heros);\n        }\n      }",
+            ",\n        directives: [HeroDetailComponent, common.NgFor],\n        providers: [HeroService],\n        pipes: [common.LowerCasePipe, common.UpperCasePipe]\n      })\n      export class AppComponent implements OnInit {\n        public title = 'Tour of Heroes';\n        public heroes: Hero[];\n        public selectedHero: Hero;\n\n        constructor(private _heroService: HeroService) { }\n\n        onSelect(hero: Hero) { this.selectedHero = hero; }\n\n        ngOnInit() {\n            this.getHeroes()\n        }\n\n        getHeroes() {\n          this._heroService.getHeroesSlowly().then(heroes => this.heroes = heroes);\n        }\n      }",
         'hero.ts': "\n      export interface Hero {\n        id: number;\n        name: string;\n      }",
         'empty.ts': "",
         'hero-detail.component.ts': "\n      import {Component, Input} from 'angular2/core';\n      import {Hero} from './hero';\n\n      @Component({\n        selector: 'my-hero-detail',\n        template: " +
@@ -801,4 +809,7 @@ var FILES = {
         }
     }
 };
+function createSource(text) {
+    return ts.createSourceFile('', text, ts.ScriptTarget.Latest, true);
+}
 //# sourceMappingURL=collector.spec.js.map

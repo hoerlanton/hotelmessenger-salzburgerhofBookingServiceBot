@@ -8,6 +8,6 @@ export class Guest {
     senderId: string;
     signed_up: boolean;
     timezone: string;
-    _id : string;
+    _id: string;
     signed_up_at: string;
 }

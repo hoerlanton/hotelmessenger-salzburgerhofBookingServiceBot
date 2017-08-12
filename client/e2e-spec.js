@@ -1,6 +1,5 @@
 'use strict'; // necessary for es6 output in node
-Object.defineProperty(exports, "__esModule", { value: true });
-var protractor_1 = require("protractor");
+var protractor_1 = require('protractor');
 describe('cli-quickstart App', function () {
     beforeEach(function () {
         return protractor_1.browser.get('/');
