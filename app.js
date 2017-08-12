@@ -42,6 +42,7 @@ app.set('view engine', 'ejs');
 
 //Set Public folder as static folder
 app.use(express.static('public'));
+app.use(express.static(__dirname + '/trustyoustatic'));
 
 // le dice a express que el directorio 'uploads', es estatico.
 app.use("/uploads", express.static(path.join(__dirname, 'uploads')));
@@ -419,6 +420,41 @@ function verifyRequestSignature(req, res, buf) {
  *
  */
 
+function getMetrics() {
+    var buffer = "";
+    var optionsget = {
+        host: 'graph.facebook.com',
+        port: 443,
+        path: '/v2.6/' + "246712532096608/insights?pretty=0&since=1502002800&until=1502175600&metric=page_fan_adds_unique&access_token=" + PAGE_ACCESS_TOKEN,
+        method: 'GET'
+    };
+
+    console.info('Options prepared:');
+    console.info(optionsget);
+    console.info('Do the GET call');
+
+// do the GET request to retrieve data from the user's graph API
+    var reqGet = https.request(optionsget, function (res) {
+        console.log("statusCode: ", res.statusCode);
+        // uncomment it for header details
+        // console.log("headers: ", res.headers);
+
+        res.on('data', function (d) {
+            console.info('GET result:\n');
+            process.stdout.write(d);
+            buffer += d;
+            //parse buffer to JSON object
+            console.log(buffer);
+        });
+    });
+// Build the post string from an object
+    reqGet.end();
+    reqGet.on('error', function (e) {
+        console.error("Error line 450:" + e);
+    });
+}
+
+exports.getMetrics = getMetrics;
 //Recieve authentication from wlanlandingpage when user click Send to messenger button - Send data to mongoDB database.
 function receivedAuthentication(event) {
     var senderID = event.sender.id;

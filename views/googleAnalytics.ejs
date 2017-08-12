@@ -2,59 +2,176 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Hello Analytics Reporting API V4</title>
-    <meta name="google-signin-client_id" content="154696474587-djqv8nhbi2ghlhv2fe9hts7um4ndf424.apps.googleusercontent.com">
-    <meta name="google-signin-scope" content="https://www.googleapis.com/auth/analytics.readonly">
+    <meta name="google-site-verification" content="KvdgCYsuDtF-BwdQpTOqHue4C9l5uf2txZ9WaenFyl8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"   integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="   crossorigin="anonymous"></script>
+
+    <script>
+        (function(w,d,s,g,js,fs){
+            g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
+            js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
+            js.src='https://apis.google.com/js/platform.js';
+            fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
+        }(window,document,'script'));
+    </script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            background-color: #0a7a74;
+        }
+
+        #embed-api-auth-container {
+            width: 100%;
+        }
+
+        #chart-container {
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
 
-<h1>Hello Analytics Reporting API V4</h1>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <ul class="nav navbar-nav">
+                    <li><img alt="Brand" href="http://www.servicio.io" src="http://servicio.io/wp-content/uploads/2016/05/servicio-logo-hellblau-auto-ohne-hintergrund-1.png" style="height: 45px; width: auto; margin-top:15px; margin-right: 50px; text-align: left; display:table-cell; vertical-align:middle;"></li>
+                    <li style="text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px"><a href="http://www.salzburgerhof.servicio.io/wlanlandingpage">LANDINGPAGE</a></li>
+                    <li style="text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px"><a href="http://servicio.io/tester-info-3">INFO</a></li>
+                    <li style="text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px"><a href="">MARKETING KPIs</a></li>
+                </ul>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><img alt="Partner" href="http://www.salzburgerhof.servicio.io/wlanlandingpage" src="http://servicio.io/wp-content/uploads/2017/06/Salzburger-Hof_Marke_CMYK-ohne-hintergrund.png" style="height: 45px; width: auto; margin-top: 10px; margin-bottom: 5px; margin-right: 5px;float: right; text-align: right; display:table-cell; vertical-align:middle;"></li>
+            </ul>
+        </div>
+    </nav>
 
-<!-- The Sign-in button. This will run `queryReports()` on success. -->
-<p class="g-signin2" data-onsuccess="queryReports"></p>
+    <div class="row">
+        <div class="container-fluid">
+            <div class="col-md-3"><h3>Angemeldete Gäste</h3>
 
-<!-- The API response will be printed here. -->
-<textarea cols="80" rows="20" id="query-output"></textarea>
+                <!-- TrustYou Widget -->
+                <script type="text/javascript" src="https://api.trustyou.com/static/3rdparty/iframe-resizer/js/iframeResizer.min.js"></script>
+                <iframe src="https://api.trustyou.com/hotels/88bd8202-9569-43f8-9dde-3e11d99cff8a/tops_flops.html?key=8565e8d5-78a8-4644-b314-69fdbbda9719&iframe_resizer=true" allowtransparency="true" frameborder="20"width="100%"height="50%" style="margin-left: 20px; padding:20px; background-color: #ffffff; margin-bottom: 20px; overflow: auto; max-height: 90%; "></iframe>
+                <script type="text/javascript">iFrameResize({});</script>
+                <!-- /TrustYou Widget -->
+            </div>
+            <div class="col-md-6">
+                <div id="embed-api-auth-container"></div>
+                <div id="chart-1-container"></div>
+                <div id="chart-2-container"></div>
+                <div id="view-selector-1-container"></div>
+                <div id="view-selector-2-container"></div>
+            </div>
+            <div class="col-md-3">
+                <iframe src="http://www.charlottefabrics.com" width="100%" height="4000" frameborder="0" scrolling="yes"></iframe
+            </div>
+        <div class="container-fluid">
+    <div class="row">
 
-<script>
-    // Replace with your view ID.
-    var VIEW_ID = '36961271';
+        <script>
 
-    // Query the API and print the results to the page.
-    function queryReports() {
-        gapi.client.request({
-            path: '/v4/reports:batchGet',
-            root: 'https://analyticsreporting.googleapis.com/',
-            method: 'POST',
-            body: {
-                reportRequests: [
-                    {
-                        viewId: VIEW_ID,
-                        dateRanges: [
-                            {
-                                startDate: '7daysAgo',
-                                endDate: 'today'
-                            }
-                        ],
-                        metrics: [
-                            {
-                                expression: 'ga:sessions'
-                            }
-                        ]
+            gapi.analytics.ready(function() {
+
+                /**
+                 * Authorize the user immediately if the user has already granted access.
+                 * If no access has been created, render an authorize button inside the
+                 * element with the ID "embed-api-auth-container".
+                 */
+                gapi.analytics.auth.authorize({
+                    container: 'embed-api-auth-container',
+                    clientid: '154696474587-bjo1gvihbg7sup2oclpfu321u09m3nbb.apps.googleusercontent.com'
+                });
+
+
+                /**
+                 * Create a ViewSelector for the first view to be rendered inside of an
+                 * element with the id "view-selector-1-container".
+                 */
+                var viewSelector1 = new gapi.analytics.ViewSelector({
+                    container: 'view-selector-1-container'
+                });
+
+                /**
+                 * Create a ViewSelector for the second view to be rendered inside of an
+                 * element with the id "view-selector-2-container".
+                 */
+                var viewSelector2 = new gapi.analytics.ViewSelector({
+                    container: 'view-selector-2-container'
+                });
+
+                // Render both view selectors to the page.
+                viewSelector1.execute();
+                viewSelector2.execute();
+
+
+                /**
+                 * Create the first DataChart for top countries over the past 30 days.
+                 * It will be rendered inside an element with the id "chart-1-container".
+                 */
+                var dataChart1 = new gapi.analytics.googleCharts.DataChart({
+                    query: {
+                        metrics: 'ga:sessions',
+                        dimensions: 'ga:country',
+                        'start-date': '30daysAgo',
+                        'end-date': 'yesterday',
+                        'max-results': 6,
+                        sort: '-ga:sessions'
+                    },
+                    chart: {
+                        container: 'chart-1-container',
+                        type: 'PIE',
+                        options: {
+                            width: '100%',
+                            pieHole: 4/9
+                        }
                     }
-                ]
-            }
-        }).then(displayResults, console.error.bind(console));
-    }
+                });
 
-    function displayResults(response) {
-        var formattedJson = JSON.stringify(response.result, null, 2);
-        document.getElementById('query-output').value = formattedJson;
-    }
-</script>
 
-<!-- Load the JavaScript API client and Sign-in library. -->
-<script src="https://apis.google.com/js/client:platform.js"></script>
+                /**
+                 * Create the second DataChart for top countries over the past 30 days.
+                 * It will be rendered inside an element with the id "chart-2-container".
+                 */
+                var dataChart2 = new gapi.analytics.googleCharts.DataChart({
+                    query: {
+                        metrics: 'ga:sessions',
+                        dimensions: 'ga:country',
+                        'start-date': '30daysAgo',
+                        'end-date': 'yesterday',
+                        'max-results': 6,
+                        sort: '-ga:sessions'
+                    },
+                    chart: {
+                        container: 'chart-2-container',
+                        type: 'PIE',
+                        options: {
+                            width: '100%',
+                            pieHole: 4/9
+                        }
+                    }
+                });
+
+                /**
+                 * Update the first dataChart when the first view selecter is changed.
+                 */
+                viewSelector1.on('change', function(ids) {
+                    dataChart1.set({query: {ids: ids}}).execute();
+                });
+
+                /**
+                 * Update the second dataChart when the second view selecter is changed.
+                 */
+                viewSelector2.on('change', function(ids) {
+                    dataChart2.set({query: {ids: ids}}).execute();
+                });
+
+            });
+        </script>
 
 </body>
 </html>

@@ -1,0 +1,268 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>TrustYou API &ndash; Hotel Detail Demo</title>
+
+    <!-- These CSS files are for styling purposes only; they are not required to visualize the TrustYou API -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,500,700"/>
+    <link rel="stylesheet" href="https://cdn.trustyou.com/common/trustyou-iconic/css/trustyou-iconic.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../css/trustyou-ui.css"/>
+    <link rel="stylesheet" href="../css/trustscore.css"/>
+    <link rel="stylesheet" href="../css/style.css"/>
+
+    <!-- This demo uses the popular MustacheJS templating engine to dynamically build an HTML page in the browser. Depending on your use case, you will likely use a server-side templating language. -->
+
+    <!-- HTML template for hotel title, address & rating -->
+    <script id="tmpl-hotel-title" type="x-tmpl-mustache">
+    <h1>
+      {{name}}
+      <span class="stars">
+        <span class="active">&#x2605;</span>
+        <span class="active">&#x2605;</span>
+        <span class="active">&#x2605;</span>
+        <span class="active">&#x2605;</span>
+        <span class="active">&#x2605;</span>
+      </span>
+    </h1>
+    <h2>
+      <i class="ty-icon ty-icon-marker"></i>
+      {{address}}
+    </h2>
+  </script>
+
+    <!-- HTML template for basic hotel info -->
+    <script id="tmpl-hotel-info" type="x-tmpl-mustache">
+    <div class="col-xs-8">
+      <h3>
+        {{summary}}
+      </h3>
+      <div class="hotel-type">
+        {{#badges}}
+        <p>
+          <i class="ty-icon ty-icon-{{categoryId}}"></i>
+          {{&text}} &ndash; <em>{{&subtext}}</em>
+        </p>
+        {{/badges}}
+      </div>
+      <div class="trustscore-distribution">
+        <iframe src="https://api.trustyou.com/hotels/674fa44c-1fbd-4275-aa72-a20f262372cd/seal.html" />
+
+	<div class="distribution">
+	  {{#reviewsDistribution}}
+          <div class="rating-level {{sentiment}}">
+            <div class="rating-value"><i class="ty-icon ty-icon-star"></i> {{stars}}</div>
+            <div class="rating-chart">
+	      <div class="rating-chart-value" style="width: {{percent}}%;"></div>
+            </div>
+            <div class="rating-count">{{reviewsCount}}</div>
+          </div>
+	  {{/reviewsDistribution}}
+        </div>
+
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="thumbnail">
+        <div class="ranking">
+          <div class="rank-wrapper">
+            <span>Ranked</span>
+            <span>Top {{popularity}}%</span>
+          </div>
+        </div>
+        <img src="{{imgUrl}}" class="img-responsive" alt="{{name}}"/>
+      </div>
+    </div>
+  </script>
+
+    <!-- HTML template for review summary -->
+    <script id="tmpl-reviews-tab" type="x-tmpl-mustache">
+    <div class="row">
+      <div class="col-xs-9">
+        <div class="tab-content">
+	  {{#languageMetaReviews}}
+          <div class="tab-pane fade {{visibility}}" id="reviews-{{language}}">
+	    {{#travelerTypes}}
+            <section class="traveler-type-distribution">
+              <h2>Travelers types</h2>
+              <iframe src="https://api.trustyou.com/hotels/674fa44c-1fbd-4275-aa72-a20f262372cd/traveler_distribution.html" />
+            </section>
+	    {{/travelerTypes}}
+            <section class="highlights">
+              <h2>Highlights</h2>
+              <ul class="nav nav-pills nav-stacked">
+                {{#categories}}
+                <li class="{{class}}"><a href="#review-summary-{{language}}-{{categoryId}}" data-toggle="pill">{{categoryName}}</a></li>
+                {{/categories}}
+              </ul>
+
+              <div class="pill-content">
+                {{#categories}}
+                <div class="pill-pane fade {{class}}" id="review-summary-{{language}}-{{categoryId}}">
+                  {{#summarySentences}}
+                  <div class="subcategory">
+                    <div class="result-description">
+		      <i class="ty-icon ty-icon-{{sentiment}}"></i>
+                      <p>{{text}}</p>
+                    </div>
+                  </div>
+                  {{/summarySentences}}
+                </div>
+                {{/categories}}
+              </div>
+            </section>
+          </div>
+	  {{/languageMetaReviews}}
+        </div>
+      </div>
+
+      <div class="col-xs-3">
+	<p style="clear: both">
+	  Summary of reviews written in &hellip;
+	</p>
+        <div class="dropdown traveler-language">
+          <a data-toggle="dropdown">
+            <i class="ty-icon ty-icon-language"></i>
+            <span class="language-type">All languages</span>
+            <span class="value">100%</span><i class="ty-icon ty-icon-chevron-down"></i>
+          </a>
+          <ul class="dropdown-menu">
+	    {{#languageMetaReviews}}
+            <li>
+            <a data-toggle="tab" data-target="#reviews-{{language}}, #gtk-{{language}}">
+                <span class="language-type">{{label}}</span>
+                <span class="value">{{reviewsPercent}}%</span>
+              </a>
+            </li>
+	    {{/languageMetaReviews}}
+          </ul>
+        </div>
+
+        <div class="tab-content">
+	  {{#languageMetaReviews}}
+          <div class="tab-pane fade {{visibility}}" id="gtk-{{language}}">
+            <section class="good-to-know">
+              <h2>Good to know</h2>
+              <ul>
+                {{#goodToKnow}}
+                <li>
+                  <i class="ty-icon ty-icon-{{sentiment}}"></i>{{text}}
+                </li>
+                {{/goodToKnow}}
+              </ul>
+            </section>
+          </div>
+	  {{/languageMetaReviews}}
+        </div>
+      </div>
+    </div>
+
+    <a href="http://trustyou.com" class="verified-reviews">
+      <img src="https://api.trustyou.com/static/img/verified-reviews.png" alt="powered by TrustYou" class="powered-by-trustyou"/>
+    </a>
+
+  </script>
+
+    <!-- Location widget will be used as an iframe, so does not need a template -->
+
+    <!-- HTML template for social -->
+    <script id="tmpl-social-tab" type="x-tmpl-mustache">
+      <div class="col-xs-6">
+        <section class="social {{socialSource}}">
+
+          {{#posts}}
+          <div class="post">
+            <div class="social-badge">
+              <i class="ty-icon ty-icon-{{socialSourceClass}}"></i>
+            </div>
+            <p class="publish-date">
+              {{publishDate}}
+            </p>
+            <p class="name">
+              <a href="" target="_blank">{{userName}}</a>
+            </p>
+            <p class="source">
+              <a href="" target="_blank">
+                on {{socialSource}}
+              </a>
+            </p>
+            <p class="content">
+              {{text}}
+            </p>
+          </div>
+          {{/posts}}
+
+        </section>
+      </div>
+    </div>
+    <a href="http://trustyou.com" class="verified-reviews">
+      <img src="https://api.trustyou.com/static/img/verified-reviews.png" alt="powered by TrustYou" class="powered-by-trustyou"/>
+    </a>
+
+  </script>
+</head>
+
+<body>
+<header>
+
+
+
+
+    <!-- /TrustYou Widget -->
+
+    <div class="hotel-title">
+        <div class="container" id="hotel-title"></div>
+    </div>
+    <div class="container">
+        <div class="row" id="hotel-info"></div>
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#review-summary" data-toggle="tab">
+                    <i class="ty-icon ty-icon-chart-bars"></i>
+                    Reviews
+                </a>
+            </li>
+            <li>
+                <a href="#location" data-toggle="tab">
+                    <i class="ty-icon ty-icon-marker"></i>
+                    Location
+                </a>
+            </li>
+            <li>
+                <a href="#social" data-toggle="tab">
+                    <i class="ty-icon ty-icon-users"></i>
+                    Social
+                </a>
+            </li>
+        </ul>
+    </div>
+</header>
+
+<div class="container">
+    <div class="tab-content">
+        <div class="tab-pane fade in active review-summary" id="review-summary"></div>
+        <!-- Location iframe -->
+        <div class="tab-pane fade" id="location">
+            <iframe id="iframe-location" src="" frameborder="0" width="100%" height="2200px"></iframe>
+        </div>
+        <div class="tab-pane fade" id="social">
+            <iframe id="iframe-social" src="" frameborder="0" width="100%" height="1000px"></iframe>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- See js/main.js for what happens next :) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../js/main.js"></script>
+
+</body>
+
+</html>

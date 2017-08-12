@@ -1,0 +1,104 @@
+
+
+/* --------------- Layout ---------------- */
+
+.distribution {
+	position: relative;
+	width: 450px;
+	height: 140px;
+	font-size: 14px;
+	font-family: "Roboto", Arial, Helvetica sans-serif;
+	line-height: normal;
+}
+
+.distribution .trustscore {
+	float: left;
+	margin-right: 25px;
+}
+
+.distribution .distribution {
+	float: left;
+}
+
+
+/* ------- Distribution star levels ------ */
+
+.rating-level {
+	margin-top: 9px;
+	font-weight: 300;
+	font-size: 13px;
+	line-height: normal;	
+}
+
+.rating-level:first-child {
+	margin-top: 0;
+}
+
+.rating-level:before,
+.rating-level:after {
+	display: table;
+	clear: both;
+	content: '';
+}
+
+.rating-count {
+	float: left;
+	margin-top: -1px;
+	text-align: left;
+}
+
+.rating-value {
+	float: left;
+	margin-top: -1px;
+	width: 30px;
+	color: #689cd4;
+	text-align: left;
+	font-weight: 500;
+}
+
+.rating-value .ty-icon {
+	display: inline-block;
+}
+
+.rating-level.pos .rating-value {
+	color: #9acf89;
+}
+
+.rating-level.neu .rating-value {
+	color: #f8d867;
+}
+
+.rating-level.neg .rating-value {
+	color: #ee8e8e;
+}
+
+/* --------- Distribution charts --------- */
+
+.rating-level .rating-chart {
+	float: left;
+	margin-right: 10px;
+	width: 160px;
+	height: 17px;
+	background: #f0f0f0;
+}
+
+.rating-level .rating-chart-value {
+	height: 100%;
+	background: #689cd4;
+	-webkit-transition: all 0.1s ease-in;
+	-moz-transition: all 0.1s ease-in;
+	-o-transition: all 0.1s ease-in;
+	transition: all 0.1s ease-in;
+}
+
+.rating-level.pos .rating-chart-value {
+	background: #9acf89;
+}
+
+.rating-level.neu .rating-chart-value {
+	background: #f8d867;
+}
+
+.rating-level.neg .rating-chart-value {
+	background: #ee8e8e;
+}

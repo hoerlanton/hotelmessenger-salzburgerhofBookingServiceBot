@@ -300,7 +300,7 @@ router.post('/guestsMessage', function(req, res, next) {
         } else {
             for (var j = 0; j < gaesteGlobalSenderID.length; j++) {
                 console.log("gaesteGlobalSenderID: line 166 - " + gaesteGlobalSenderID[j]);
-                sourceFile.sendBroadcast(gaesteGlobalSenderID[j], broadcast);
+                sendBroadcast(gaesteGlobalSenderID[j], broadcast);
             }
             //Save Message to DB
             db.salzburgerhofMessages.save(message, function (err, message) {
@@ -390,8 +390,14 @@ router.get('/wlanlandingpage', function(req, res, next) {
 router.get('/googleanalytics', function(req, res, next) {
     res.render('googleAnalytics');
     console.log("googleAnalytics ejs rendered");
+    sourceFile.getMetrics();
 });
 
+//Get Google Analytics
+router.get('/trustyou', function(req, res, next) {
+    res.render('trustyou');
+    console.log("trustyou ejs rendered");
+});
 
 
 //Get checkout form page
