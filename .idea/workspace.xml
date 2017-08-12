@@ -2,65 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e97f89fe-21ab-44d6-b3b0-c19d42291d92" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trustyoustatic/img/674fa44c-1fbd-4275-aa72-a20f262372cd.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trustyoustatic/img/avatar.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trustyoustatic/img/preview.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trustyoustatic/css/style.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trustyoustatic/css/trustscore.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trustyoustatic/css/trustyou-ui.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trustyoustatic/js/main.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/views/trustyou.ejs" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.015452059207113455*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.019476800176309927*2015-12-2622.38.52.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.05898374513467841*invoice-2.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.06989081080337267*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.07981297107739249*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.10103735641166844*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.13902063600413084*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.16430156315402122*WochenprogrammKW31.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.27105898874903245*0.06636058166623116KletterleoSchwierigkeitsstufen.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.3116409339174262*0.06636058166623116KletterleoSchwierigkeitsstufen.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.3533073002097675*WochenprogrammKW31.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.3738657845306719*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.41342042648343913*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.47817792066593223*Angebot-SalzburgerHof2017-7-28-00228.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.4994869067011005*Preis-Strategie2017.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.515088196835862*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.5481217529141706*invoice-10.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.5983707995753638*Benoetigte_Unterlagen_ab_WS2017.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.6236800166068703*KletterleoSchwierigkeitsstufen.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.6273674157146985*ratatouille.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.6549170976845766*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.6632292899625329*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.6756930624767903*invoice-8.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.7501822237235978*0.06636058166623116KletterleoSchwierigkeitsstufen.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.8011341819761728*Bildschirmfoto2017-08-03um20.16.49.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.8074450642812874*1542584.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.812725773668435*invoice-6.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.8186012696950464*invoice.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.8643769818370663*0.06636058166623116KletterleoSchwierigkeitsstufen.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.9368218803611301*0.06636058166623116KletterleoSchwierigkeitsstufen.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.9445259969083721*0.06636058166623116KletterleoSchwierigkeitsstufen.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.9792684730447281*Preis-Strategie2017.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/0.998380492018365*Alm-Weidetiere-Wanderer,VerhaltenmitHunden.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/uploads/92.64922920522089Stellenbeschreibung_Online-Marketing_grafisch_aufbereitet2_online.pdf" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/node_modules/ng2-datetime/ng2-datetime.js" afterPath="$PROJECT_DIR$/client/node_modules/ng2-datetime/ng2-datetime.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/node_modules/ng2-datetime/src/ng2-datetime/ITimepickerEvent.js" afterPath="$PROJECT_DIR$/client/node_modules/ng2-datetime/src/ng2-datetime/ITimepickerEvent.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/node_modules/ng2-datetime/src/ng2-datetime/ng2-datetime.js" afterPath="$PROJECT_DIR$/client/node_modules/ng2-datetime/src/ng2-datetime/ng2-datetime.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/node_modules/ng2-datetime/src/ng2-datetime/ng2-datetime.module.js" afterPath="$PROJECT_DIR$/client/node_modules/ng2-datetime/src/ng2-datetime/ng2-datetime.module.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html" afterPath="$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/src/index.html" afterPath="$PROJECT_DIR$/client/src/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/index.html" afterPath="$PROJECT_DIR$/public/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/inline.bundle.js.map" afterPath="$PROJECT_DIR$/public/inline.bundle.js.map" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/main.bundle.js" afterPath="$PROJECT_DIR$/public/main.bundle.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/main.bundle.js.map" afterPath="$PROJECT_DIR$/public/main.bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/polyfills.bundle.js.map" afterPath="$PROJECT_DIR$/public/polyfills.bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/scripts.bundle.js.map" afterPath="$PROJECT_DIR$/public/scripts.bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/styles.bundle.js.map" afterPath="$PROJECT_DIR$/public/styles.bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/vendor.bundle.js.map" afterPath="$PROJECT_DIR$/public/vendor.bundle.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/index.js" afterPath="$PROJECT_DIR$/routes/index.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/googleAnalytics.ejs" afterPath="$PROJECT_DIR$/views/googleAnalytics.ejs" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -77,17 +24,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/index.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="262">
-              <caret line="474" column="0" lean-forward="true" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+              <caret line="474" column="0" lean-forward="false" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
               <folding>
                 <element signature="n#!!block;n#sendHotelResRQ#0" expanded="false" />
                 <element signature="n#!!block;n#assignTotalPriceReservation#0" expanded="false" />
                 <element signature="n#!!block;n#resetData#0" expanded="false" />
                 <element signature="n#!!block;n#sendBookingConfirmation#0" expanded="false" />
                 <element signature="n#!!block;n#sendPDF#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dashboard.component.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="243">
+              <caret line="20" column="25" lean-forward="false" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
+              <folding>
+                <element signature="n#style#0;n#li#3;n#ul#0;n#div#0;n#div#0;n#nav#0;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -176,11 +135,11 @@
         <option value="$PROJECT_DIR$/views/trustyou.ejs" />
         <option value="$PROJECT_DIR$/client/src/index.html" />
         <option value="$PROJECT_DIR$/app.js" />
-        <option value="$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html" />
         <option value="$PROJECT_DIR$/views/googleAnalytics.ejs" />
         <option value="$PROJECT_DIR$/public/index.html" />
         <option value="$PROJECT_DIR$/config/default.json" />
         <option value="$PROJECT_DIR$/routes/index.js" />
+        <option value="$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html" />
       </list>
     </option>
   </component>
@@ -235,6 +194,41 @@
             <path>
               <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
               <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
+              <item name="hotelmessenger-salzburgerhof" type="462c0819:PsiDirectoryNode" />
+              <item name="client" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="dashboard" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="hotelmessenger-salzburgerhof" type="b2602c69:ProjectViewProjectNode" />
@@ -382,12 +376,12 @@
       <workItem from="1500921220168" duration="13030000" />
       <workItem from="1501748680196" duration="19161000" />
       <workItem from="1501920823178" duration="1187000" />
-      <workItem from="1502184566240" duration="22923000" />
+      <workItem from="1502184566240" duration="23306000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="488922000" />
+    <option name="totallyTimeSpent" value="489305000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -400,7 +394,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33995235" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -410,7 +403,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32890856" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28335625" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28335625" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -878,20 +871,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding>
-            <element signature="n#style#0;n#img#0;n#li#0;n#ul#0;n#div#0;n#div#0;n#nav#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="n#style#0;n#li#1;n#ul#0;n#div#0;n#div#0;n#nav#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="n#style#0;n#li#2;n#ul#0;n#div#0;n#div#0;n#nav#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="n#style#0;n#li#3;n#ul#0;n#div#0;n#div#0;n#nav#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="n#style#0;n#img#0;n#li#0;n#ul#0;n#div#0;n#nav#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -944,13 +923,23 @@
     <entry file="file://$PROJECT_DIR$/routes/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="262">
-          <caret line="474" column="0" lean-forward="true" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+          <caret line="474" column="0" lean-forward="false" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#sendHotelResRQ#0" expanded="false" />
             <element signature="n#!!block;n#assignTotalPriceReservation#0" expanded="false" />
             <element signature="n#!!block;n#resetData#0" expanded="false" />
             <element signature="n#!!block;n#sendBookingConfirmation#0" expanded="false" />
             <element signature="n#!!block;n#sendPDF#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/src/app/components/dashboard/dashboard.component.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="243">
+          <caret line="20" column="25" lean-forward="false" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
+          <folding>
+            <element signature="n#style#0;n#li#3;n#ul#0;n#div#0;n#div#0;n#nav#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
