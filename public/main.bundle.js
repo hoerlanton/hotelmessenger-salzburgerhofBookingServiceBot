@@ -10404,7 +10404,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<flash-messages></flash-messages>\n<dashboard></dashboard>\n\n\n"
+module.exports = "<flash-messages></flash-messages>\n<tischplan></tischplan>\n\n\n"
 
 /***/ }),
 
@@ -10414,6 +10414,7 @@ module.exports = "<flash-messages></flash-messages>\n<dashboard></dashboard>\n\n
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_dashboard_service__ = __webpack_require__("../../../../../src/app/services/dashboard.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_tischplan_service__ = __webpack_require__("../../../../../src/app/services/tischplan.service.ts");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -10421,6 +10422,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 var AppComponent = (function () {
@@ -10434,7 +10436,7 @@ AppComponent = __decorate([
         selector: 'app-root',
         template: __webpack_require__("../../../../../src/app/app.component.html"),
         styles: [__webpack_require__("../../../../../src/app/app.component.css")],
-        providers: [__WEBPACK_IMPORTED_MODULE_1__services_dashboard_service__["a" /* DashboardService */]]
+        providers: [__WEBPACK_IMPORTED_MODULE_1__services_dashboard_service__["a" /* DashboardService */], __WEBPACK_IMPORTED_MODULE_2__services_tischplan_service__["a" /* TischplanService */]]
     })
 ], AppComponent);
 
@@ -10452,29 +10454,30 @@ AppComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_component__ = __webpack_require__("../../../../../src/app/app.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_dashboard_dashboard_component__ = __webpack_require__("../../../../../src/app/components/dashboard/dashboard.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_angular2_flash_messages__ = __webpack_require__("../../../../angular2-flash-messages/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_angular2_flash_messages__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_angular2_moment__ = __webpack_require__("../../../../angular2-moment/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_angular2_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_angular2_moment__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_ng2_datetime_ng2_datetime__ = __webpack_require__("../../../../ng2-datetime/ng2-datetime.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_mdn_polyfills_Object_assign__ = __webpack_require__("../../../../mdn-polyfills/Object.assign.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_mdn_polyfills_Object_assign___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_mdn_polyfills_Object_assign__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__angular_platform_browser_dynamic__ = __webpack_require__("../../../platform-browser-dynamic/@angular/platform-browser-dynamic.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__angular_common__ = __webpack_require__("../../../common/@angular/common.es5.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rxjs__ = __webpack_require__("../../../../rxjs/Rx.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_rxjs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__bower_components_bootstrap_dist_css_bootstrap_css__ = __webpack_require__("../../../../../bower_components/bootstrap/dist/css/bootstrap.css");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__bower_components_bootstrap_dist_css_bootstrap_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__bower_components_bootstrap_dist_css_bootstrap_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__bower_components_jquery_dist_jquery_min_js__ = __webpack_require__("../../../../../bower_components/jquery/dist/jquery.min.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__bower_components_jquery_dist_jquery_min_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14__bower_components_jquery_dist_jquery_min_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bower_components_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__("../../../../../bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bower_components_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15__bower_components_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__bower_components_bootstrap_datepicker_dist_js_bootstrap_datepicker_min_js__ = __webpack_require__("../../../../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__bower_components_bootstrap_datepicker_dist_js_bootstrap_datepicker_min_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16__bower_components_bootstrap_datepicker_dist_js_bootstrap_datepicker_min_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__node_modules_bootstrap_timepicker_css_bootstrap_timepicker_min_css__ = __webpack_require__("../../../../bootstrap-timepicker/css/bootstrap-timepicker.min.css");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__node_modules_bootstrap_timepicker_css_bootstrap_timepicker_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_17__node_modules_bootstrap_timepicker_css_bootstrap_timepicker_min_css__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__node_modules_bootstrap_timepicker_js_bootstrap_timepicker_min_js__ = __webpack_require__("../../../../bootstrap-timepicker/js/bootstrap-timepicker.min.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__node_modules_bootstrap_timepicker_js_bootstrap_timepicker_min_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_18__node_modules_bootstrap_timepicker_js_bootstrap_timepicker_min_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_digitalerTischplan_tischplan_component__ = __webpack_require__("../../../../../src/app/components/digitalerTischplan/tischplan.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_angular2_flash_messages__ = __webpack_require__("../../../../angular2-flash-messages/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_angular2_flash_messages__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_angular2_moment__ = __webpack_require__("../../../../angular2-moment/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_angular2_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_angular2_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_ng2_datetime_ng2_datetime__ = __webpack_require__("../../../../ng2-datetime/ng2-datetime.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_mdn_polyfills_Object_assign__ = __webpack_require__("../../../../mdn-polyfills/Object.assign.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_mdn_polyfills_Object_assign___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_mdn_polyfills_Object_assign__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__angular_platform_browser_dynamic__ = __webpack_require__("../../../platform-browser-dynamic/@angular/platform-browser-dynamic.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__angular_common__ = __webpack_require__("../../../common/@angular/common.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_rxjs__ = __webpack_require__("../../../../rxjs/Rx.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_rxjs__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__bower_components_bootstrap_dist_css_bootstrap_css__ = __webpack_require__("../../../../../bower_components/bootstrap/dist/css/bootstrap.css");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__bower_components_bootstrap_dist_css_bootstrap_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14__bower_components_bootstrap_dist_css_bootstrap_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bower_components_jquery_dist_jquery_min_js__ = __webpack_require__("../../../../../bower_components/jquery/dist/jquery.min.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__bower_components_jquery_dist_jquery_min_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15__bower_components_jquery_dist_jquery_min_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__bower_components_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__ = __webpack_require__("../../../../../bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__bower_components_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16__bower_components_bootstrap_datepicker_dist_css_bootstrap_datepicker3_min_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__bower_components_bootstrap_datepicker_dist_js_bootstrap_datepicker_min_js__ = __webpack_require__("../../../../../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__bower_components_bootstrap_datepicker_dist_js_bootstrap_datepicker_min_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_17__bower_components_bootstrap_datepicker_dist_js_bootstrap_datepicker_min_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__node_modules_bootstrap_timepicker_css_bootstrap_timepicker_min_css__ = __webpack_require__("../../../../bootstrap-timepicker/css/bootstrap-timepicker.min.css");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__node_modules_bootstrap_timepicker_css_bootstrap_timepicker_min_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_18__node_modules_bootstrap_timepicker_css_bootstrap_timepicker_min_css__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__node_modules_bootstrap_timepicker_js_bootstrap_timepicker_min_js__ = __webpack_require__("../../../../bootstrap-timepicker/js/bootstrap-timepicker.min.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__node_modules_bootstrap_timepicker_js_bootstrap_timepicker_min_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_19__node_modules_bootstrap_timepicker_js_bootstrap_timepicker_min_js__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -10482,6 +10485,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -10511,15 +10515,15 @@ var AppModule = (function () {
 AppModule = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["NgModule"])({
         declarations: [
-            __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */], __WEBPACK_IMPORTED_MODULE_5__components_dashboard_dashboard_component__["a" /* DashboardComponent */]
+            __WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */], __WEBPACK_IMPORTED_MODULE_5__components_dashboard_dashboard_component__["a" /* DashboardComponent */], __WEBPACK_IMPORTED_MODULE_6__components_digitalerTischplan_tischplan_component__["a" /* TischplanComponent */]
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_8_ng2_datetime_ng2_datetime__["a" /* NKDatetimeModule */],
+            __WEBPACK_IMPORTED_MODULE_9_ng2_datetime_ng2_datetime__["a" /* NKDatetimeModule */],
             __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
             __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormsModule */],
             __WEBPACK_IMPORTED_MODULE_3__angular_http__["a" /* HttpModule */],
-            __WEBPACK_IMPORTED_MODULE_6_angular2_flash_messages__["FlashMessagesModule"],
-            __WEBPACK_IMPORTED_MODULE_7_angular2_moment__["MomentModule"]
+            __WEBPACK_IMPORTED_MODULE_7_angular2_flash_messages__["FlashMessagesModule"],
+            __WEBPACK_IMPORTED_MODULE_8_angular2_moment__["MomentModule"]
         ],
         providers: [],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_4__app_component__["a" /* AppComponent */]]
@@ -10681,6 +10685,157 @@ var _a, _b, _c;
 
 /***/ }),
 
+/***/ "../../../../../src/app/components/digitalerTischplan/tischplan.component.css":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "html, body {\n    padding: 0;\n    margin: 0;\n    height: 100%;\n    background-color: #0a7a74;\n}\n\n.row {\n    height: 100%;\n}\n\n.row .container-fluid .col-md-4 {\n    background-color: #f3efe4;\n    padding: 20px 10px 20px 10px;\n    border-left: 10px solid #0a7a74;\n    border-right: 10px solid #0a7a74;\n    height: 100%;\n    border-bottom: 40px solid #0a7a74;\n    max-width: 20%;\n}\n\n.row .container-fluid .col-md-4 .row1 {\n    overflow: auto;\n    margin: 0 auto;\n    display: inline-block;\n    width: 100%;\n    height: 382.5px;\n    padding-top: 20px;\n}\n\n.row .container-fluid .col-md-4 .row3 {\n    margin: 0 auto;\n    display: inline-block;\n    width: 100%;\n    height: 800px;\n    padding-top: 20px;\n}\n\n\n.row .container-fluid .col-md-4 .col-xs-12 .row1 {\n    overflow: auto;\n    margin: 0 auto;\n    display: inline-block;\n    width: 100%;\n    height: 800px;\n    padding-top: 20px;\n}\n\n\n.row .container-fluid .col-md-4 h3 {\n    -ms-flex-line-pack: center;\n        align-content: center;\n    margin: 0 auto;\n    display: inline-block;\n    color: #0a7a74;\n    position: relative;\n    text-align:center;\n}\n\n.row .container-fluid .col-md-4 .row3 .col-xs-12 .form-group {\n    border-top:3px solid #0a7a74;\n    width: 105%;\n    padding: 10px 10px 10px 30px;\n}\n\n.row .container-fluid .col-md-4 .row3 .col-xs-12  .group {\n    border-top:3px solid #0a7a74;\n    width: 105%;\n    padding: 10px 10px 10px 30px;\n}\n\n.row .container-fluid .col-md-4 .row3 .col-xs-12 .form-group1 {\n    margin-top: 20px;\n    overflow: auto;\n    max-height: 300px;\n    display: inline-block;\n    border-top:3px solid #0a7a74;\n    width: 102%;\n    padding: 10px 10px 10px 25px;\n}\n\n.row1 .col {\n    -webkit-box-flex: 1;\n        -ms-flex: 1;\n            flex: 1;\n}\n\n.row1 .col:nth-child(1) {\n    -webkit-box-ordinal-group: 2;\n        -ms-flex-order: 1;\n            order: 1;\n}\n.row1 .col:nth-child(2) {\n    -webkit-box-ordinal-group: 1;\n        -ms-flex-order: 0;\n            order: 0;\n}\n.row1 .col:nth-child(3) {\n    -webkit-box-ordinal-group: 3;\n        -ms-flex-order: 2;\n            order: 2;\n}\n\n.row .col-md-4 .row2 {\n    padding-bottom: 10px;\n    position: relative;\n    min-height: 100%;\n    border-bottom: 1px solid red;\n}\n\n.card {\n    background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */\n    background: rgba(255,255,255, 1);\n}\n\n.row .container-fluid .col-md-4 .row1 .card p {\n    padding:10px 10px 10px 10px;\n}\n\n.row .container-fluid .col-md-4 .card p {\n    padding:10px 10px 10px 10px;\n}\n\n.row .container-fluid .col-md-4 .row3 .row1 p {\n    padding: 10px 10px 10px 10px;\n    background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */\n    background: rgba(255,255,255, 1);\n}\n\n.row .container-fluid .col-md-4 .col-xs-12 .row1 .card p {\n    padding: 10px 10px 10px 10px;\n}\n\n\n.row .container-fluid .col-md-6 {\n    max-width: 60%;\n    height: 500px;\n    background-color: white;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t58 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 30px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t57 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 30px;\n    background-color: #0a7a74;\n}\n.row .container-fluid .col-md-6 .row .col-md-4 .t56 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 30px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t55 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 30px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t54 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 50px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t53 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 50px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t52 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 60px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t51 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 50px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 .t50 {\n    margin-top: 30px;\n    margin-left: 20px;\n    width: 60px;\n    height: 50px;\n    background-color: #0a7a74;\n}\n\n.row .container-fluid .col-md-6 .row .col-md-4 {\n    background-color: #FFFFFF;\n    padding: 0 0 0 0;\n    border-left: 0;\n    border-right: 0;\n    height: 100%;\n    border-bottom: 0;\n    max-width: 20%;\n}", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
+
+/***/ }),
+
+/***/ "../../../../../src/app/components/digitalerTischplan/tischplan.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<html>\n<head>\n    <title>Dashboard</title>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n    <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css\" integrity=\"sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u\" crossorigin=\"anonymous\">\n    <script src=\"https://code.jquery.com/jquery-1.12.4.min.js\"   integrity=\"sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=\"   crossorigin=\"anonymous\"></script>\n    <link rel=\"stylesheet\" href=\" https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css\">\n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.ar.min.js\"></script>\n    <script src=\"node_modules/core-js/client/shim.min.js\"></script>\n    <script src=\"<your-libs-directory>/object-assign.min.js\"></script>\n</head>\n\n<body>\n\n<nav class=\"navbar navbar-default\">\n    <div class=\"container-fluid\">\n        <div class=\"navbar-header\">\n            <ul class=\"nav navbar-nav\">\n                <li><img alt=\"Brand\" href=\"http://www.servicio.io\" src=\"http://servicio.io/wp-content/uploads/2016/05/servicio-logo-hellblau-auto-ohne-hintergrund-1.png\" style=\"height: 45px; width: auto; margin-top:15px; margin-right: 50px; text-align: left; display:table-cell; vertical-align:middle;\"></li>\n                <li style=\"text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px\"><a href=\"http://www.salzburgerhof.servicio.io/wlanlandingpage\">LANDINGPAGE</a></li>\n                <li style=\"text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px\"><a href=\"http://servicio.io/tester-info-2\">INFO</a></li>\n            </ul>\n        </div>\n        <ul class=\"nav navbar-nav navbar-right\">\n            <li><img alt=\"Partner\" href=\"http://www.salzburgerhof.servicio.io/wlanlandingpage\" src=\"http://servicio.io/wp-content/uploads/2017/06/Salzburger-Hof_Marke_CMYK-ohne-hintergrund.png\" style=\"height: 45px; width: auto; margin-top: 10px; margin-bottom: 5px; margin-right: 5px;float: right; text-align: right; display:table-cell; vertical-align:middle;\"></li>\n        </ul>\n    </div>\n</nav>\n\n<div id=\"charge-error\" class=\"alert alert-danger <% if ( !errMsg ) { %> hidden <% } %>\">\n    <%= errMsg  %>\n</div>\n\n<div class=\"row\">\n    <div class=\"container-fluid\">\n        <div class=\"col-md-4\"><h3>Restaurant</h3>\n            <div class=\"col-xs-12\" style=\"padding: 0px 0px 0px 0px;\">\n                <div class=\"row1\">\n                    <div *ngFor=\"let guest of guests\">\n                        <div class=\"card\" *ngIf=\"guest.signed_up\">\n                            <img src=\"{{guest.profile_pic}}\" style=\"width: 60px;height: 60px;position: relative;border-radius: 50%;margin: 5px; margin-left: 60%;\">\n                            <p><b>Name:</b> {{guest.first_name + \" \"}}{{guest.last_name}}<br>\n                                <b>Geschlecht:</b> {{guest.gender}}<br>\n                                <b>Heimat:</b> {{guest.locale}}<br>\n                                <b>FacebookID:</b> {{guest.senderId}}<br>\n                                <b>Angemeldet am:</b> {{guest.signed_up_at}}<br>\n                            </p>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"col-md-4\"><h3>Im-Haus-Liste</h3>\n            <form class=\"SendMessage\" (submit)=\"sendMessage($event)\">\n                <input type=\"file\" style=\"float: left; margin-top: 10px; color: #0a7a74\" (change)=\"fileChangeEvent($event)\" placeholder=\"Upload file...\" />\n                <button style=\" background-color: #0a7a74; float: right; color:  white\" type=\"button\" class=\"btn btn-send\" (click)=\"upload()\">CSV HOCHLADEN</button>\n            </form>\n            <div class=\"row1\">\n                <div class=\"card\" style=\"margin-top: 10px\" *ngFor=\"let Messages of sentMessages\">\n                    <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>\n                </div>\n            </div>\n            <h3>Traces-Liste</h3>\n            <form class=\"SendMessage\" (submit)=\"sendMessage($event)\">\n                <input type=\"file\" style=\"float: left; margin-top: 10px; color: #0a7a74\" (change)=\"fileChangeEvent($event)\" placeholder=\"Upload file...\" />\n                <button style=\" background-color: #0a7a74; float: right; color:  white\" type=\"button\" class=\"btn btn-send\" (click)=\"upload()\">CSV HOCHLADEN</button>\n            </form>\n            <div class=\"row1\">\n                <div class=\"card\" style=\"margin-top: 10px\" *ngFor=\"let Messages of sentMessages\">\n                    <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"col-md-6\">\n            <div class=\"row\">\n                <div class=\"col-md-4\" style=\"padding: 0px 0px 0px 0px;\">\n                    <div class=\"t58\">\n                        <p>58</p>\n                    </div>\n                    <div class=\"t57\">\n                        <p>57</p>\n                    </div>\n                    <div class=\"t56\">\n                        <p>56</p>\n                    </div>\n                    <div class=\"t55\">\n                        <p>55</p>\n                    </div>\n                </div>\n                <div class=\"col-md-4\" style=\"padding: 0px 0px 0px 0px;\">\n                    <div class=\"t54\">\n                        <p>54</p>\n                    </div>\n                    <div class=\"t53\">\n                        <p>53</p>\n                    </div>\n                    <div class=\"t52\">\n                        <p>52</p>\n                    </div>\n                    <div class=\"t51\">\n                        <p>51</p>\n                    </div>\n                    <div class=\"t50\">\n                        <p>50</p>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n    </div>\n</div>\n\n</body>\n</html>\n"
+
+/***/ }),
+
+/***/ "../../../../../src/app/components/digitalerTischplan/tischplan.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_tischplan_service__ = __webpack_require__("../../../../../src/app/services/tischplan.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_catch__ = __webpack_require__("../../../../rxjs/add/operator/catch.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_catch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_catch__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_flash_messages__ = __webpack_require__("../../../../angular2-flash-messages/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_angular2_flash_messages__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TischplanComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+var TischplanComponent = (function () {
+    function TischplanComponent(tischplanService, http, _flashMessagesService) {
+        var _this = this;
+        this.tischplanService = tischplanService;
+        this.http = http;
+        this._flashMessagesService = _flashMessagesService;
+        this.filesToUpload = [];
+        this.scheduledDate = new Date(2016, 5, 10);
+        this.datepickerOpts = {
+            startDate: new Date(2016, 5, 10),
+            autoclose: true,
+            todayBtn: 'linked',
+            todayHighlight: true,
+            assumeNearbyYear: true,
+            format: 'D, d MM yyyy'
+        };
+        this.tischplanService.getGuests()
+            .subscribe(function (guests) {
+            _this.guests = guests;
+        });
+        this.tischplanService.getMessages()
+            .subscribe(function (sentMessages) {
+            _this.sentMessages = sentMessages;
+        });
+        this.tischplanService.getScheduledMessages()
+            .subscribe(function (scheduledMessages) {
+            _this.scheduledMessages = scheduledMessages;
+        });
+    }
+    TischplanComponent.prototype.clicked = function (event) {
+        var _this = this;
+        console.log(this.scheduledDate);
+        var scheduledMessage = {
+            text: this.title,
+            date: this.scheduledDate.toString(),
+        };
+        console.log(scheduledMessage);
+        this.tischplanService.scheduleMessage(scheduledMessage)
+            .subscribe(function (Messages) {
+            _this.scheduledMessages.push(Messages);
+            _this.title = '';
+        });
+    };
+    TischplanComponent.prototype.sendMessage = function (event) {
+        var _this = this;
+        event.preventDefault();
+        this.dateGenerated = new Date();
+        var newMessage = {
+            text: this.title,
+            date: this.dateGenerated
+        };
+        console.log(newMessage);
+        this.tischplanService.sendMessage(newMessage)
+            .subscribe(function (Messages) {
+            _this.sentMessages.push(Messages);
+            _this.title = '';
+        });
+    };
+    TischplanComponent.prototype.ngOnInit = function () {
+    };
+    TischplanComponent.prototype.upload = function () {
+        var _this = this;
+        var formData = new FormData();
+        var files = this.filesToUpload;
+        formData.append('uploads[]', files[0], files[0]['name']);
+        this.http.post('/upload', formData)
+            .map(function (files) { return files.json(); }).map(function (res) {
+            // 1st parameter is a flash message text
+            // 2nd parameter is optional. You can pass object with options.
+            return _this._flashMessagesService.show('Erfolgreich Datei angehängt', { cssClass: 'alert-success', timeout: 10000 });
+        })
+            .subscribe(function (files) { return console.log('files', files); });
+    };
+    TischplanComponent.prototype.fileChangeEvent = function (fileInput) {
+        this.filesToUpload = fileInput.target.files;
+        //this.successMsg = "Hoi" + fileInput.target.files[0]['name'];
+        //console.log(this.successMsg);
+        //this.product.photo = fileInput.target.files[0]['name'];
+    };
+    return TischplanComponent;
+}());
+TischplanComponent = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        selector: 'tischplan',
+        template: __webpack_require__("../../../../../src/app/components/digitalerTischplan/tischplan.component.html"),
+        styles: [__webpack_require__("../../../../../src/app/components/digitalerTischplan/tischplan.component.css")],
+    }),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_tischplan_service__["a" /* TischplanService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_tischplan_service__["a" /* TischplanService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_http__["b" /* Http */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_5_angular2_flash_messages__["FlashMessagesService"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_angular2_flash_messages__["FlashMessagesService"]) === "function" && _c || Object])
+], TischplanComponent);
+
+var _a, _b, _c;
+// html file deleted:
+// {{"Kann zahlen: " + guest.is_payment_enabled}} 
+//# sourceMappingURL=tischplan.component.js.map
+
+/***/ }),
+
 /***/ "../../../../../src/app/services/dashboard.service.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -10742,6 +10897,70 @@ DashboardService = __decorate([
 
 var _a;
 //# sourceMappingURL=dashboard.service.js.map
+
+/***/ }),
+
+/***/ "../../../../../src/app/services/tischplan.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/@angular/core.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("../../../http/@angular/http.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TischplanService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var TischplanService = (function () {
+    function TischplanService(http) {
+        this.http = http;
+        console.log('Task service initialized!');
+    }
+    TischplanService.prototype.getGuests = function () {
+        return this.http.get('guests')
+            .map(function (res) { return res.json(); });
+    };
+    TischplanService.prototype.getMessages = function () {
+        return this.http.get('guestsMessages')
+            .map(function (res) { return res.json(); });
+    };
+    TischplanService.prototype.getScheduledMessages = function () {
+        return this.http.get('guestsScheduledMessages')
+            .map(function (res) { return res.json(); });
+    };
+    TischplanService.prototype.sendMessage = function (newMessage) {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Headers */]();
+        headers.append('Content-Type', 'application/json');
+        console.log(headers);
+        return this.http.post('guestsMessage', newMessage, { headers: headers })
+            .map(function (res) { return res.json(); });
+    };
+    TischplanService.prototype.scheduleMessage = function (scheduledMessage) {
+        var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Headers */]();
+        headers.append('Content-Type', 'application/json');
+        console.log(headers);
+        return this.http.post('guestsMessage', scheduledMessage, { headers: headers })
+            .map(function (res) { return res.json(); });
+    };
+    return TischplanService;
+}());
+TischplanService = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _a || Object])
+], TischplanService);
+
+var _a;
+//# sourceMappingURL=tischplan.service.js.map
 
 /***/ }),
 

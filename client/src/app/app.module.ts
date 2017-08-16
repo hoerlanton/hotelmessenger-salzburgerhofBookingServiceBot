@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { TischplanComponent } from './components/digitalerTischplan/tischplan.component';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { MomentModule } from 'angular2-moment';
 import { NKDatetimeModule } from 'ng2-datetime/ng2-datetime';
@@ -27,7 +28,7 @@ import '../../node_modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js';
 
 @NgModule({
     declarations: [
-        AppComponent, DashboardComponent
+        AppComponent, DashboardComponent, TischplanComponent
     ],
     imports: [
         NKDatetimeModule,

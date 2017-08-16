@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var dashboard_service_1 = require("./services/dashboard.service");
+var tischplan_service_1 = require("./services/tischplan.service");
 var AppComponent = (function () {
     function AppComponent() {
         this.title = 'App works!';
@@ -19,7 +20,7 @@ AppComponent = __decorate([
         selector: 'app-root',
         templateUrl: 'app.component.html',
         styleUrls: ['./app.component.css'],
-        providers: [dashboard_service_1.DashboardService]
+        providers: [dashboard_service_1.DashboardService, tischplan_service_1.TischplanService]
     })
 ], AppComponent);
 exports.AppComponent = AppComponent;

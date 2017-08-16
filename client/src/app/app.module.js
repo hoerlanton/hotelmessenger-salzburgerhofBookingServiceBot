@@ -12,9 +12,11 @@ var forms_1 = require("@angular/forms");
 var http_1 = require("@angular/http");
 var app_component_1 = require("./app.component");
 var dashboard_component_1 = require("./components/dashboard/dashboard.component");
+var tischplan_component_1 = require("./components/digitalerTischplan/tischplan.component");
 var angular2_flash_messages_1 = require("angular2-flash-messages");
 var angular2_moment_1 = require("angular2-moment");
 var ng2_datetime_1 = require("ng2-datetime/ng2-datetime");
+require("mdn-polyfills/Object.assign");
 require("@angular/platform-browser");
 require("@angular/platform-browser-dynamic");
 require("@angular/core");
@@ -34,7 +36,7 @@ var AppModule = (function () {
 AppModule = __decorate([
     core_1.NgModule({
         declarations: [
-            app_component_1.AppComponent, dashboard_component_1.DashboardComponent
+            app_component_1.AppComponent, dashboard_component_1.DashboardComponent, tischplan_component_1.TischplanComponent
         ],
         imports: [
             ng2_datetime_1.NKDatetimeModule,
