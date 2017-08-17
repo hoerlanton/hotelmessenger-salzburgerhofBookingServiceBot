@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
+import { ElementRef } from '@angular/core';
 import { TischplanService } from '../../services/tischplan.service';
+import { DragulaService } from "ng2-dragula";
 import { Guest } from '../../../../Guest';
+import { Table } from '../../../../Table';
 import { Messages } from '../../../../Messages';
 import { Http } from '@angular/http';
 import { OnInit } from '@angular/core';
@@ -15,7 +18,9 @@ import { FlashMessagesService } from 'angular2-flash-messages';
 })
 
 export class TischplanComponent implements OnInit {
+    bgColor: string;
     guests: Guest[];
+    tables: Table[];
     sentMessages: Messages[];
     title: string;
     dateGenerated: any;
@@ -32,7 +37,10 @@ export class TischplanComponent implements OnInit {
     };
 
 
-    constructor(private tischplanService: TischplanService, private http: Http, private _flashMessagesService: FlashMessagesService) {
+
+    constructor(private tischplanService: TischplanService, private http: Http, private _flashMessagesService: FlashMessagesService, private dragulaService: DragulaService, private element: ElementRef) {
+        this.bgColor = 'BBFFFF';
+
         this.tischplanService.getGuests()
             .subscribe(guests => {
                 this.guests = guests;
@@ -47,8 +55,50 @@ export class TischplanComponent implements OnInit {
             .subscribe(scheduledMessages => {
                 this.scheduledMessages = scheduledMessages;
             });
+
+        this.tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
+
+        dragulaService.drag.subscribe((value) => {
+            console.log(`drag: ${value[0]}`);
+            this.onDrag(value.slice(1));
+        });
+        dragulaService.drop.subscribe((value) => {
+            console.log(`drop: ${value[0]}`);
+            this.onDrop(value.slice(1));
+        });
+        dragulaService.over.subscribe((value) => {
+            console.log(`over: ${value[0]}`);
+            this.onOver(value.slice(1));
+        });
+        dragulaService.out.subscribe((value) => {
+            console.log(`out: ${value[0]}`);
+            this.onOut(value.slice(1));
+        });
     }
 
+    private onDrag(args) {
+        let [e, el] = args;
+
+    }
+
+    private onDrop(args) {
+        let [e, el] = args;
+        let element = this.element.nativeElement;
+        console.log(element);
+        if(this.element.nativeElement.querySelector('.container').querySelector("#card") != null) {
+            this.element.nativeElement.querySelector('.container').querySelector(".1").bgColor = "FFFFFF";
+        }
+    }
+
+    private onOver(args) {
+        let [e, el, container] = args;
+        // do something
+    }
+
+    private onOut(args) {
+        let [e, el, container] = args;
+        // do something
+    }
 
 
     clicked(event) {

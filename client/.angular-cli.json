@@ -22,7 +22,8 @@
         "styles.css",
         "../bower_components/bootstrap/dist/css/bootstrap.css",
         "../node_modules/ng2-datetime/src/bootstrap-datepicker/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css",
-        "../node_modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css"
+        "../node_modules/bootstrap-timepicker/css/bootstrap-timepicker.min.css",
+        "../node_modules/dragula/dist/dragula.css"
       ],
       "scripts": ["../bower_components/jquery/dist/jquery.js",
         "../node_modules/ng2-datetime/src/bootstrap-datepicker/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js",

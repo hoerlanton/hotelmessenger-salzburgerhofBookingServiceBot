@@ -17,6 +17,9 @@ const
   moment = require('moment-timezone'),
   cron = require('node-cron');
 
+
+const csv=require('csvtojson');
+
 require("babel-polyfill");
 
 
@@ -121,6 +124,8 @@ var b = "";
 // c = messageData.recipient.id; called in updateDb function -> if sendAPI call failes
 var c = "";
 
+var imHausListe = "";
+
 //Store uploaded files - destination set / name of file set
 var storage = multer.diskStorage({
     // Destination of upload
@@ -195,11 +200,55 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
     console.log("console log in app.post upload", 'files', req.files);
     exports.uploadedFileName = req.files[0].filename;
+    var uploadedFileName = req.files[0].filename;
     newFileUploaded = true;
     //Export value to index.js - a new file got uploaded
     exports.newFileUploaded = newFileUploaded;
     res.send(req.files);
 
+    csv()
+        .fromStream(request.get(String(config.get('serverURL') + "/uploads/" + uploadedFileName)))
+        .on('csv',(csvRow)=>{
+            imHausListe = JSON.stringify(csvRow);
+                // csvRow is an array
+                // console.log(JSON.stringify(csvRow[i]));
+                // var gaesteName = JSON.stringify(csvRow[23]);
+                // console.log(csvRow[23]);
+                // postImHausListeToDB(gaesteName);
+            // console.log(JSON.stringify(csvRow));
+            postImHausListeToDB();
+        })
+        .on('done', (error)=>{
+        });
+
+
+
+    //New User is saved in DB, function called in receivedAuthentication - send to index.js /guests REST-FUL API
+    function postImHausListeToDB() {
+        // An object of options to indicate where to post to
+        var post_options = {
+            //Change URL to hotelmessengertagbag.herokuapp.com if deploying
+            host: HOST_URL,
+            port: '80',
+            path: '/guests',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        // Set up the request
+        var post_req = http.request(post_options, function (res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                console.log('Response: ' + chunk);
+            });
+        });
+
+        // post the data
+        post_req.write(imHausListe);
+        post_req.end();
+    }
 });
 
 /*

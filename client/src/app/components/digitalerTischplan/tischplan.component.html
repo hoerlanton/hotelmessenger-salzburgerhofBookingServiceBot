@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"   integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="   crossorigin="anonymous"></script>
-    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.ar.min.js"></script>
     <script src="node_modules/core-js/client/shim.min.js"></script>
     <script src="<your-libs-directory>/object-assign.min.js"></script>
@@ -17,7 +17,6 @@
         <div class="navbar-header">
             <ul class="nav navbar-nav">
                 <li><img alt="Brand" href="http://www.servicio.io" src="http://servicio.io/wp-content/uploads/2016/05/servicio-logo-hellblau-auto-ohne-hintergrund-1.png" style="height: 45px; width: auto; margin-top:15px; margin-right: 50px; text-align: left; display:table-cell; vertical-align:middle;"></li>
-                <li style="text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px"><a href="http://www.salzburgerhof.servicio.io/wlanlandingpage">LANDINGPAGE</a></li>
                 <li style="text-align: left; display:table-cell; vertical-align:middle; margin-bottom: 5px"><a href="http://servicio.io/tester-info-2">INFO</a></li>
             </ul>
         </div>
@@ -36,15 +35,14 @@
         <div class="col-md-4"><h3>Restaurant</h3>
             <div class="col-xs-12" style="padding: 0px 0px 0px 0px;">
                 <div class="row1">
-                    <div *ngFor="let guest of guests">
-                        <div class="card" *ngIf="guest.signed_up">
-                            <img src="{{guest.profile_pic}}" style="width: 60px;height: 60px;position: relative;border-radius: 50%;margin: 5px; margin-left: 60%;">
-                            <p><b>Name:</b> {{guest.first_name + " "}}{{guest.last_name}}<br>
-                                <b>Geschlecht:</b> {{guest.gender}}<br>
-                                <b>Heimat:</b> {{guest.locale}}<br>
-                                <b>FacebookID:</b> {{guest.senderId}}<br>
-                                <b>Angemeldet am:</b> {{guest.signed_up_at}}<br>
-                            </p>
+                    <div class='wrapper'>
+                        <div *ngFor="let table of tables">
+                            <div class='container' [dragula]='"evented-bag"'>
+                                <div class="{{table}}" [ngStyle]="{'background-color': '#' + bgColor}">
+                                    <p><b> Tisch: {{table}}</b><br>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -57,8 +55,23 @@
                 <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="upload()">CSV HOCHLADEN</button>
             </form>
             <div class="row1">
-                <div class="card" style="margin-top: 10px" *ngFor="let Messages of sentMessages">
-                    <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
+                <div class='wrapper'>
+                    <div class='container' [dragula]='"evented-bag"'>
+                        <div *ngFor="let guest of guests">
+                            <div class="card" id="card">
+                            <p> <b>Name:</b> {{guest.data[23]}}<br>
+                                <b>Nation:</b> {{guest.data[25]}}<br>
+                                <b>Zimmernummer:</b> {{guest.data[26]}}<br>
+                                <b>PreisTyp:</b> {{guest.data[28]}}<br>
+                                <b>Anreise:</b> {{guest.data[29]}}<br>
+                                <b>Abreise:</b> {{guest.data[30]}}<br>
+                                <b>Personen Anzahl:</b> {{guest.data[31]}}<br>
+                                <b>RB/SOU:</b> {{guest.data[31]}}<br>
+                                <b>Notiz2:</b> {{guest.data[32]}}<br>
+                            </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <h3>Traces-Liste</h3>
@@ -67,18 +80,29 @@
                 <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="upload()">CSV HOCHLADEN</button>
             </form>
             <div class="row1">
-                <div class="card" style="margin-top: 10px" *ngFor="let Messages of sentMessages">
-                    <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
+                <div [dragula]='"bag-one"' [dragulaModel]='sentMessages'>
+                    <div class="card" style="margin-top: 10px" *ngFor="let Messages of sentMessages">
+                        <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
+                    </div>
+                </div>
+                <div class='wrapper'>
+                    <div class='container' [dragula]='"first-bag"'>
+                        <div>You can move these elements between these two containers</div>
+                        <div>Moving them anywhere else isn't quite possible</div>
+                        <div>There's also the possibility of moving elements around in the same container, changing their position</div>
+                    </div>
+                    <div class='container' [dragula]='"first-bag"'>
+                        <div>This is the default use case. You only need to specify the containers you want to use</div>
+                        <div>More interactive use cases lie ahead</div>
+                        <div>Make sure to check out the <a href='https://github.com/bevacqua/dragula#readme'>documentation on GitHub!</a></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6"><h3>Sonnberg-Zirbn</h3>
             <div class="row">
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px;">
-                    <div class="t58">
-                        <p>58</p>
-                    </div>
+                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
                     <div class="t57">
                         <p>57</p>
                     </div>
@@ -88,14 +112,19 @@
                     <div class="t55">
                         <p>55</p>
                     </div>
-                </div>
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px;">
                     <div class="t54">
                         <p>54</p>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
+                    <div class="t58">
+                        <p>58</p>
                     </div>
                     <div class="t53">
                         <p>53</p>
                     </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px 80px 0px 0px; width: 15%; border-right: solid #959194 10px">
                     <div class="t52">
                         <p>52</p>
                     </div>
@@ -106,9 +135,46 @@
                         <p>50</p>
                     </div>
                 </div>
+                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
+                    <div class="t47">
+                        <p>47</p>
+                    </div>
+                    <div class="t48">
+                        <p>48</p>
+                    </div>
+                    <div class="t49">
+                        <p>49</p>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 7%">
+                    <div class="t46">
+                        <p>46</p>
+                    </div>
+                    <div class="t45">
+                        <p>45</p>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 7%">
+                    <div class="t43">
+                        <p>43</p>
+                    </div>
+                    <div class="t44">
+                        <p>44</p>
+                    </div>
+                </div>
+                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
+                    <div class="t42">
+                        <p>42</p>
+                    </div>
+                    <div class="t41">
+                        <p>41</p>
+                    </div>
+                    <div class="t40">
+                        <p>40</p>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 

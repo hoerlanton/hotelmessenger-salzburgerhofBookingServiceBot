@@ -16,6 +16,7 @@ var tischplan_component_1 = require("./components/digitalerTischplan/tischplan.c
 var angular2_flash_messages_1 = require("angular2-flash-messages");
 var angular2_moment_1 = require("angular2-moment");
 var ng2_datetime_1 = require("ng2-datetime/ng2-datetime");
+var ng2_dragula_1 = require("ng2-dragula");
 require("mdn-polyfills/Object.assign");
 require("@angular/platform-browser");
 require("@angular/platform-browser-dynamic");
@@ -44,7 +45,8 @@ AppModule = __decorate([
             forms_1.FormsModule,
             http_1.HttpModule,
             angular2_flash_messages_1.FlashMessagesModule,
-            angular2_moment_1.MomentModule
+            angular2_moment_1.MomentModule,
+            ng2_dragula_1.DragulaModule
         ],
         providers: [],
         bootstrap: [app_component_1.AppComponent]

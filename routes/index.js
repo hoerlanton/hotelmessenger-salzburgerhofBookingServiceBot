@@ -12,6 +12,8 @@ var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['
 var config = require('config');
 var cron = require('node-cron');
 var CronJob = require('cron').CronJob;
+const csv=require('csvtojson');
+
 
 // HOST_URL used for DB calls - SERVER_URL without https or https://
 const HOST_URL = config.get('hostURL');
@@ -93,21 +95,26 @@ router.get('/guests', function(req, res, next) {
 router.post('/guests', function(req, res, next) {
     //JSON string is parsed to a JSON object
     console.log("Post request made to /guests");
-    var guest = req.body;
-    console.dir(guest);
-    if(!guest.first_name || !guest.last_name){
-        res.status(400);
-        res.json({
-            error: "Bad data"
-        });
-    } else {
+    var guest = {
+        data: "",
+    };
+
+
+    guest.data = req.body;
+    //console.dir(guest);
+    //if(!guest.first_name || !guest.last_name){
+        //res.status(400);
+        //res.json({
+        //    error: "Bad data"
+        //});
+    //} else {
         db.testGaeste.save(guest, function (err, guest) {
             if (err) {
                 res.send(err);
             }
             res.json(guest);
         });
-    }
+    //}
 });
 
 //Update guest
@@ -146,6 +153,10 @@ router.post('/guestsMessage', function(req, res, next) {
     var uploadedFileName = sourceFile.uploadedFileName;
     //Destination URL for uploaded files
     var URLUploadedFile = String(config.get('serverURL') + "/uploads/" + uploadedFileName);
+
+
+
+
     newFileUploaded = sourceFile.newFileUploaded;
 
     db.testGaeste.find(function (err, gaeste) {
@@ -378,6 +389,9 @@ router.post('/guestsMessage', function(req, res, next) {
         sourceFile.newFileUploaded = false;
     }
 });
+
+
+
 
 //Get W-Lan-landingpage
 router.get('/wlanlandingpage', function(req, res, next) {

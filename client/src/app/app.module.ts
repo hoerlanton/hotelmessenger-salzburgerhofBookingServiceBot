@@ -8,6 +8,7 @@ import { TischplanComponent } from './components/digitalerTischplan/tischplan.co
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { MomentModule } from 'angular2-moment';
 import { NKDatetimeModule } from 'ng2-datetime/ng2-datetime';
+import { DragulaModule } from 'ng2-dragula';
 import * as $ from 'jquery';
 
 import 'mdn-polyfills/Object.assign';
@@ -36,7 +37,8 @@ import '../../node_modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js';
         FormsModule,
         HttpModule,
         FlashMessagesModule,
-        MomentModule
+        MomentModule,
+        DragulaModule
     ],
     providers: [],
     bootstrap: [AppComponent]

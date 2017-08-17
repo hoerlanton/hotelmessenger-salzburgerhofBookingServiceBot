@@ -89,8 +89,11 @@
                 </div>
                 <h3>Gesendete Nachrichten</h3>
                 <div class="row1">
-                    <div *ngFor="let Messages of sentMessages">
-                        <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
+                    <div class='wrapper'>
+                            <div *ngFor="let Messages of sentMessages">
+                                <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,7 +113,6 @@
             </div>
         </div>
     </div>
-</div>
 
 </body>
 </html>

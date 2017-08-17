@@ -10,17 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
+var core_2 = require("@angular/core");
 var tischplan_service_1 = require("../../services/tischplan.service");
+var ng2_dragula_1 = require("ng2-dragula");
 var http_1 = require("@angular/http");
 require("rxjs/add/operator/map");
 require("rxjs/add/operator/catch");
 var angular2_flash_messages_1 = require("angular2-flash-messages");
 var TischplanComponent = (function () {
-    function TischplanComponent(tischplanService, http, _flashMessagesService) {
+    function TischplanComponent(tischplanService, http, _flashMessagesService, dragulaService, element) {
         var _this = this;
         this.tischplanService = tischplanService;
         this.http = http;
         this._flashMessagesService = _flashMessagesService;
+        this.dragulaService = dragulaService;
+        this.element = element;
         this.filesToUpload = [];
         this.scheduledDate = new Date(2016, 5, 10);
         this.datepickerOpts = {
@@ -31,6 +35,7 @@ var TischplanComponent = (function () {
             assumeNearbyYear: true,
             format: 'D, d MM yyyy'
         };
+        this.bgColor = 'BBFFFF';
         this.tischplanService.getGuests()
             .subscribe(function (guests) {
             _this.guests = guests;
@@ -43,7 +48,43 @@ var TischplanComponent = (function () {
             .subscribe(function (scheduledMessages) {
             _this.scheduledMessages = scheduledMessages;
         });
+        this.tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
+        dragulaService.drag.subscribe(function (value) {
+            console.log("drag: " + value[0]);
+            _this.onDrag(value.slice(1));
+        });
+        dragulaService.drop.subscribe(function (value) {
+            console.log("drop: " + value[0]);
+            _this.onDrop(value.slice(1));
+        });
+        dragulaService.over.subscribe(function (value) {
+            console.log("over: " + value[0]);
+            _this.onOver(value.slice(1));
+        });
+        dragulaService.out.subscribe(function (value) {
+            console.log("out: " + value[0]);
+            _this.onOut(value.slice(1));
+        });
     }
+    TischplanComponent.prototype.onDrag = function (args) {
+        var e = args[0], el = args[1];
+    };
+    TischplanComponent.prototype.onDrop = function (args) {
+        var e = args[0], el = args[1];
+        var element = this.element.nativeElement;
+        console.log(element);
+        if (this.element.nativeElement.querySelector('.container').querySelector("#card") != null) {
+            this.element.nativeElement.querySelector('.container').querySelector(".1").bgColor = "FFFFFF";
+        }
+    };
+    TischplanComponent.prototype.onOver = function (args) {
+        var e = args[0], el = args[1], container = args[2];
+        // do something
+    };
+    TischplanComponent.prototype.onOut = function (args) {
+        var e = args[0], el = args[1], container = args[2];
+        // do something
+    };
     TischplanComponent.prototype.clicked = function (event) {
         var _this = this;
         console.log(this.scheduledDate);
@@ -102,7 +143,7 @@ TischplanComponent = __decorate([
         templateUrl: 'tischplan.component.html',
         styleUrls: ['tischplan.component.css'],
     }),
-    __metadata("design:paramtypes", [tischplan_service_1.TischplanService, http_1.Http, angular2_flash_messages_1.FlashMessagesService])
+    __metadata("design:paramtypes", [tischplan_service_1.TischplanService, http_1.Http, angular2_flash_messages_1.FlashMessagesService, ng2_dragula_1.DragulaService, core_2.ElementRef])
 ], TischplanComponent);
 exports.TischplanComponent = TischplanComponent;
 // html file deleted:
