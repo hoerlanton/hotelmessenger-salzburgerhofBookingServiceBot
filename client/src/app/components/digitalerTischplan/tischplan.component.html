@@ -35,12 +35,17 @@
         <div class="col-md-4"><h3>Restaurant</h3>
             <div class="col-xs-12" style="padding: 0px 0px 0px 0px;">
                 <div class="row1">
-                    <div class='wrapper'>
-                        <div *ngFor="let table of tables">
-                            <div class='container' [dragula]='"evented-bag"'>
-                                <div class="{{table}}" [ngStyle]="{'background-color': '#' + bgColor}">
-                                    <p><b> Tisch: {{table}}</b><br>
-                                    </p>
+                    <div class='wrapper' id="wrapper">
+                        <div *ngFor="let table of tables; let j = index;">
+                            <div *ngFor="let bgColor of bgColors; let i = index;">
+                                <div *ngIf="i === j">
+                                    <div class='container' id='container' [dragula]='"evented-bag"' [ngStyle]="{'background-color': '#' + bgColor}">
+                                        <div class="table" [ngStyle]="{'background-color': '#' + bgColor}">
+                                        <p><b> Tisch: {{table}} </b><br>
+                                            <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="besetzt()">BESETZT</button>
+                                        </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -66,8 +71,8 @@
                                 <b>Anreise:</b> {{guest.data[29]}}<br>
                                 <b>Abreise:</b> {{guest.data[30]}}<br>
                                 <b>Personen Anzahl:</b> {{guest.data[31]}}<br>
-                                <b>RB/SOU:</b> {{guest.data[31]}}<br>
-                                <b>Notiz2:</b> {{guest.data[32]}}<br>
+                                <b>RB/SOU:</b> {{guest.data[32]}}<br>
+                                <b>Notiz2:</b> {{guest.data[33]}}<br>
                             </p>
                             </div>
                         </div>
@@ -150,20 +155,20 @@
                     <div class="t46">
                         <p>46</p>
                     </div>
-                    <div class="t45">
+                    <div class="t45" >
                         <p>45</p>
                     </div>
                 </div>
                 <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 7%">
-                    <div class="t43">
+                    <div class="t43" >
                         <p>43</p>
                     </div>
-                    <div class="t44">
+                    <div class="t44" >
                         <p>44</p>
                     </div>
                 </div>
                 <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
-                    <div class="t42">
+                    <div class="t42" >
                         <p>42</p>
                     </div>
                     <div class="t41">

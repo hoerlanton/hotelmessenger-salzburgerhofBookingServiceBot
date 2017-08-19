@@ -390,9 +390,6 @@ router.post('/guestsMessage', function(req, res, next) {
     }
 });
 
-
-
-
 //Get W-Lan-landingpage
 router.get('/wlanlandingpage', function(req, res, next) {
     res.render('wlanlandingpage', { title: 'Jetzt buchen', errMsg: errMsg, noError: !errMsg});
@@ -542,9 +539,6 @@ router.post('/checkout', function(req, res, next){
         }
     }, 20000);
 });
-
-
-
 
 //Sending Hotel Reservation Request -> HotelResRQ
 function sendHotelResRQ(checkoutDataName, checkoutDataAddress, checkoutDataCardName, checkoutDataCardNumber, checkoutDataCardExpiryYear, checkoutDataCardCvc, numberOfPersonsReservation, numberOfRoomsReservation, arrivalDateReservation, departureDateReservation, ratePlanIDReservation) {

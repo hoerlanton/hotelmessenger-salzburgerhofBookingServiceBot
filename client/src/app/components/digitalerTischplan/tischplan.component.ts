@@ -4,6 +4,7 @@ import { TischplanService } from '../../services/tischplan.service';
 import { DragulaService } from "ng2-dragula";
 import { Guest } from '../../../../Guest';
 import { Table } from '../../../../Table';
+import { BgColor } from '../../../../BgColor';
 import { Messages } from '../../../../Messages';
 import { Http } from '@angular/http';
 import { OnInit } from '@angular/core';
@@ -18,7 +19,7 @@ import { FlashMessagesService } from 'angular2-flash-messages';
 })
 
 export class TischplanComponent implements OnInit {
-    bgColor: string;
+    bgColors: BgColor[];
     guests: Guest[];
     tables: Table[];
     sentMessages: Messages[];
@@ -39,7 +40,8 @@ export class TischplanComponent implements OnInit {
 
 
     constructor(private tischplanService: TischplanService, private http: Http, private _flashMessagesService: FlashMessagesService, private dragulaService: DragulaService, private element: ElementRef) {
-        this.bgColor = 'BBFFFF';
+        let DomBaseElement = this.element.nativeElement;
+        let wrapperElementsChildNames = [];
 
         this.tischplanService.getGuests()
             .subscribe(guests => {
@@ -56,7 +58,9 @@ export class TischplanComponent implements OnInit {
                 this.scheduledMessages = scheduledMessages;
             });
 
+        //92
         this.tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
+        this.bgColors = ['ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff'];
 
         dragulaService.drag.subscribe((value) => {
             console.log(`drag: ${value[0]}`);
@@ -64,7 +68,7 @@ export class TischplanComponent implements OnInit {
         });
         dragulaService.drop.subscribe((value) => {
             console.log(`drop: ${value[0]}`);
-            this.onDrop(value.slice(1));
+            this.onDrop(value.slice(1), DomBaseElement, wrapperElementsChildNames);
         });
         dragulaService.over.subscribe((value) => {
             console.log(`over: ${value[0]}`);
@@ -78,17 +82,58 @@ export class TischplanComponent implements OnInit {
 
     private onDrag(args) {
         let [e, el] = args;
-
     }
 
-    private onDrop(args) {
+    private onDrop(args, DomBaseElement, wrapperElementsChildNames) {
         let [e, el] = args;
-        let element = this.element.nativeElement;
-        console.log(element);
-        if(this.element.nativeElement.querySelector('.container').querySelector("#card") != null) {
-            this.element.nativeElement.querySelector('.container').querySelector(".1").bgColor = "FFFFFF";
-        }
-    }
+        //Check if one of the elements with the id #container has a element with the id #card as child element
+        let containerElements = DomBaseElement.querySelectorAll('.container a');
+                //console.log("ContainerElements:");
+                //console.log(containerElements);
+                console.log(containerElements.length);
+            for (var i=0; i<containerElements.length; i++) {
+                if (containerElements[i].hasChildNodes("#card") != null) {
+                    //if so change the background color of this element
+                        //console.log(document.getElementsByClassName('.container'));
+                        //console.log(DomBaseElement.querySelector('.container').querySelector('.table'));
+                    let wrapperElements = DomBaseElement.querySelectorAll('.wrapper a');
+                    let wrapperElementsLength = document.getElementById("wrapper").childNodes.length;
+                    let wrapperElementsNames = document.getElementById("wrapper").childNodes;
+
+                        console.log("WrapperElements:");
+                        console.log(wrapperElements);
+                        console.log(wrapperElementsLength);
+                        console.log(wrapperElementsNames);
+                        //console.log(document.getElementById("container").childNodes);
+                        for (let j =0; j<wrapperElementsLength; j++){
+                            wrapperElementsChildNames.push(wrapperElementsNames.item(j));
+                            //wrapperElementsChildNames.push(wrapperElementsNames[j].childNodes);
+
+                            //console.log(wrapperElementsChildNames[j]);
+
+                            if (wrapperElementsChildNames[j].childNodes.length < 10){
+                                console.log(wrapperElementsChildNames[j].childNodes.length);
+                                this.bgColors[j] = "0a7a74";
+                            }
+
+                            //console.log(wrapperElementsChildNames);
+                            //console.log(wrapperElementsChildNames[j].item(2));
+
+                           //if (wrapperElementsNames[j].childNodes ) {
+                            //       this.bgColors[j] = "0a7a74";
+                             //   }
+
+                            //if (wrapperElementsChildNames.childNodes("#card") != null) {
+                             //   this.bgColors[j] = "0a7a74";
+                            //}
+                        }
+
+                        //if (document.getElementById("container").childNodes[j] != null) {
+                        //}
+                        }
+                    }
+                }
+
 
     private onOver(args) {
         let [e, el, container] = args;
