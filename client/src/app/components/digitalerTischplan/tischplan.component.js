@@ -27,6 +27,7 @@ var TischplanComponent = (function () {
         this.element = element;
         this.filesToUpload = [];
         this.scheduledDate = new Date(2016, 5, 10);
+        this.isBesetzt = true;
         this.datepickerOpts = {
             startDate: new Date(2016, 5, 10),
             autoclose: true,
@@ -77,10 +78,11 @@ var TischplanComponent = (function () {
         //Check if one of the elements with the id #container has a element with the id #card as child element
         var containerElements = DomBaseElement.querySelectorAll('.container a');
         //console.log("ContainerElements:");
-        //console.log(containerElements);
+        console.log("Container Elements");
+        console.log(containerElements);
         console.log(containerElements.length);
-        for (var i = 0; i < containerElements.length; i++) {
-            if (containerElements[i].hasChildNodes("#card") != null) {
+        for (var k = 0; k < containerElements.length; k++) {
+            if (containerElements[k].hasChildNodes("#card") != null) {
                 //if so change the background color of this element
                 //console.log(document.getElementsByClassName('.container'));
                 //console.log(DomBaseElement.querySelector('.container').querySelector('.table'));
@@ -90,25 +92,38 @@ var TischplanComponent = (function () {
                 console.log("WrapperElements:");
                 console.log(wrapperElements);
                 console.log(wrapperElementsLength);
-                console.log(wrapperElementsNames);
+                //console.log(wrapperElementsNames);
                 //console.log(document.getElementById("container").childNodes);
                 for (var j = 0; j < wrapperElementsLength; j++) {
                     wrapperElementsChildNames.push(wrapperElementsNames.item(j));
                     //wrapperElementsChildNames.push(wrapperElementsNames[j].childNodes);
+                    //var hii = DOMParser.parse.wrapperElementsChildNames[j];
+                    //console.log(wrapperElementsChildNames[j].childNodes);
+                    //console.log(wrapperElementsChildNames[j].childNodes[3].childNodes[0]);
+                    //console.log(wrapperElementsChildNames[j].childNodes[3].childNodes[0] > 1);
                     //console.log(wrapperElementsChildNames[j]);
-                    if (wrapperElementsChildNames[j].childNodes.length < 10) {
-                        console.log(wrapperElementsChildNames[j].childNodes.length);
-                        this.bgColors[j] = "0a7a74";
-                    }
-                    //console.log(wrapperElementsChildNames);
-                    //console.log(wrapperElementsChildNames[j].item(2));
-                    //if (wrapperElementsNames[j].childNodes ) {
-                    //       this.bgColors[j] = "0a7a74";
-                    //   }
-                    //if (wrapperElementsChildNames.childNodes("#card") != null) {
-                    //   this.bgColors[j] = "0a7a74";
-                    //}
+                    //console.log(wrapperElementsChildNames[j].childNodes);
+                    var elementByXpath = [];
+                    elementByXpath.push(document.evaluate('//*[@id="card"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
                 }
+                //console.log(elementByXpath[j]);
+                //if (elementByXpath[j] != null) {
+                //    this.bgColors[j] = "0a7a74";
+                //}
+                //if (elementByXpath != null) {
+                //    element.value = '...';
+                //}
+                //console.log(wrapperElementsChildNames);
+                //console.log(wrapperElementsChildNames[j].item(2));
+                //if (wrapperElementsNames[j].childNodes ) {
+                //       this.bgColors[j] = "0a7a74";
+                //   }
+                //function isInPage(node) {
+                //    return (node === document.body) ? false : document.body.contains(node);
+                //}
+                //if (wrapperElementsChildNames.childNodes("#card") != null) {
+                //   this.bgColors[j] = "0a7a74";
+                //}
                 //if (document.getElementById("container").childNodes[j] != null) {
                 //}
             }
@@ -183,6 +198,16 @@ TischplanComponent = __decorate([
     __metadata("design:paramtypes", [tischplan_service_1.TischplanService, http_1.Http, angular2_flash_messages_1.FlashMessagesService, ng2_dragula_1.DragulaService, core_2.ElementRef])
 ], TischplanComponent);
 exports.TischplanComponent = TischplanComponent;
+/*
+    besetzt(i){
+        if (this.bgColors[i] === "ffffff") {
+        this.bgColors[i] = "0a7a74"} else {
+            this.bgColors[i] = "ffffff"
+        }
+    }
+
+}
+*/
 // html file deleted:
 // {{"Kann zahlen: " + guest.is_payment_enabled}} 
 //# sourceMappingURL=tischplan.component.js.map

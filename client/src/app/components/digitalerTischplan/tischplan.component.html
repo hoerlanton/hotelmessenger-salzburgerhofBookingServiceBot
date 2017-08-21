@@ -36,14 +36,17 @@
             <div class="col-xs-12" style="padding: 0px 0px 0px 0px;">
                 <div class="row1">
                     <div class='wrapper' id="wrapper">
-                        <div *ngFor="let table of tables; let j = index;">
-                            <div *ngFor="let bgColor of bgColors; let i = index;">
-                                <div *ngIf="i === j">
-                                    <div class='container' id='container' [dragula]='"evented-bag"' [ngStyle]="{'background-color': '#' + bgColor}">
-                                        <div class="table" [ngStyle]="{'background-color': '#' + bgColor}">
-                                        <p><b> Tisch: {{table}} </b><br>
-                                            <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="besetzt()">BESETZT</button>
-                                        </p>
+
+                            <div *ngFor="let table of tables; let j = index;">
+                                <div *ngFor="let bgColor of bgColors; let i = index;">
+                                    <div *ngIf="i === j">
+                                        <div class='container' id='container' [dragula]='"evented-bag"' [ngStyle]="{'background-color': '#' + bgColor}">
+                                            <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="besetzt(i)">BESETZT</button>
+                                            <div *ngIf=isBesetzt; let i = index>
+                                                <div class="table" [ngStyle]="{'background-color': '#' + bgColor}">
+                                                <p><b> Tisch: {{table}} </b><br>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

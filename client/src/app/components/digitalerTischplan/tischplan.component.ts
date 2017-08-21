@@ -28,6 +28,7 @@ export class TischplanComponent implements OnInit {
     filesToUpload: Array<File> = [];
     scheduledDate: Date = new Date(2016, 5, 10);
     scheduledMessages: Messages[];
+    isBesetzt: boolean = true;
     datepickerOpts = {
         startDate: new Date(2016, 5, 10),
         autoclose: true,
@@ -36,7 +37,6 @@ export class TischplanComponent implements OnInit {
         assumeNearbyYear: true,
         format: 'D, d MM yyyy'
     };
-
 
 
     constructor(private tischplanService: TischplanService, private http: Http, private _flashMessagesService: FlashMessagesService, private dragulaService: DragulaService, private element: ElementRef) {
@@ -60,7 +60,7 @@ export class TischplanComponent implements OnInit {
 
         //92
         this.tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
-        this.bgColors = ['ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff', 'ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff','ffffff', 'ffffff'];
+        this.bgColors = ['ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff'];
 
         dragulaService.drag.subscribe((value) => {
             console.log(`drag: ${value[0]}`);
@@ -88,51 +88,70 @@ export class TischplanComponent implements OnInit {
         let [e, el] = args;
         //Check if one of the elements with the id #container has a element with the id #card as child element
         let containerElements = DomBaseElement.querySelectorAll('.container a');
-                //console.log("ContainerElements:");
-                //console.log(containerElements);
-                console.log(containerElements.length);
-            for (var i=0; i<containerElements.length; i++) {
-                if (containerElements[i].hasChildNodes("#card") != null) {
-                    //if so change the background color of this element
-                        //console.log(document.getElementsByClassName('.container'));
-                        //console.log(DomBaseElement.querySelector('.container').querySelector('.table'));
-                    let wrapperElements = DomBaseElement.querySelectorAll('.wrapper a');
-                    let wrapperElementsLength = document.getElementById("wrapper").childNodes.length;
-                    let wrapperElementsNames = document.getElementById("wrapper").childNodes;
+        //console.log("ContainerElements:");
+        console.log("Container Elements");
 
-                        console.log("WrapperElements:");
-                        console.log(wrapperElements);
-                        console.log(wrapperElementsLength);
-                        console.log(wrapperElementsNames);
-                        //console.log(document.getElementById("container").childNodes);
-                        for (let j =0; j<wrapperElementsLength; j++){
-                            wrapperElementsChildNames.push(wrapperElementsNames.item(j));
-                            //wrapperElementsChildNames.push(wrapperElementsNames[j].childNodes);
+        console.log(containerElements);
+        console.log(containerElements.length);
+        for (var k = 0; k < containerElements.length; k++) {
+            if (containerElements[k].hasChildNodes("#card") != null) {
+                //if so change the background color of this element
+                //console.log(document.getElementsByClassName('.container'));
+                //console.log(DomBaseElement.querySelector('.container').querySelector('.table'));
+                let wrapperElements = DomBaseElement.querySelectorAll('.wrapper a');
+                let wrapperElementsLength = document.getElementById("wrapper").childNodes.length;
+                let wrapperElementsNames = document.getElementById("wrapper").childNodes;
 
-                            //console.log(wrapperElementsChildNames[j]);
-
-                            if (wrapperElementsChildNames[j].childNodes.length < 10){
-                                console.log(wrapperElementsChildNames[j].childNodes.length);
-                                this.bgColors[j] = "0a7a74";
-                            }
-
-                            //console.log(wrapperElementsChildNames);
-                            //console.log(wrapperElementsChildNames[j].item(2));
-
-                           //if (wrapperElementsNames[j].childNodes ) {
-                            //       this.bgColors[j] = "0a7a74";
-                             //   }
-
-                            //if (wrapperElementsChildNames.childNodes("#card") != null) {
-                             //   this.bgColors[j] = "0a7a74";
-                            //}
-                        }
-
-                        //if (document.getElementById("container").childNodes[j] != null) {
-                        //}
-                        }
-                    }
+                console.log("WrapperElements:");
+                console.log(wrapperElements);
+                console.log(wrapperElementsLength);
+                //console.log(wrapperElementsNames);
+                //console.log(document.getElementById("container").childNodes);
+                for (let j = 0; j < wrapperElementsLength; j++) {
+                    wrapperElementsChildNames.push(wrapperElementsNames.item(j));
+                    //wrapperElementsChildNames.push(wrapperElementsNames[j].childNodes);
+                    //var hii = DOMParser.parse.wrapperElementsChildNames[j];
+                    //console.log(wrapperElementsChildNames[j].childNodes);
+                    //console.log(wrapperElementsChildNames[j].childNodes[3].childNodes[0]);
+                    //console.log(wrapperElementsChildNames[j].childNodes[3].childNodes[0] > 1);
+                    //console.log(wrapperElementsChildNames[j]);
+                    //console.log(wrapperElementsChildNames[j].childNodes);
+                    var elementByXpath = [];
+                    elementByXpath.push(document.evaluate('//*[@id="card"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
                 }
+
+                    //console.log(elementByXpath[j]);
+                    //if (elementByXpath[j] != null) {
+                    //    this.bgColors[j] = "0a7a74";
+                    //}
+
+
+                    //if (elementByXpath != null) {
+                    //    element.value = '...';
+                    //}
+
+                    //console.log(wrapperElementsChildNames);
+                    //console.log(wrapperElementsChildNames[j].item(2));
+
+                    //if (wrapperElementsNames[j].childNodes ) {
+                    //       this.bgColors[j] = "0a7a74";
+                    //   }
+
+                    //function isInPage(node) {
+                    //    return (node === document.body) ? false : document.body.contains(node);
+                    //}
+
+
+                    //if (wrapperElementsChildNames.childNodes("#card") != null) {
+                    //   this.bgColors[j] = "0a7a74";
+                    //}
+
+
+                //if (document.getElementById("container").childNodes[j] != null) {
+                //}
+            }
+        }
+    }
 
 
     private onOver(args) {
@@ -191,7 +210,7 @@ export class TischplanComponent implements OnInit {
             .map(files => files.json()).map(res =>
             // 1st parameter is a flash message text
             // 2nd parameter is optional. You can pass object with options.
-            this._flashMessagesService.show('Erfolgreich Datei angehängt', { cssClass: 'alert-success', timeout: 10000 }))
+            this._flashMessagesService.show('Erfolgreich Datei angehängt', {cssClass: 'alert-success', timeout: 10000}))
             .subscribe(files => console.log('files', files));
     }
 
@@ -202,7 +221,16 @@ export class TischplanComponent implements OnInit {
         //this.product.photo = fileInput.target.files[0]['name'];
     }
 }
+/*
+    besetzt(i){
+        if (this.bgColors[i] === "ffffff") {
+        this.bgColors[i] = "0a7a74"} else {
+            this.bgColors[i] = "ffffff"
+        }
+    }
 
+}
+*/
 
 // html file deleted:
 // {{"Kann zahlen: " + guest.is_payment_enabled}}
