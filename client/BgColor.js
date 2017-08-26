@@ -6,4 +6,3 @@ var BgColor = (function () {
     return BgColor;
 }());
 exports.BgColor = BgColor;
-//# sourceMappingURL=BgColor.js.map

@@ -1,16 +1,23 @@
-import { Component } from '@angular/core';
-import { ElementRef } from '@angular/core';
+import { Component, Directive, Input, ElementRef, ViewChild, Renderer } from '@angular/core';
 import { TischplanService } from '../../services/tischplan.service';
 import { DragulaService } from "ng2-dragula";
 import { Guest } from '../../../../Guest';
+import { ImHausListe } from '../../../../ImHausListe';
+import { AnreiseListe } from '../../../../AnreiseListe';
+import { TracesListe } from '../../../../TracesListe';
 import { Table } from '../../../../Table';
 import { BgColor } from '../../../../BgColor';
+import { LeftValue } from '../../../../LeftValue';
+import { TopValue } from '../../../../TopValue';
+import { buttonBgColor } from '../../../../buttonBgColor';
+import { IsBesetzt } from '../../../../IsBesetzt';
 import { Messages } from '../../../../Messages';
 import { Http } from '@angular/http';
 import { OnInit } from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { FlashMessagesService } from 'angular2-flash-messages';
+import {NgClass} from '@angular/common';
 
 @Component({
     selector: 'tischplan',
@@ -19,8 +26,21 @@ import { FlashMessagesService } from 'angular2-flash-messages';
 })
 
 export class TischplanComponent implements OnInit {
+    buttonBgColor1: string;
+    buttonBgColor2: string;
+    buttonBgColor3: string;
+    buttonBgColor4: string;
+    fontColor1: string;
+    fontColor2: string;
+    fontColor3: string;
+    fontColor4: string;
+    leftValues: LeftValue[];
+    topValues: TopValue[];
     bgColors: BgColor[];
     guests: Guest[];
+    imHausListeElemente: ImHausListe[];
+    anreiseListeElemente: AnreiseListe[];
+    tracesListeElemente: TracesListe[];
     tables: Table[];
     sentMessages: Messages[];
     title: string;
@@ -28,7 +48,7 @@ export class TischplanComponent implements OnInit {
     filesToUpload: Array<File> = [];
     scheduledDate: Date = new Date(2016, 5, 10);
     scheduledMessages: Messages[];
-    isBesetzt: boolean = true;
+    isBesetzt: IsBesetzt[];
     datepickerOpts = {
         startDate: new Date(2016, 5, 10),
         autoclose: true,
@@ -38,29 +58,40 @@ export class TischplanComponent implements OnInit {
         format: 'D, d MM yyyy'
     };
 
+    @ViewChild('myTable') input: ElementRef;
 
-    constructor(private tischplanService: TischplanService, private http: Http, private _flashMessagesService: FlashMessagesService, private dragulaService: DragulaService, private element: ElementRef) {
+    constructor(private tischplanService: TischplanService, private http: Http, private _flashMessagesService: FlashMessagesService, private dragulaService: DragulaService, private element: ElementRef, private renderer: Renderer) {
         let DomBaseElement = this.element.nativeElement;
         let wrapperElementsChildNames = [];
 
-        this.tischplanService.getGuests()
-            .subscribe(guests => {
-                this.guests = guests;
+        this.tischplanService.getImHausListe()
+            .subscribe(imHausListeElemente => {
+                this.imHausListeElemente = imHausListeElemente;
             });
 
-        this.tischplanService.getMessages()
-            .subscribe(sentMessages => {
-                this.sentMessages = sentMessages;
+        this.tischplanService.getAnreiseListe()
+            .subscribe(anreiseListeElemente => {
+                this.anreiseListeElemente = anreiseListeElemente;
             });
 
-        this.tischplanService.getScheduledMessages()
-            .subscribe(scheduledMessages => {
-                this.scheduledMessages = scheduledMessages;
+        this.tischplanService.getTracesListe()
+            .subscribe(tracesListeElemente => {
+                this.tracesListeElemente = tracesListeElemente;
             });
 
         //92
-        this.tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
+        //this.tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
         this.bgColors = ['ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff'];
+        this.isBesetzt = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
+        this.buttonBgColor1 = "eaf3f3";
+        this.buttonBgColor2 = "eaf3f3";
+        this.buttonBgColor3 = "eaf3f3";
+        this.buttonBgColor4 = "eaf3f3";
+        this.fontColor1 = "0a7a74";
+        this.fontColor2 = "0a7a74";
+        this.fontColor3 = "0a7a74";
+        this.fontColor4 = "0a7a74";
+
 
         dragulaService.drag.subscribe((value) => {
             console.log(`drag: ${value[0]}`);
@@ -86,73 +117,15 @@ export class TischplanComponent implements OnInit {
 
     private onDrop(args, DomBaseElement, wrapperElementsChildNames) {
         let [e, el] = args;
+        console.log("Args = ");
+        console.log(args);
         //Check if one of the elements with the id #container has a element with the id #card as child element
         let containerElements = DomBaseElement.querySelectorAll('.container a');
-        //console.log("ContainerElements:");
-        console.log("Container Elements");
-
+        console.log("ContainerElements:");
+        console.log("Container Elements = ");
         console.log(containerElements);
         console.log(containerElements.length);
-        for (var k = 0; k < containerElements.length; k++) {
-            if (containerElements[k].hasChildNodes("#card") != null) {
-                //if so change the background color of this element
-                //console.log(document.getElementsByClassName('.container'));
-                //console.log(DomBaseElement.querySelector('.container').querySelector('.table'));
-                let wrapperElements = DomBaseElement.querySelectorAll('.wrapper a');
-                let wrapperElementsLength = document.getElementById("wrapper").childNodes.length;
-                let wrapperElementsNames = document.getElementById("wrapper").childNodes;
-
-                console.log("WrapperElements:");
-                console.log(wrapperElements);
-                console.log(wrapperElementsLength);
-                //console.log(wrapperElementsNames);
-                //console.log(document.getElementById("container").childNodes);
-                for (let j = 0; j < wrapperElementsLength; j++) {
-                    wrapperElementsChildNames.push(wrapperElementsNames.item(j));
-                    //wrapperElementsChildNames.push(wrapperElementsNames[j].childNodes);
-                    //var hii = DOMParser.parse.wrapperElementsChildNames[j];
-                    //console.log(wrapperElementsChildNames[j].childNodes);
-                    //console.log(wrapperElementsChildNames[j].childNodes[3].childNodes[0]);
-                    //console.log(wrapperElementsChildNames[j].childNodes[3].childNodes[0] > 1);
-                    //console.log(wrapperElementsChildNames[j]);
-                    //console.log(wrapperElementsChildNames[j].childNodes);
-                    var elementByXpath = [];
-                    elementByXpath.push(document.evaluate('//*[@id="card"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue);
-                }
-
-                    //console.log(elementByXpath[j]);
-                    //if (elementByXpath[j] != null) {
-                    //    this.bgColors[j] = "0a7a74";
-                    //}
-
-
-                    //if (elementByXpath != null) {
-                    //    element.value = '...';
-                    //}
-
-                    //console.log(wrapperElementsChildNames);
-                    //console.log(wrapperElementsChildNames[j].item(2));
-
-                    //if (wrapperElementsNames[j].childNodes ) {
-                    //       this.bgColors[j] = "0a7a74";
-                    //   }
-
-                    //function isInPage(node) {
-                    //    return (node === document.body) ? false : document.body.contains(node);
-                    //}
-
-
-                    //if (wrapperElementsChildNames.childNodes("#card") != null) {
-                    //   this.bgColors[j] = "0a7a74";
-                    //}
-
-
-                //if (document.getElementById("container").childNodes[j] != null) {
-                //}
-            }
-        }
     }
-
 
     private onOver(args) {
         let [e, el, container] = args;
@@ -197,7 +170,7 @@ export class TischplanComponent implements OnInit {
     }
 
     ngOnInit() {
-
+        //this.renderer.invokeElementMethod(this.input.nativeElement, 'focus');
     }
 
     upload() {
@@ -220,17 +193,135 @@ export class TischplanComponent implements OnInit {
         //console.log(this.successMsg);
         //this.product.photo = fileInput.target.files[0]['name'];
     }
-}
-/*
-    besetzt(i){
+
+    besetzt(i, h, j) {
         if (this.bgColors[i] === "ffffff") {
-        this.bgColors[i] = "0a7a74"} else {
-            this.bgColors[i] = "ffffff"
+            this.bgColors[i] = "0a7a74";
+            if (this.tables[j] === this.tables[j - 1]) {
+                this.bgColors[i - 1] = "0a7a74";
+            }
+        } else {
+            this.bgColors[i] = "ffffff";
+            if (this.tables[j] === this.tables[j - 1]) {
+                this.bgColors[i - 1] = "ffffff";
+            }
+        }
+        if (this.isBesetzt[h] == true) {
+            this.isBesetzt[h] = false;
+        } else {
+            this.isBesetzt[h] = true;
+        }
+
+    }
+
+    showSonnbergZirbn() {
+        console.log("Hoi!");
+
+        this.topValues = [340, 220, 140, 200, 280, 280, 200, 140, 220, 340, 430, 370, 280, 280, 320, 260, 200, 140, 140];
+        this.leftValues = [630, 630, 600, 570, 570, 510, 510, 400, 400, 400, 200, 200, 230, 170, 50, 50, 50, 50, 200,];
+        this.tables = [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58];
+
+        if (this.buttonBgColor1 === "eaf3f3") {
+            this.buttonBgColor1 = "0a7a74";
+            this.buttonBgColor2 = "eaf3f3";
+            this.buttonBgColor3 = "eaf3f3";
+            this.buttonBgColor4 = "eaf3f3"
+        } else {
+            this.buttonBgColor1 = "eaf3f3";
+        }
+        if (this.fontColor1 === "0a7a74") {
+            this.fontColor1 = "eaf3f3";
+            this.fontColor2 = "0a7a74";
+            this.fontColor3 = "0a7a74";
+            this.fontColor4 = "0a7a74"
+        } else {
+            this.fontColor1 = "0a7a74";
         }
     }
 
-}
-*/
+    showPanorama() {
+        console.log("Hoi!");
+        this.topValues =  [440, 440, 440, 440, 440, 440, 440, 340, 280, 220, 160, 160, 220, 280, 340, 340, 280, 220, 160, 340, 280, 220, 160, 160, 220, 280, 340, 400, 460, 520, 580, 640];
+        this.leftValues = [220, 280, 340, 400, 460, 520, 580, 580, 580, 580, 580, 460, 460, 460, 460, 340, 340, 340, 340, 220, 220, 220, 220, 60, 60, 60, 60, 60, 60, 60, 60, 60];
+        this.tables =     [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89];
 
-// html file deleted:
-// {{"Kann zahlen: " + guest.is_payment_enabled}}
+        if (this.buttonBgColor2 === "eaf3f3") {
+            this.buttonBgColor2 = "0a7a74";
+            this.buttonBgColor1 = "eaf3f3";
+            this.buttonBgColor3 = "eaf3f3";
+            this.buttonBgColor4 = "eaf3f3"
+        } else {
+            this.buttonBgColor2 = "eaf3f3";
+        }
+        if (this.fontColor2 === "0a7a74") {
+            this.fontColor2 = "eaf3f3";
+            this.fontColor1 = "0a7a74";
+            this.fontColor3 = "0a7a74";
+            this.fontColor4 = "0a7a74"
+        } else {
+            this.fontColor2 = "0a7a74";
+        }
+    }
+
+    showRestaurant() {
+        console.log("Hoi!");
+        this.topValues =  [500, 500, 500, 500, 350, 350, 350, 200, 200, 200, 200, 200, 300, 400, 500, 500, 350 ];
+        this.leftValues = [60, 120, 180, 240, 120, 180, 240, 60, 180, 240, 340, 440, 440, 440, 440, 340, 340 ];
+        this.tables =     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+        if (this.buttonBgColor3 === "eaf3f3") {
+            this.buttonBgColor3 = "0a7a74";
+            this.buttonBgColor1 = "eaf3f3";
+            this.buttonBgColor2 = "eaf3f3";
+            this.buttonBgColor4 = "eaf3f3"
+        } else {
+            this.buttonBgColor3 = "eaf3f3";
+        }
+        if (this.fontColor3 === "0a7a74") {
+            this.fontColor3 = "eaf3f3";
+            this.fontColor1 = "0a7a74";
+            this.fontColor2 = "0a7a74";
+            this.fontColor4 = "0a7a74"
+        } else {
+            this.fontColor3 = "0a7a74";
+        }
+    }
+
+    showWintergarten() {
+        console.log("Hoi!");
+        this.topValues =  [115, 115, 115, 115, 215, 215, 420, 460, 530, 530, 460, 420, 350, 420, 380, 380, 290, 280, 230, 180, 130, 130, 180, 115, 180];
+        this.leftValues = [420, 500, 590, 680, 590, 690, 590, 640, 630, 560, 530, 400, 340, 340, 280, 200, 150, 110, 70, 50, 40, 150, 260, 300, 330 ];
+        this.tables =     [501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
+        if (this.buttonBgColor4 === "eaf3f3") {
+            this.buttonBgColor4 = "0a7a74";
+            this.buttonBgColor1 = "eaf3f3";
+            this.buttonBgColor2 = "eaf3f3";
+            this.buttonBgColor3 = "eaf3f3"
+        } else {
+            this.buttonBgColor4 = "eaf3f3";
+        }
+        if (this.fontColor4 === "0a7a74") {
+            this.fontColor4 = "eaf3f3";
+            this.fontColor1 = "0a7a74";
+            this.fontColor2 = "0a7a74";
+            this.fontColor3 = "0a7a74"
+        } else {
+            this.fontColor4 = "0a7a74";
+        }
+    }
+
+    moveTable(g, j) {
+        console.log("HELLO");
+        console.log(j);
+
+        if (g === 0 && this.topValues[g] === 430) {
+            this.topValues[g] = 400;
+            this.tables.splice(j + 1, 1, 50);
+
+            console.log(this.tables)
+
+        } else if (g === 0 && this.topValues[g] === 400) {
+            this.topValues[g] = 430;
+            this.tables.splice(j + 1, 1, 51);
+        }
+    }
+}

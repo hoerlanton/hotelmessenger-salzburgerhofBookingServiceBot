@@ -46,7 +46,8 @@ AppModule = __decorate([
             http_1.HttpModule,
             angular2_flash_messages_1.FlashMessagesModule,
             angular2_moment_1.MomentModule,
-            ng2_dragula_1.DragulaModule
+            ng2_dragula_1.DragulaModule,
+            forms_1.ReactiveFormsModule
         ],
         providers: [],
         bootstrap: [app_component_1.AppComponent]

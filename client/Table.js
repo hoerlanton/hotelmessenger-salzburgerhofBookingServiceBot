@@ -6,4 +6,3 @@ var Table = (function () {
     return Table;
 }());
 exports.Table = Table;
-//# sourceMappingURL=Table.js.map

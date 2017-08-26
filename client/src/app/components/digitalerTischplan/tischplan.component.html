@@ -36,16 +36,23 @@
             <div class="col-xs-12" style="padding: 0px 0px 0px 0px;">
                 <div class="row1">
                     <div class='wrapper' id="wrapper">
-
-                            <div *ngFor="let table of tables; let j = index;">
-                                <div *ngFor="let bgColor of bgColors; let i = index;">
-                                    <div *ngIf="i === j">
-                                        <div class='container' id='container' [dragula]='"evented-bag"' [ngStyle]="{'background-color': '#' + bgColor}">
-                                            <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="besetzt(i)">BESETZT</button>
-                                            <div *ngIf=isBesetzt; let i = index>
-                                                <div class="table" [ngStyle]="{'background-color': '#' + bgColor}">
-                                                <p><b> Tisch: {{table}} </b><br>
-                                                </p>
+                        <div *ngFor="let table of tables; let j = index;">
+                            <div *ngFor="let bgColor of bgColors; let i = index;">
+                                <div *ngIf="i === j">
+                                    <div *ngFor="let isbesetzt of isBesetzt; let h = index;">
+                                        <div *ngIf="h === i">
+                                            <div *ngIf="tables[j] !== tables[j+1]">
+                                                <div class='container' id='container' [dragula]='"evented-bag"' [ngStyle]="{'background-color': '#' + bgColor}">
+                                                <button style="  float: right; margin: 20px 0px 20px 0px" type="button" class="btn btn-send" (click)="besetzt(i, h, j)">{{isbesetzt ? "ZURÜCKSETZEN": "BESETZEN"}}</button>
+                                                    <div class="table" [ngStyle]="{'background-color': '#' + bgColor}">
+                                                        <p><b> Tisch: {{table}} </b><br></p>
+                                                        <div *ngIf=!isbesetzt;>
+                                                            <div class="placeholder" style="background-color: #9d9d9d; border: dashed 3px black; margin-top: 50px; opacity: 0.4; padding: 10px 10px 10px 10px">
+                                                                <p>Im-HAUS-LISTE Element hier hin ziehen</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -57,128 +64,118 @@
             </div>
         </div>
 
-        <div class="col-md-4"><h3>Im-Haus-Liste</h3>
+        <div class="col-md-4">
             <form class="SendMessage" (submit)="sendMessage($event)">
                 <input type="file" style="float: left; margin-top: 10px; color: #0a7a74" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
                 <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="upload()">CSV HOCHLADEN</button>
-            </form>
+            </form><h3>Im-Haus-Liste</h3>
             <div class="row1">
                 <div class='wrapper'>
-                    <div class='container' [dragula]='"evented-bag"'>
-                        <div *ngFor="let guest of guests">
-                            <div class="card" id="card">
-                            <p> <b>Name:</b> {{guest.data[23]}}<br>
-                                <b>Nation:</b> {{guest.data[25]}}<br>
-                                <b>Zimmernummer:</b> {{guest.data[26]}}<br>
-                                <b>PreisTyp:</b> {{guest.data[28]}}<br>
-                                <b>Anreise:</b> {{guest.data[29]}}<br>
-                                <b>Abreise:</b> {{guest.data[30]}}<br>
-                                <b>Personen Anzahl:</b> {{guest.data[31]}}<br>
-                                <b>RB/SOU:</b> {{guest.data[32]}}<br>
-                                <b>Notiz2:</b> {{guest.data[33]}}<br>
+                    <div *ngFor="let imHausListeElement of imHausListeElemente">
+                        <div class='container' id='container1' [dragula]='"evented-bag"'>
+                            <div class="card" id="card1" >
+                            <p> <b>Name:</b> {{imHausListeElement.data[23]}}<br>
+                                <b>Nation:</b> {{imHausListeElement.data[25]}}<br>
+                                <b>Zimmernummer:</b> {{imHausListeElement.data[26]}}<br>
+                                <b>PreisTyp:</b> {{imHausListeElement.data[28]}}<br>
+                                <b>Anreise:</b> {{imHausListeElement.data[29]}}<br>
+                                <b>Abreise:</b> {{imHausListeElement.data[30]}}<br>
+                                <b>Personen Anzahl:</b> {{imHausListeElement.data[31]}}<br>
+                                <b>RB/SOU:</b> {{imHausListeElement.data[32]}}<br>
+                                <b>Notiz2:</b> {{imHausListeElement.data[33]}}<br>
                             </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <h3>Traces-Liste</h3>
-            <form class="SendMessage" (submit)="sendMessage($event)">
-                <input type="file" style="float: left; margin-top: 10px; color: #0a7a74" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
-                <button style=" background-color: #0a7a74; float: right; color:  white" type="button" class="btn btn-send" (click)="upload()">CSV HOCHLADEN</button>
-            </form>
+            <h3>Anreise-Liste</h3>
             <div class="row1">
-                <div [dragula]='"bag-one"' [dragulaModel]='sentMessages'>
-                    <div class="card" style="margin-top: 10px" *ngFor="let Messages of sentMessages">
-                        <p><b>Nachricht gesendet am: </b>{{Messages.date | amLocale:'de' | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}<br><b>Nachricht: </b>{{Messages.text}}<br><b>Datei im Anhang: </b>{{Messages.uploaded_file}}</p>
-                    </div>
-                </div>
                 <div class='wrapper'>
-                    <div class='container' [dragula]='"first-bag"'>
-                        <div>You can move these elements between these two containers</div>
-                        <div>Moving them anywhere else isn't quite possible</div>
-                        <div>There's also the possibility of moving elements around in the same container, changing their position</div>
-                    </div>
-                    <div class='container' [dragula]='"first-bag"'>
-                        <div>This is the default use case. You only need to specify the containers you want to use</div>
-                        <div>More interactive use cases lie ahead</div>
-                        <div>Make sure to check out the <a href='https://github.com/bevacqua/dragula#readme'>documentation on GitHub!</a></div>
+                    <div *ngFor="let anreiseListeElement of anreiseListeElemente">
+                        <div class='container' id='container2' [dragula]='"evented-bag"'>
+                            <div class="card" id="card2">
+                                <p> <b>Data:</b> {{anreiseListeElement.data[0]}}<br>
+                                    <b>Sprache:</b> {{anreiseListeElement.data[25]}}<br>
+                                    <b>Zimmernummer:</b> {{anreiseListeElement.data[26]}}<br>
+                                    <b>PreisTyp:</b> {{anreiseListeElement.data[28]}}<br>
+                                    <b>Anreise:</b> {{anreiseListeElement.data[29]}}<br>
+                                    <b>Abreise:</b> {{anreiseListeElement.data[30]}}<br>
+                                    <b>Personen Anzahl:</b> {{anreiseListeElement.data[31]}}<br>
+                                    <b>RB/SOU:</b> {{anreiseListeElement.data[32]}}<br>
+                                    <b>Notiz2:</b> {{anreiseListeElement.data[33]}}<br>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <h3>Traces-Liste</h3>
+            <div class="row1">
+                <div class='wrapper'>
+                    <div *ngFor="let tracesListeElement of tracesListeElemente">
+                        <div class='container' id='container3' [dragula]='"evented-bag"'>
+                            <div class="card" id="card3">
+                                <p> <b>1:</b> {{tracesListeElement.data[0]}}<br>
+                                    <b>2:</b> {{tracesListeElement.data[1]}}<br>
+                                    <b>3:</b> {{tracesListeElement.data[2]}}<br>
+                                    <b>4:</b> {{tracesListeElement.data[3]}}<br>
+                                    <b>5:</b> {{tracesListeElement.data[4]}}<br>
+                                    <b>6:</b> {{tracesListeElement.data[5]}}<br>
+                                    <b>7:</b> {{tracesListeElement.data[6]}}<br>
+                                    <b>8:</b> {{tracesListeElement.data[7]}}<br>
+                                    <b>9:</b> {{tracesListeElement.data[8]}}<br>
+                                    <b>10:</b> {{tracesListeElement.data[9]}}<br>
+                                    <b>11:</b> {{tracesListeElement.data[10]}}<br>
+                                    <b>12:</b> {{tracesListeElement.data[11]}}<br>
+                                    <b>13:</b> {{tracesListeElement.data[12]}}<br>
+                                    <b>14:</b> {{tracesListeElement.data[13]}}<br>
+                                    <b>15:</b> {{tracesListeElement.data[14]}}<br>
+                                    <b>16:</b> {{tracesListeElement.data[15]}}<br>
+                                    <b>17:</b> {{tracesListeElement.data[16]}}<br>
+                                    <b>18:</b> {{tracesListeElement.data[17]}}<br>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="col-md-6"><h3>Sonnberg-Zirbn</h3>
+        <div class="col-md-6">
+            <div class="row1" style="height: auto">
+                <div class="col-md-3"  (click)="showSonnbergZirbn()" [ngStyle]="{'background-color': '#' + buttonBgColor1}">
+                    <h3 [ngStyle]="{'color': '#' + fontColor1}">Sonnberg-Zirbn</h3>
+                </div>
+                <div class="col-md-3"  (click)="showPanorama()" [ngStyle]="{'background-color': '#' + buttonBgColor2}">
+                    <h3 [ngStyle]="{'color': '#' + fontColor2}">Panorama</h3>
+                </div>
+                <div class="col-md-3"  (click)="showRestaurant()" [ngStyle]="{'background-color': '#' + buttonBgColor3}">
+                    <h3 [ngStyle]="{'color': '#' + fontColor3}">Restaurant</h3>
+                </div>
+                <div class="col-md-3"  (click)="showWintergarten()" [ngStyle]="{'background-color': '#' + buttonBgColor4}">
+                    <h3 [ngStyle]="{'color': '#' + fontColor4}">Wintergarten</h3>
+                </div>
+            </div>
             <div class="row">
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
-                    <div class="t57">
-                        <p>57</p>
-                    </div>
-                    <div class="t56">
-                        <p>56</p>
-                    </div>
-                    <div class="t55">
-                        <p>55</p>
-                    </div>
-                    <div class="t54">
-                        <p>54</p>
-                    </div>
-                </div>
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
-                    <div class="t58">
-                        <p>58</p>
-                    </div>
-                    <div class="t53">
-                        <p>53</p>
-                    </div>
-                </div>
-                <div class="col-md-4" style="padding: 0px 80px 0px 0px; width: 15%; border-right: solid #959194 10px">
-                    <div class="t52">
-                        <p>52</p>
-                    </div>
-                    <div class="t51">
-                        <p>51</p>
-                    </div>
-                    <div class="t50">
-                        <p>50</p>
-                    </div>
-                </div>
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
-                    <div class="t47">
-                        <p>47</p>
-                    </div>
-                    <div class="t48">
-                        <p>48</p>
-                    </div>
-                    <div class="t49">
-                        <p>49</p>
-                    </div>
-                </div>
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 7%">
-                    <div class="t46">
-                        <p>46</p>
-                    </div>
-                    <div class="t45" >
-                        <p>45</p>
-                    </div>
-                </div>
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 7%">
-                    <div class="t43" >
-                        <p>43</p>
-                    </div>
-                    <div class="t44" >
-                        <p>44</p>
-                    </div>
-                </div>
-                <div class="col-md-4" style="padding: 0px 0px 0px 0px; width: 10%">
-                    <div class="t42" >
-                        <p>42</p>
-                    </div>
-                    <div class="t41">
-                        <p>41</p>
-                    </div>
-                    <div class="t40">
-                        <p>40</p>
+                <div *ngFor="let table of tables; let j = index;">
+                    <div *ngFor="let bgColor of bgColors; let i = index;">
+                        <div *ngIf="i === j">
+                            <div *ngFor="let topValue of topValues; let g = index;">
+                                <div *ngIf="g === i">
+                                    <div *ngFor="let leftValue of leftValues; let f = index;">
+                                        <div *ngIf="f === g">
+                                            <div class="t{{table}}" (click)="moveTable(g, j)" [ngStyle]="{'background-color': '#' + bgColor, 'top': topValue + 'px', 'left': leftValue + 'px'}">
+                                                <div *ngIf="tables[j] !== tables[j+1]">
+                                                    <p>{{table}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

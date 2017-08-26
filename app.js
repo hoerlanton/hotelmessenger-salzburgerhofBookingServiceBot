@@ -124,7 +124,7 @@ var b = "";
 // c = messageData.recipient.id; called in updateDb function -> if sendAPI call failes
 var c = "";
 
-var imHausListe = "";
+var csvDatei = "";
 
 //Store uploaded files - destination set / name of file set
 var storage = multer.diskStorage({
@@ -209,19 +209,19 @@ app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
     csv()
         .fromStream(request.get(String(config.get('serverURL') + "/uploads/" + uploadedFileName)))
         .on('csv',(csvRow)=>{
-            imHausListe = JSON.stringify(csvRow);
-                // csvRow is an array
-                // console.log(JSON.stringify(csvRow[i]));
-                // var gaesteName = JSON.stringify(csvRow[23]);
-                // console.log(csvRow[23]);
-                // postImHausListeToDB(gaesteName);
-            // console.log(JSON.stringify(csvRow));
-            postImHausListeToDB();
+            console.log("before stringifying: " + csvRow);
+            csvDatei = JSON.stringify(csvRow);
+            console.log("after stringifying: " + csvDatei);
+            if(csvDatei.indexOf("Im Haus NEU nach Zimmer") !== -1) {
+                postImHausListeToDB();
+            } if(csvDatei.indexOf("Anreiseliste aktuell") !== -1) {
+                postAnreiseListeToDB();
+            } else {
+                postTracesListeToDB();
+            }
         })
         .on('done', (error)=>{
         });
-
-
 
     //New User is saved in DB, function called in receivedAuthentication - send to index.js /guests REST-FUL API
     function postImHausListeToDB() {
@@ -230,7 +230,7 @@ app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
             //Change URL to hotelmessengertagbag.herokuapp.com if deploying
             host: HOST_URL,
             port: '80',
-            path: '/guests',
+            path: '/imHausListe',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -241,12 +241,64 @@ app.post("/upload", upload.array("uploads[]", 12), function (req, res) {
         var post_req = http.request(post_options, function (res) {
             res.setEncoding('utf8');
             res.on('data', function (chunk) {
-                console.log('Response: ' + chunk);
+                console.log('Response: ' + "chunk as string");
             });
         });
 
         // post the data
-        post_req.write(imHausListe);
+        post_req.write(csvDatei);
+        post_req.end();
+    }
+
+    function postAnreiseListeToDB() {
+        // An object of options to indicate where to post to
+        var post_options = {
+            //Change URL to hotelmessengertagbag.herokuapp.com if deploying
+            host: HOST_URL,
+            port: '80',
+            path: '/anreiseListe',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        // Set up the request
+        var post_req = http.request(post_options, function (res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                console.log('Response: ' + "chunk as string");
+            });
+        });
+
+        // post the data
+        post_req.write(csvDatei);
+        post_req.end();
+    }
+
+    function postTracesListeToDB() {
+        // An object of options to indicate where to post to
+        var post_options = {
+            //Change URL to hotelmessengertagbag.herokuapp.com if deploying
+            host: HOST_URL,
+            port: '80',
+            path: '/tracesListe',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        // Set up the request
+        var post_req = http.request(post_options, function (res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                console.log('Response: ' + "chunk as string");
+            });
+        });
+
+        // post the data
+        post_req.write(csvDatei);
         post_req.end();
     }
 });

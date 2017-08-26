@@ -7,16 +7,16 @@ export class TischplanService {
     constructor(private http: Http) {
         console.log('Task service initialized!');
     }
-    getGuests() {
-        return this.http.get('guests')
+    getImHausListe() {
+        return this.http.get('imHausListe')
             .map(res => res.json());
     }
-    getMessages() {
-        return this.http.get('guestsMessages')
+    getAnreiseListe() {
+        return this.http.get('anreiseListe')
             .map(res => res.json());
     }
-    getScheduledMessages() {
-        return this.http.get('guestsScheduledMessages')
+    getTracesListe() {
+        return this.http.get('tracesListe')
             .map(res => res.json());
     }
 

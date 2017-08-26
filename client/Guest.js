@@ -6,4 +6,3 @@ var Guest = (function () {
     return Guest;
 }());
 exports.Guest = Guest;
-//# sourceMappingURL=Guest.js.map

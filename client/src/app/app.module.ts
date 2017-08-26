@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -9,6 +9,7 @@ import { FlashMessagesModule } from 'angular2-flash-messages';
 import { MomentModule } from 'angular2-moment';
 import { NKDatetimeModule } from 'ng2-datetime/ng2-datetime';
 import { DragulaModule } from 'ng2-dragula';
+import {NgClass} from '@angular/common';
 import * as $ from 'jquery';
 
 import 'mdn-polyfills/Object.assign';
@@ -38,7 +39,8 @@ import '../../node_modules/bootstrap-timepicker/js/bootstrap-timepicker.min.js';
         HttpModule,
         FlashMessagesModule,
         MomentModule,
-        DragulaModule
+        DragulaModule,
+        ReactiveFormsModule
     ],
     providers: [],
     bootstrap: [AppComponent]

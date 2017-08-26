@@ -20,7 +20,7 @@ AppComponent = __decorate([
         selector: 'app-root',
         templateUrl: 'app.component.html',
         styleUrls: ['./app.component.css'],
-        providers: [dashboard_service_1.DashboardService, tischplan_service_1.TischplanService]
+        providers: [dashboard_service_1.DashboardService, tischplan_service_1.TischplanService],
     })
 ], AppComponent);
 exports.AppComponent = AppComponent;
