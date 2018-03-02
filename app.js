@@ -59,8 +59,8 @@ app.use('/', routes);
 //Data recieved from the sendXmlPostRequest request to Channelmanager
 var resultTransferData = [];
 
-var doppelzimmerClassicSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"156054\"/>";
-var einzelzimmerSommerstein = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"156052\"/>";
+var doppelzimmerClassicSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420424\"/>";
+var einzelzimmerSommerstein = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420596\"/>";
 var doppelzimmerDeluxeHolzleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420590\"/>";
 var doppelzimmerSuperiorSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420592\"/>";
 var numberOfPersons = 0;
@@ -2507,7 +2507,7 @@ function sendGenericMessageOffer12(recipientId) {
                     template_type: "generic",
 
                     elements: [{
-                        title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2018 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2018 | " + stayRange + " Übernachtung/en",
+                        title: String(numberOfRooms / numberOfRooms) + " Doppelzimmer Classic Steinleo | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                         subtitle: String(priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms) + ",00 EUR ",
                         item_url: SERVER_URL + "/checkout",
                         image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Doppelzimmer-classic-Steinleo.png",
@@ -2522,7 +2522,7 @@ function sendGenericMessageOffer12(recipientId) {
                         }]
                     },
                         {
-                            title: String((numberOfRooms/ numberOfRooms) * 3) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2018 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2018 | " + stayRange + " Übernachtung/en",
+                            title: String((numberOfRooms/ numberOfRooms) * 3) + " Einzelzimmer Sommerstein | Von " + arrivalDateDayCalculations + "." + arrivalDateMonthCalculations + "." + "2017 bis " + departureDateSplitted[2] + "." + departureDateSplitted[1] + ".2017 | " + stayRange + " Übernachtung/en",
                             subtitle: (priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 3 + ",00 EUR + " + priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ",00 EUR  = " + (priceAllNightsDoppelzimmerClassicSteinleo / numberOfRooms + ((priceAllNightsEinzelzimmerSommerstein / numberOfRooms) * 3)) + ",00 EUR | Preis ist kalkuliert für " + numberOfPersons + " Erwachsene" ,
                             item_url: SERVER_URL + "/checkout",
                             image_url: "https://gettagbag.com/wp-content/uploads/2017/04/Einzelzimmer-Sommerstein1-1.9.png",
