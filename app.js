@@ -59,8 +59,8 @@ app.use('/', routes);
 //Data recieved from the sendXmlPostRequest request to Channelmanager
 var resultTransferData = [];
 
-var doppelzimmerClassicSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"516236\"/>";
-var einzelzimmerSommerstein = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"516234\"/>";
+var doppelzimmerClassicSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"156054\"/>";
+var einzelzimmerSommerstein = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"156052\"/>";
 var doppelzimmerDeluxeHolzleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420590\"/>";
 var doppelzimmerSuperiorSteinleo = "<RatePlanCandidate RatePlanType=\"11\" RatePlanID=\"420592\"/>";
 var numberOfPersons = 0;
