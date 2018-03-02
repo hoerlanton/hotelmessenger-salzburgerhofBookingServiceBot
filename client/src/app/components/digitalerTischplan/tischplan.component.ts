@@ -4,7 +4,7 @@ import { DragulaService } from "ng2-dragula";
 import { Guest } from '../../../../Guest';
 import { ImHausListe } from '../../../../ImHausListe';
 import { AnreiseListe } from '../../../../AnreiseListe';
-import { TracesListe } from '../../../../TracesListe';
+import { TracesListElement } from '../../../../TracesListElement';
 import { Table } from '../../../../Table';
 import { BgColor } from '../../../../BgColor';
 import { LeftValue } from '../../../../LeftValue';
@@ -12,12 +12,14 @@ import { TopValue } from '../../../../TopValue';
 import { buttonBgColor } from '../../../../buttonBgColor';
 import { IsBesetzt } from '../../../../IsBesetzt';
 import { Messages } from '../../../../Messages';
+import { TracesListeDataElement } from '../../../../TracesListeDataElement';
 import { Http } from '@angular/http';
 import { OnInit } from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { FlashMessagesService } from 'angular2-flash-messages';
 import {NgClass} from '@angular/common';
+
 
 @Component({
     selector: 'tischplan',
@@ -40,9 +42,10 @@ export class TischplanComponent implements OnInit {
     guests: Guest[];
     imHausListeElemente: ImHausListe[];
     anreiseListeElemente: AnreiseListe[];
-    tracesListeElemente: TracesListe[];
+    tracesListeElemente: TracesListElement[];
     tables: Table[];
     sentMessages: Messages[];
+    tracesListeDataElemente: TracesListeDataElement[];
     title: string;
     dateGenerated: any;
     filesToUpload: Array<File> = [];
@@ -58,7 +61,7 @@ export class TischplanComponent implements OnInit {
         format: 'D, d MM yyyy'
     };
 
-    @ViewChild('myTable') input: ElementRef;
+
 
     constructor(private tischplanService: TischplanService, private http: Http, private _flashMessagesService: FlashMessagesService, private dragulaService: DragulaService, private element: ElementRef, private renderer: Renderer) {
         let DomBaseElement = this.element.nativeElement;
@@ -75,12 +78,25 @@ export class TischplanComponent implements OnInit {
             });
 
         this.tischplanService.getTracesListe()
-            .subscribe(tracesListeElemente => {
-                this.tracesListeElemente = tracesListeElemente;
+            .subscribe(tracesListeElemente  => {
+                if (tracesListeElemente) {
+                    console.log(tracesListeElemente);
+                    console.log("2:" + tracesListeElemente[0].data[0]);
+                    console.log(tracesListeElemente[0].data.length);
+                    this.tracesListeElemente = tracesListeElemente[0].data;
+                    //this.formatTracesListeElements();
+                }
             });
+
+        /*
+        function filterTracesListeElemente(tracesListeDataElemente) {
+            console.log(tracesListeDataElemente);
+        }
+        */
 
         //92
         //this.tables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525];
+
         this.bgColors = ['ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff', 'ffffff'];
         this.isBesetzt = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
         this.buttonBgColor1 = "eaf3f3";
@@ -91,6 +107,7 @@ export class TischplanComponent implements OnInit {
         this.fontColor2 = "0a7a74";
         this.fontColor3 = "0a7a74";
         this.fontColor4 = "0a7a74";
+
 
 
         dragulaService.drag.subscribe((value) => {
@@ -110,6 +127,34 @@ export class TischplanComponent implements OnInit {
             this.onOut(value.slice(1));
         });
     }
+
+    private formatTracesListeElements() {
+
+        /*
+        for (let o = 0; o < this.tracesListeElemente.length; o++) {
+            this.tracesListeElemente = this.tracesListeElemente[o].split(',');
+
+            if (this.tracesListeElemente[o].length === 7) {
+                this.tracesListeElemente[o].splice(0, 5);
+                this.tracesListeElemente[o].splice(6, 7);
+            }
+            if (this.tracesListeElemente[o].length === 8) {
+                this.tracesListeElemente[o].splice(o, 1);
+            }
+            if (this.tracesListeElemente[o].length > 12) {
+                this.tracesListeElemente[o].splice(o, 1);
+
+                //this.tracesListeElemente = this.tracesListeElemente[0].data;
+                //if (this.tracesListeElemente[0].data[o].length === 12) {
+                //    this.tracesListeElemente[0].data[o].concat(this.tracesListeElemente[0].data[o + 1]);
+                //}
+
+            }
+        }
+        console.log(this.tracesListeElemente);
+        */
+    }
+
 
     private onDrag(args) {
         let [e, el] = args;
@@ -323,5 +368,860 @@ export class TischplanComponent implements OnInit {
             this.topValues[g] = 430;
             this.tables.splice(j + 1, 1, 51);
         }
+    }
+
+    print(): void {
+        let printContents, popupWin;
+        printContents = document.getElementById('print-section').innerHTML + document.getElementById('print-section1').innerHTML;
+        popupWin = window.open('', '_blank', 'top=0,left=0,height=100%,width=auto');
+        popupWin.document.open();
+        popupWin.document.write(`   
+      <html>
+        <head>
+            <title>Dashboard</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+                <script src="https://code.jquery.com/jquery-1.12.4.min.js"   integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="   crossorigin="anonymous"></script>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/locales/bootstrap-datepicker.ar.min.js"></script>
+                <script src="node_modules/core-js/client/shim.min.js"></script>
+                <script src="<your-libs-directory>/object-assign.min.js"></script>
+          <style>
+          
+html, body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    background-color: #0a7a74;
+}
+
+.row {
+    height: 100%;
+}
+
+.row .container-fluid {
+    height: 100%;
+}
+
+.row .container-fluid .col-md-4 {
+    background-color: #f3efe4;
+    padding: 20px 10px 20px 10px;
+    border-left: 10px solid #0a7a74;
+    border-right: 10px solid #0a7a74;
+    height: 100%;
+    border-bottom: 20px solid #0a7a74;
+    max-width: 20%;
+}
+
+.row .container-fluid .col-md-4 .row1 {
+    overflow: auto;
+    margin: 0 0 0 0;
+    display: inline-block;
+    width: 100%;
+    height: 25%;
+    padding-top: 20px;
+}
+
+.row .container-fluid .col-md-4 .row1 .wrapper {
+    overflow: auto;
+    margin: 0 0 0 0;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.row .container-fluid .col-md-4 .row1 .wrapper .container {
+    overflow: auto;
+    margin: 0 0 0 0;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.row .container-fluid .col-md-4 .row3 {
+    margin: 0 auto;
+    display: inline-block;
+    width: 100%;
+      height: 100%;
+
+    padding-top: 20px;
+}
+
+
+.row .container-fluid .col-md-4 .col-xs-12 .row1 {
+    overflow: auto;
+    margin: 0 auto;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+
+    padding-top: 20px;
+}
+
+
+.row .container-fluid .col-md-4 h3 {
+    align-content: center;
+    margin: 0 auto;
+    display: inline-block;
+    color: #0a7a74;
+    position: relative;
+    text-align:center;
+}
+
+.row .container-fluid .col-md-4 .row3 .col-xs-12 .form-group {
+    border-top:3px solid #0a7a74;
+    width: 105%;
+    padding: 10px 10px 10px 30px;
+}
+
+.row .container-fluid .col-md-4 .row3 .col-xs-12  .group {
+    border-top:3px solid #0a7a74;
+    width: 105%;
+    padding: 10px 10px 10px 30px;
+}
+
+.row .container-fluid .col-md-4 .row3 .col-xs-12 .form-group1 {
+    margin-top: 20px;
+    overflow: auto;
+    max-height: 300px;
+    display: inline-block;
+    border-top:3px solid #0a7a74;
+    width: 102%;
+    padding: 10px 10px 10px 25px;
+}
+
+.row1 .col {
+    flex: 1;
+}
+
+.row1 .col:nth-child(1) {
+    order: 1;
+}
+.row1 .col:nth-child(2) {
+    order: 0;
+}
+.row1 .col:nth-child(3) {
+    order: 2;
+}
+
+.row .col-md-4 .row2 {
+    padding-bottom: 10px;
+    position: relative;
+    min-height: 100%;
+    border-bottom: 1px solid red;
+}
+
+.card {
+    background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */
+    background: rgba(255,255,255, 1);
+}
+
+.row .container-fluid .col-md-4 .row1 .wrapper .container .card p {
+    padding:10px 10px 10px 10px;
+    max-width: 100%;
+}
+
+.row .container-fluid .col-md-4 .wrapper .container .card p {
+    padding:10px 10px 10px 10px;
+    max-width: 100%;
+}
+
+.row .container-fluid .col-md-4 .row3 .row1 p {
+    padding: 10px 10px 10px 10px;
+    background: rgb(255,255,255); /* Fall-back for browsers that don support rgba */
+    background: rgba(255,255,255, 1);
+    max-width: 100%;
+}
+
+.row .container-fluid .col-md-4 .col-xs-12 .row1 .wrapper .container .card p {
+    padding: 10px 10px 10px 10px;
+    max-width: 100%;
+}
+
+.row .container-fluid .col-md-6 {
+    height: 620px;
+    width: 58%;
+    background-color: #eaf3f3;
+}
+
+.row .container-fluid .col-md-6 .row {
+    background-color: #eaf3f3;
+    height: 620px;
+}
+
+.row .container-fluid .col-md-6 .row1 .col-md-3 {
+    margin: 0px 0px 0px 0px;
+    padding: 20px 20px 20px 20px;
+}
+
+.row .container-fluid .col-md-6 .row .t1 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t2 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t3 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t4 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t5 {
+    width: 30px;
+    height: 80px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t6 {
+    width: 30px;
+    height: 80px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t7 {
+    width: 30px;
+    height: 80px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t8 {
+    width: 100px;
+    height: 90px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t9 {
+    width: 40px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t10 {
+    width: 40px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t11 {
+    width: 30px;
+    height: 80px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t12 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t13 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t14 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t15 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t16 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t17 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t40 {
+    width: 60px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t41 {
+    width: 60px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t42 {
+    width: 80px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t43 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t44 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t45 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t46 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t47 {
+    width: 80px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t48 {
+    width: 60px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t49 {
+    width: 60px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t50 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t51 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t52 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t53 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t54 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t55 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t56 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t57 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t58 {
+    width: 60px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .t60 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t61 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t62 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t63 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t64 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t65 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t66 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t67 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t68 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t69 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t70 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t71 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t72 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t73 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t74 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t75 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t76 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t77 {
+     width: 60px;
+     height: 30px;
+     background-color: #FFFFFF;
+     position: absolute;
+ }
+
+.row .container-fluid .col-md-6 .row .t78 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+
+.row .container-fluid .col-md-6 .row .t79 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t80 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t81 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t82 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t83 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t84 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t85 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row  .t86 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t87 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t88 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t89 {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t501 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t502 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t503 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t504 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t505 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t506 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t507 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    border-radius: 50%;
+}
+
+.row .container-fluid .col-md-6 .row .t508 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    border-radius: 50%;
+
+}
+
+.row .container-fluid .col-md-6 .row .t509 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    border-radius: 50%;
+
+}
+
+.row .container-fluid .col-md-6 .row .t510 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    border-radius: 50%;
+
+}
+
+.row .container-fluid .col-md-6 .row .t511 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    border-radius: 50%;
+
+}
+
+.row .container-fluid .col-md-6 .row .t512 {
+    width: 80px;
+    height: 45px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t513 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    border-radius: 50%;
+
+}
+
+.row .container-fluid .col-md-6 .row .t514 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    border-radius: 50%;
+
+}
+
+.row .container-fluid .col-md-6 .row .t515 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t516 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t517 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(10deg);
+}
+
+.row .container-fluid .col-md-6 .row .t518 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(30deg);
+}
+
+.row .container-fluid .col-md-6 .row .t519 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(50deg);
+}
+
+.row .container-fluid .col-md-6 .row .t520 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(70deg);
+}
+
+.row .container-fluid .col-md-6 .row .t521 {
+    width: 30px;
+    height: 60px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(90deg);
+}
+
+.row .container-fluid .col-md-6 .row .t522 {
+    width: 80px;
+    height: 45px;
+    background-color: #FFFFFF;
+    position: absolute;
+}
+
+.row .container-fluid .col-md-6 .row .t523 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t524 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+.row .container-fluid .col-md-6 .row .t525 {
+    width: 40px;
+    height: 40px;
+    background-color: #FFFFFF;
+    position: absolute;
+    transform: rotate(45deg);
+}
+
+</style>
+        </head>
+            <body onload="window.print();window.close()">${printContents}</body>
+      </html>`
+        );
+        popupWin.document.close();
     }
 }

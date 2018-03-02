@@ -14,9 +14,11 @@ html, body {
     padding: 20px 10px 20px 10px;
     border-left: 10px solid #0a7a74;
     border-right: 10px solid #0a7a74;
-    height: 100%;
+    height: 1000px;
     border-bottom: 40px solid #0a7a74;
 }
+
+
 
 .row .container-fluid .col-md-4 .row1 {
     overflow: auto;

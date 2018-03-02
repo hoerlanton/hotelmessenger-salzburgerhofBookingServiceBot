@@ -19,9 +19,6 @@ export class TischplanService {
         return this.http.get('tracesListe')
             .map(res => res.json());
     }
-
-
-
     sendMessage(newMessage) {
         var headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -29,7 +26,6 @@ export class TischplanService {
         return this.http.post('guestsMessage', newMessage, {headers: headers} )
             .map(res => res.json());
     }
-
     scheduleMessage(scheduledMessage) {
         var headers = new Headers();
         headers.append('Content-Type', 'application/json');

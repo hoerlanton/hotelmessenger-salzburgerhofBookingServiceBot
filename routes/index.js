@@ -8,7 +8,7 @@ var sourceFile = require('../app');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongojs = require('mongojs');
-var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['testMessages', 'testGaeste', 'testScheduledMessages']);
+var db = mongojs('mongodb://anton:b2d4f6h8@ds127132.mlab.com:27132/servicio', ['testMessages', 'testGaeste', 'testScheduledMessages', 'tracesListe', 'anreiseListe', 'imHausListe']);
 var config = require('config');
 var cron = require('node-cron');
 var CronJob = require('cron').CronJob;
@@ -147,6 +147,7 @@ router.post('/imHausListe', function(req, res, next) {
 
 //Save TracesListe
 router.post('/tracesListe', function(req, res, next) {
+    console.log("REQ BODY ------>>>>" + req.body);
     //JSON string is parsed to a JSON object
     console.log("Post request made to /guests");
     var tracesListe = {
@@ -349,7 +350,7 @@ router.post('/guestsMessage', function(req, res, next) {
 
                             console.log("---->>>month" + monthNames[monthNumber]);
                             //Filter the right message
-                            var regex = String(month + " " + day + " 2017 " + hour + ":" + minutes);
+                            var regex = String(month + " " + day + " 2018 " + hour + ":" + minutes);
                             console.log("---->regex:"+regex);
 
                             for (var m = 0; m < bufferObject.length; m++) {
