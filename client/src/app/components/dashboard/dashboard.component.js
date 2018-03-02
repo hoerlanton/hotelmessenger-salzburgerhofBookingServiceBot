@@ -21,9 +21,9 @@ var DashboardComponent = (function () {
         this.http = http;
         this._flashMessagesService = _flashMessagesService;
         this.filesToUpload = [];
-        this.scheduledDate = new Date(2016, 5, 10);
+        this.scheduledDate = new Date(2018, 5, 10);
         this.datepickerOpts = {
-            startDate: new Date(2016, 5, 10),
+            startDate: new Date(2018, 5, 10),
             autoclose: true,
             todayBtn: 'linked',
             todayHighlight: true,

@@ -10404,7 +10404,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<flash-messages></flash-messages>\n<tischplan></tischplan>\n\n\n"
+module.exports = "<flash-messages></flash-messages>\n<dashboard></dashboard>\n\n\n"
 
 /***/ }),
 
@@ -10600,9 +10600,9 @@ var DashboardComponent = (function () {
         this.http = http;
         this._flashMessagesService = _flashMessagesService;
         this.filesToUpload = [];
-        this.scheduledDate = new Date(2016, 5, 10);
+        this.scheduledDate = new Date(2018, 5, 10);
         this.datepickerOpts = {
-            startDate: new Date(2016, 5, 10),
+            startDate: new Date(2018, 5, 10),
             autoclose: true,
             todayBtn: 'linked',
             todayHighlight: true,
